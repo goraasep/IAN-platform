@@ -6,6 +6,7 @@ use App\Http\Controllers\SitesController;
 use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DatatablesController;
+use App\Http\Controllers\TestController;
 use App\Models\Devices;
 
 /*
@@ -39,10 +40,11 @@ Route::resource('/sites', SitesController::class)->middleware('auth');
 Route::get('/login', [LoginController::class, 'index'])->name('login')->middleware('guest');
 Route::post('/login', [LoginController::class, 'authenticate']);
 Route::post('/logout', [LoginController::class, 'logout']);
-Route::get('/test', function () {
-    return view('test', [
-        'title' => 'test',
-        'breadcrumb' => 'test'
-    ]);
-});
+Route::get('/test', [TestController::class, 'test']);
+// Route::get('/test', function () {
+//     return view('test', [
+//         'title' => 'test',
+//         'breadcrumb' => 'test'
+//     ]);
+// });
 // Route::post('/alldevice', [DatatablesController::class, 'allDevice'])->middleware('auth');

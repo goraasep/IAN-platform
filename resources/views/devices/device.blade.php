@@ -315,7 +315,10 @@
         </div>
     </div>
     <hr class="my-0">
-    <div class="row my-4">
+    @livewire('number-parameter', [
+        'device_id' => $device->id,
+    ])
+    {{-- <div class="row my-4">
         <div class="col-lg-12">
             <div class="card shadow-xs border">
                 <div class="card-header pb-0">
@@ -378,7 +381,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
     <div class="row">
         <div class="col-md-12">
             <div class="d-md-flex align-items-center mb-3 mx-2">

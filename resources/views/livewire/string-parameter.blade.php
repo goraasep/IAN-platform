@@ -1,4 +1,4 @@
-<div wire:poll.1000ms>
+<div wire:poll.5000ms>
     {{-- Care about people's approval and you will be their prisoner. --}}
     <div class="row my-4">
         @if (!$parameters->count())
