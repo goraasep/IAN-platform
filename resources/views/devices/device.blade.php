@@ -134,7 +134,6 @@
                                                 </h5>
                                                 <button type="button" class="btn-close text-dark"
                                                     data-bs-dismiss="modal" aria-label="Close">
-                                                    {{-- <span aria-hidden="true">×</span> --}}
                                                 </button>
                                             </div>
                                             <div class="modal-body">
@@ -247,64 +246,6 @@
     @livewire('string-parameter', [
         'device_id' => $device->id,
     ])
-    {{-- <div class="row my-4">
-        <div class="col-xl-2 col-sm-3 mb-xl-0">
-            <div class="card border shadow-xs mb-4">
-                <div class="card-body text-start p-3 w-100">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="w-100">
-                                <p class="text-sm text-secondary mb-1">Door 1</p>
-                                <h4 class="mb-2 font-weight-bold">Close</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-2 col-sm-3 mb-xl-0">
-            <div class="card border shadow-xs mb-4">
-                <div class="card-body text-start p-3 w-100">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="w-100">
-                                <p class="text-sm text-secondary mb-1">Door 1</p>
-                                <h4 class="mb-2 font-weight-bold">Close</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-2 col-sm-3 mb-xl-0">
-            <div class="card border shadow-xs mb-4">
-                <div class="card-body text-start p-3 w-100">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="w-100">
-                                <p class="text-sm text-secondary mb-1">Door 1</p>
-                                <h4 class="mb-2 font-weight-bold">Close</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-2 col-sm-3 mb-xl-0">
-            <div class="card border shadow-xs mb-4">
-                <div class="card-body text-start p-3 w-100">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="w-100">
-                                <p class="text-sm text-secondary mb-1">Door 1</p>
-                                <h4 class="mb-2 font-weight-bold">Close</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> --}}
     <div class="row">
         <div class="col-md-12">
             <div class="d-md-flex align-items-center mb-3 mx-2">
@@ -315,73 +256,46 @@
         </div>
     </div>
     <hr class="my-0">
-    @livewire('number-parameter', [
+    {{-- @livewire('number-parameter', [
         'device_id' => $device->id,
-    ])
-    {{-- <div class="row my-4">
-        <div class="col-lg-12">
-            <div class="card shadow-xs border">
-                <div class="card-header pb-0">
-                    <div class="d-sm-flex align-items-center mb-3">
-                        <div>
-                            <h6 class="font-weight-semibold text-lg mb-0">Voltage 1</h6>
-                            <p class="text-sm mb-sm-0 mb-2">Here you have details Voltage 1.</p>
-                        </div>
-                        <div class="ms-auto d-flex">
-                            <button type="button" class="btn btn-sm btn-white mb-0 me-2">
-                                View report
-                            </button>
-                        </div>
-                    </div>
-                    <div class="d-sm-flex align-items-center">
-                        <h3 class="mb-0 font-weight-semibold">12.5 V</h3>
-                    </div>
-                </div>
-                <div class="card-body p-3 row">
-                    <div class="col-lg-3">GAUGE</div>
-                    <div class="col-lg-9">
-                        Chart
-                        <div class="chart mt-n6">
-                            <canvas id="chart-line" class="chart-canvas" height="300"></canvas>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
+    ]) --}}
     <div class="row my-4">
-        <div class="col-lg-12">
-            <div class="card shadow-xs border">
-                <div class="card-header pb-0">
-                    <div class="d-sm-flex align-items-center mb-3">
-                        <div>
-                            <h6 class="font-weight-semibold text-lg mb-0">Voltage 2</h6>
-                            <p class="text-sm mb-sm-0 mb-2">Here you have details Voltage 2.</p>
+        @if (!$parameters_number->count())
+            <h3 class="col-12 text-center opacity-5">Data not found.</h3>
+        @else
+            @foreach ($parameters_number as $parameter)
+                <div class="col-lg-12 mb-4">
+                    <div class="card shadow-xs border">
+                        <div class="card-header pb-0">
+                            <div class="d-sm-flex align-items-center mb-3">
+                                <div>
+                                    <h6 class="font-weight-semibold text-lg mb-0">{{ $parameter->name }}</h6>
+                                    <p class="text-sm mb-sm-0 mb-2">Here you have details about {{ $parameter->name }}.</p>
+                                </div>
+                                <div class="ms-auto d-flex">
+                                    <button type="button" class="btn btn-sm btn-white mb-0 me-2">
+                                        View report
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="ms-auto d-flex">
-                            <button type="button" class="btn btn-sm btn-white mb-0 me-2">
-                                View report
-                            </button>
+                        <div class="card-body p-3 row mt-3">
+                            <div class="col-lg-3">
+                                {!! $charts['charts_gauge'][$loop->index]->container() !!}
+                                {!! $charts['charts_gauge'][$loop->index]->script() !!}
+                            </div>
+                            <div class="col-lg-9">
+                                <div class="chart mt-n5">
+                                    {!! $charts['charts_line'][$loop->index]->container() !!}
+                                    {!! $charts['charts_line'][$loop->index]->script() !!}
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="d-sm-flex align-items-center">
-                        <h3 class="mb-0 font-weight-semibold">12.5 V</h3>
                     </div>
                 </div>
-                <div class="card-body p-3 row">
-                    <div class="col-lg-3">GAUGE</div>
-                    <div class="col-lg-9">
-                        Chart
-                        <div class="chart mt-n6">
-                            <canvas id="chart-line" class="chart-canvas" height="300"></canvas>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div> --}}
+            @endforeach
+        @endif
+    </div>
     <div class="row">
         <div class="col-md-12">
             <div class="d-md-flex align-items-center mb-3 mx-2">
@@ -429,7 +343,6 @@
                                 @foreach ($parameters as $parameter)
                                     <th>{{ $parameter->name }}</th>
                                 @endforeach
-
                             </tr>
                         </thead>
                         <tbody>

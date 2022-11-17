@@ -6,7 +6,6 @@
         @else
             @foreach ($parameters as $parameter)
                 <div class="col-lg-12 mb-4">
-
                     <div class="card shadow-xs border">
                         <div class="card-header pb-0">
                             <div class="d-sm-flex align-items-center mb-3">
@@ -36,26 +35,52 @@
                                 {{-- Chart
                                 <div class="chart mt-n6">
                                     <canvas id="chart-line" class="chart-canvas" height="300"></canvas>
-                                </div> --}}
-                                {!! $charts_line[$loop->index]->container() !!}
-                                {!! $charts_line[$loop->index]->script() !!}
+                                 --}}
+                                <div class="chart mt-n5">
+                                    {!! $charts_line[$loop->index]->container() !!}
+                                    {!! $charts_line[$loop->index]->script() !!}
+                                </div>
                             </div>
 
                         </div>
                     </div>
                 </div>
-                {{-- <script>
+                <script>
                     //ajax sending to controller
-                    setInterval(function() {
-                        window.{{ $charts[$loop->index]->id }}.setOption({
-                            series: [{
-                                data: [{
-                                    value: 0
-                                }]
-                            }]
-                        });
-                    }, 2000);
-                </script> --}}
+                    // setInterval(function() {
+                    // window.{{ $charts_gauge[$loop->index]->id }}.setOption({
+                    //     series: [{
+                    //         data: [{
+                    //             value: 0
+                    //         }]
+                    //     }]
+                    // });
+                    // }, 2000);
+                    // $(document).ready(function() {
+                    //     setInterval(function() {
+                    //         $.ajax({
+                    //             type: 'POST',
+                    //             url: '/livedata',
+                    //             async: true,
+                    //             dataType: 'json',
+                    //             data: {
+                    //                 _token: "{{ csrf_token() }}",
+                    //                 slug: "{{ $parameter->slug }}",
+                    //                 device_id: "{{ $device_id }}"
+                    //             },
+                    //             success: function(data) {
+                    //                 $("#{{ $charts_gauge[$loop->index]->id }}").setOption({
+                    //                     series: [{
+                    //                         data: [{
+                    //                             value: data.value
+                    //                         }]
+                    //                     }]
+                    //                 });
+                    //             }
+                    //         });
+                    //     }, 5000);
+                    // });
+                </script>
             @endforeach
         @endif
     </div>

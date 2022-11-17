@@ -82,9 +82,9 @@ class NumberParameter extends Component
                 'containLabel' => true
             ],
             'toolbox' => [
-                'feature' => [
-                    'saveAsImage' => []
-                ]
+                // 'feature' => [
+                //     'saveAsImage' => []
+                // ]
             ],
             'xAxis' => [
                 'type' => 'category',

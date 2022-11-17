@@ -78,7 +78,7 @@
             });
         </script>
     @endif
-    @if (Request::is('devices/*'))
+    @if (Request::is('devices/*') && !Request::is('devices/*/*'))
         <script>
             $(document).ready(function() {
                 $('#parameter_list').DataTable({
@@ -89,7 +89,8 @@
                         "type": "POST",
                         "data": {
                             _token: "{{ csrf_token() }}",
-                            device_id: "{{ $device->id }}"
+                            device_id: "{{ $device->id }}",
+                            device_uuid: "{{ $device->uuid }}"
                         }
                     },
                 });
@@ -121,6 +122,49 @@
                     }
                 });
             });
+            @if ($parameters_number->count())
+                $(document).ready(function() {
+                    setInterval(function() {
+                        $.ajax({
+                            type: 'POST',
+                            url: '/livedata',
+                            async: true,
+                            dataType: 'json',
+                            data: {
+                                _token: "{{ csrf_token() }}",
+                                device_id: "{{ $device->id }}"
+                            },
+                            success: function(data) {
+                                @foreach ($parameters_number as $parameter)
+                                    window.{{ $charts['charts_gauge'][$loop->index]->id }}
+                                        .setOption({
+                                            series: [{
+                                                data: [{
+                                                    value: data.value[
+                                                        '{{ $parameter->slug }}'
+                                                    ]
+                                                }]
+                                            }]
+                                        });
+                                    window.{{ $charts['charts_line'][$loop->index]->id }}
+                                        .setOption({
+                                            series: [{
+                                                data: data.log.map(
+                                                    function(row) {
+                                                        return [row[
+                                                            'created_at'
+                                                        ], row[
+                                                            '{{ $parameter->slug }}'
+                                                        ]];
+                                                    })
+                                            }]
+                                        });
+                                @endforeach
+                            }
+                        });
+                    }, 5000);
+                });
+            @endif
         </script>
     @endif
     <script>

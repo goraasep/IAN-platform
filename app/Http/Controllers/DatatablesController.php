@@ -144,7 +144,7 @@ class DatatablesController extends Controller
                 $nestedData[] = $row->unit;
                 $nestedData[] = $alert;
                 $nestedData[] = $row->type;
-                $nestedData[] = '<i class="fa-solid fa-pen-to-square"></i>';
+                $nestedData[] = view('modal.edit-parameter', ['parameter' => $row, 'device_uuid' => $request->device_uuid])->render();
                 $data[] = $nestedData;
             }
         }
