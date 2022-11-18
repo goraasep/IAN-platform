@@ -7,8 +7,10 @@ use App\Models\Parameters;
 use App\Models\Devices;
 use Illuminate\Support\Facades\Schema;
 use \Cviebrock\EloquentSluggable\Services\SlugService;
+use Exception;
 use Illuminate\Support\Facades\App;
 use LaracraftTech\LaravelDynamicModel\DynamicModel;
+use Illuminate\Support\Carbon;
 
 class ParameterController extends Controller
 {
@@ -51,6 +53,7 @@ class ParameterController extends Controller
             'th_L' => 'required',
             'th_L_enable' => 'required',
         ]);
+        // ddd($request);
         $slug = SlugService::createSlug(Parameters::class, 'slug', $validatedData['name']);
         $validatedData['slug'] = $slug;
         $device_id = Devices::where('uuid', $request['uuid'])->first()->id;
@@ -107,9 +110,11 @@ class ParameterController extends Controller
             'th_L' => 'required',
             'th_L_enable' => 'required',
         ]);
-        // $device_id = Devices::where('uuid', $request['uuid'])->first()->id;
-        Parameters::where('slug', $slug)->update($validatedData);
-        return redirect('/devices/' . $request['uuid'])->with('success', 'Post has been updated!');
+        $affected_row = Parameters::where('slug', $slug)->update($validatedData);
+        if ($affected_row) {
+            return redirect('/devices/' . $request['uuid'])->with('success', 'Success!');
+        }
+        return redirect('/devices/' . $request['uuid'])->with('failed', 'Failed!');
     }
 
     /**
@@ -126,15 +131,18 @@ class ParameterController extends Controller
         Schema::table('device_' . $device_id . '_log', function ($table) use ($slug) {
             $table->dropColumn($slug);
         });
-        return redirect('/devices/' . $request['uuid'])->with('success', 'Post has been updated!');
+        return redirect('/devices/' . $request['uuid'])->with('success', 'Success!');
     }
 
     //custom function
     public function liveData(Request $request)
     {
+        $range = 1;
+        $range = (int)$request->input('range') ?: $range;
         // $request->slug
-        $parameters_log = App::make(DynamicModel::class, ['table_name' => 'device_' . $request->device_id . '_log'])->latest();
-        $value = $parameters_log->first() ?: 0;
-        return json_encode(['value' => $value, 'log' => $parameters_log->take(20)->get()]);
+        $parameters_log = App::make(DynamicModel::class, ['table_name' => 'device_' . $request->device_id . '_log']);
+        $value = $parameters_log->latest()->first() ?: 0;
+        // dd($parameters_log->whereDate('created_at', '>', '2016-12-31')->get());
+        return json_encode(['value' => $value, 'log' => $parameters_log->where('created_at', '>=', Carbon::now()->subDays($range))->latest()->get()]);
     }
 }

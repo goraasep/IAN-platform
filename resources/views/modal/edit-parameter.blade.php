@@ -24,7 +24,7 @@
                 <input type="text" class="form-control" id="device-uuid" name="uuid" value="{{ $device_uuid }}"
                     hidden required>
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Add new parameter
+                    <h5 class="modal-title" id="exampleModalLabel">Edit {{ $parameter->name }}
                     </h5>
                     <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
                     </button>

@@ -23,6 +23,71 @@
                     <span class="btn-inner--text">Device Configuration</span>
 
                 </a>
+                <div class="dropstart">
+                    <button class="btn btn-sm btn-white btn-icon d-flex align-items-center mb-0 me-2 dropdown-toggle"
+                        data-bs-toggle="dropdown" id="navbarDropdownMenuLink2">
+                        Range
+                    </button>
+                    <div class="dropdown-menu" style=" width: 500px !important;" aria-labelledby="navbarDropdownMenuLink2">
+                        <div class="row">
+                            <div class="col-6">
+                                <form class="ms-4 my-2">
+                                    <div class="mb-3">
+                                        <label for="from" class="form-label">From</label>
+                                        <input type="datetime-local" class="form-control" id="from">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="to" class="form-label">To</label>
+                                        <input type="datetime-local" class="form-control" id="to">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Apply</button>
+                                </form>
+                            </div>
+                            <div class="d-flex col-1 justify-content-center px-0 mx-0">
+                                <div class="vr" style="height: 100%;"></div>
+                            </div>
+                            <div class="col-5">
+                                <div class="ms-0 me-4 my-2">
+                                    <form action="/devices/test" method="post">
+                                        @csrf
+                                        <input type="text" name="range" value="24_hours" hidden>
+                                        <button type="submit" class="dropdown-item rounded text-white bg-primary"
+                                            href="#">
+                                            Last 24 Hours (Default)
+                                        </button>
+                                    </form>
+                                    <form action="/devices/test" method="post">
+                                        @csrf
+                                        <input type="text" name="range" value="24_hours" hidden>
+                                        <button type="submit" class="dropdown-item rounded" href="#">
+                                            Last 7 Days
+                                        </button>
+                                    </form>
+                                    <form action="/devices/test" method="post">
+                                        @csrf
+                                        <input type="text" name="range" value="24_hours" hidden>
+                                        <button type="submit" class="dropdown-item rounded" href="#">
+                                            Last 30 Days
+                                        </button>
+                                    </form>
+                                    <form action="/devices/test" method="post">
+                                        @csrf
+                                        <input type="text" name="range" value="24_hours" hidden>
+                                        <button type="submit" class="dropdown-item rounded" href="#">
+                                            Last 90 Days
+                                        </button>
+                                    </form>
+                                    {{-- <a class="dropdown-item rounded" href="#">Last 7 Days</a>
+                                    <a class="dropdown-item rounded" href="#">Last 30 Days</a>
+                                    <a class="dropdown-item rounded" href="#">Last 90 Days</a>
+                                    <a class="dropdown-item rounded" href="#">Last 120 Days</a>
+                                    <a class="dropdown-item rounded" href="#">Last 180 Days</a>
+                                    <a class="dropdown-item rounded" href="#">Last 360 Days</a> --}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <a type="button" class="btn btn-sm btn-dark btn-icon d-flex align-items-center mb-0">
                     <span class="btn-inner--icon">
                         <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -261,7 +326,7 @@
     ]) --}}
     <div class="row my-4">
         @if (!$parameters_number->count())
-            <h3 class="col-12 text-center opacity-5">Data not found.</h3>
+            <h3 class="col-12 text-center opacity-5">No data available.</h3>
         @else
             @foreach ($parameters_number as $parameter)
                 <div class="col-lg-12 mb-4">

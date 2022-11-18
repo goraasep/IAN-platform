@@ -2,7 +2,7 @@
     {{-- Care about people's approval and you will be their prisoner. --}}
     <div class="row my-4">
         @if (!$parameters->count())
-            <h3 class="col-12 text-center opacity-5">Data not found.</h3>
+            <h3 class="col-12 text-center opacity-5">No data available.</h3>
         @else
             @foreach ($parameters as $parameter)
                 <div class="col-xl-2 col-sm-3 mb-xl-0">

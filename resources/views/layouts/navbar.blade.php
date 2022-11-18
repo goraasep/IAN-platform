@@ -154,4 +154,13 @@
             </ul>
         </div>
     </div>
+    @if (session()->has('success'))
+        <div class="alert alert-success" role="alert">
+            {{ session('success') }}
+        </div>
+    @elseif (session()->has('failed'))
+        <div class="alert alert-danger" role="alert">
+            {{ session('failed') }}
+        </div>
+    @endif
 </nav>

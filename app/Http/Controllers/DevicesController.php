@@ -13,6 +13,7 @@ use LaracraftTech\LaravelDynamicModel\DynamicModel;
 use Illuminate\Support\Str;
 use App\Charts\NumberParametersChart;
 use SebastianBergmann\Type\NullType;
+use Illuminate\Support\Carbon;
 
 class DevicesController extends Controller
 {
@@ -80,7 +81,7 @@ class DevicesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Devices $device)
+    public function show(Devices $device, Request $request)
     {
         // $parameters = Parameters::where('device_id', $device->id)->get()->map(function ($query) {
         //     return $query->slug;
@@ -92,6 +93,11 @@ class DevicesController extends Controller
         //eager load
         // Devices::with('parameters')->get();
         // $alert_log = App::make(DynamicModel::class, ['table_name' => 'device_' . $device->id . '_alert']);
+        // dd($request->input());
+        // if ($request->input('range')) {
+        //     dd($request->input('range'));
+        // }
+
         $parameters = Parameters::where('device_id', $device->id)->get();
         $parameters_number = $parameters->where('type', 'number');
         $data = [
@@ -102,12 +108,15 @@ class DevicesController extends Controller
             // 'parameters' => Parameters::where('device_id', $device->id),
             'parameters' => $parameters,
             'parameters_number' => $parameters_number,
+            'range' => (int)$request->input('range') ?: 1
             // 'charts' => $this->renderChart($device->id, $parameters_number)
             // 'alerts' => $alert_log->paginate(10)->withQueryString()
         ];
         // dd($parameters_number);
+        $range = 1;
+        $range = (int)$request->input('range') ?: $range;
         if ($parameters_number) {
-            $data['charts'] = $this->renderChart($device->id, $parameters_number);
+            $data['charts'] = $this->renderChart($device->id, $parameters_number, $range);
         }
         // $alert_log = App::make(DynamicModel::class, ['table_name' => 'device_' . $device->id . '_alert']);
         // dd($alert_log->first());
@@ -179,7 +188,7 @@ class DevicesController extends Controller
     //     return view('devices.device', $data);
     // }
 
-    public function renderChart($device_id, $parameters)
+    public function renderChart($device_id, $parameters, $requested_range)
     {
         $gauge_options = [
             'type' => 'gauge',
@@ -274,12 +283,12 @@ class DevicesController extends Controller
             // ]
         ];
 
-        $parameters_log = App::make(DynamicModel::class, ['table_name' => 'device_' . $device_id . '_log'])->latest();
-
+        $parameters_log = App::make(DynamicModel::class, ['table_name' => 'device_' . $device_id . '_log']);
         $charts_gauge = [];
         $charts_line = [];
-        $first_log = $parameters_log->first() ?: 0;
-        $parameters_log_ranged = $parameters_log->take(20)->get();
+        $first_log = $parameters_log->latest()->first() ?: 0;
+        // $parameters_log_ranged = $parameters_log->where('created_at', '>=', Carbon::now()->subDay())->get();
+        $parameters_log_ranged = $parameters_log->where('created_at', '>=', Carbon::now()->subDays($requested_range))->latest()->get();
         // dd($parameters_log_ranged);
         foreach ($parameters as $parameter) {
             $chart_gauge = new NumberParametersChart;

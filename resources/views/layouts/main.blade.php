@@ -102,7 +102,7 @@
                         "type": "POST",
                         "data": {
                             _token: "{{ csrf_token() }}",
-                            device_id: "{{ $device->id }}"
+                            device_id: "{{ $device->id }}",
                         }
                     },
                 });
@@ -127,12 +127,13 @@
                     setInterval(function() {
                         $.ajax({
                             type: 'POST',
-                            url: '/livedata',
+                            url: '{{ url('livedata') }}',
                             async: true,
                             dataType: 'json',
                             data: {
                                 _token: "{{ csrf_token() }}",
-                                device_id: "{{ $device->id }}"
+                                device_id: "{{ $device->id }}",
+                                range: "{{ $range }}"
                             },
                             success: function(data) {
                                 @foreach ($parameters_number as $parameter)
