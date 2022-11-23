@@ -37,7 +37,7 @@
     <link id="pagestyle" href="/assets/css/corporate-ui-dashboard.css?v=1.0.0" rel="stylesheet" />
     <link href="/assets/css/jquery.dataTables.min.css" rel="stylesheet" />
     <link href="/assets/css/daterangepicker.css" rel="stylesheet" />
-    @livewireStyles()
+    {{-- @livewireStyles() --}}
 </head>
 
 <body class="g-sidenav-show  bg-gray-100">
@@ -245,7 +245,7 @@
     <!-- Github buttons -->
     <!-- Control Center for Corporate UI Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="/assets/js/corporate-ui-dashboard.min.js?v=1.0.0"></script>
-    @livewireScripts()
+    {{-- @livewireScripts() --}}
 </body>
 
 </html>

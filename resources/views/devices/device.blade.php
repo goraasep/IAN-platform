@@ -40,7 +40,7 @@
     <div class="row my-4 d-flex justify-content-center">
         {{-- ../assets/img/img-2.jpg --}}
         <img id="device_image" src="{{ asset('storage/images/' . $device->image) }}" class="col-lg-6"
-            style="height:auto;width:auto;max-height:500px" alt=""
+            style="height:auto;width:auto;max-height:400px" alt=""
             onerror="this.onerror=null;this.src='/assets/img/img-2.jpg';">
     </div>
     <div class="row my-4">

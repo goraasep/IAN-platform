@@ -198,9 +198,9 @@ class DevicesController extends Controller
         //
         $device = Devices::where('uuid', $request['uuid'])->first();
         Storage::delete('/public/images/' . $device->image);
+        Schema::dropIfExists('device_' . $device->id . '_log');
+        Schema::dropIfExists('device_' . $device->id . '_alert');
         Devices::where('uuid', $request['uuid'])->delete();
-        Schema::dropIfExists('device_' . $device->id . 'log');
-        Schema::dropIfExists('device_' . $device->id . 'alert');
         // Schema::table('device_' . $device_id . '_log', function ($table) use ($slug) {
         //     $table->dropColumn($slug);
         // });
