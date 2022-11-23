@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 use App\Charts\NumberParametersChart;
 use SebastianBergmann\Type\NullType;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class DevicesController extends Controller
 {
@@ -59,6 +60,14 @@ class DevicesController extends Controller
             'image' => 'image|file|max:1024',
             'description' => 'max:1024|required'
         ]);
+        if (array_key_exists('image', $validatedData)) {
+            $filename = $validatedData['image']->hashName();
+            $validatedData['image']->storeAs(
+                'public/images',
+                $filename
+            );
+            $validatedData['image'] = $filename;
+        }
         Devices::create($validatedData);
         $last_inserted_id = Devices::latest()->first()->id;
         Schema::create('device_' . $last_inserted_id . '_log', function (Blueprint $table) {
@@ -100,6 +109,11 @@ class DevicesController extends Controller
 
         $parameters = Parameters::where('device_id', $device->id)->get();
         $parameters_number = $parameters->where('type', 'number');
+        $parameters_string = $parameters->where('type', 'string');
+        // $range = 1;
+        $range = (int)$request->input('range') ?: 1;
+        $from = (int)$request->input('from') ?: 0;
+        $to = (int)$request->input('to') ?: 0;
         $data = [
             'title' => 'Devices',
             'breadcrumb' => 'Device',
@@ -108,15 +122,16 @@ class DevicesController extends Controller
             // 'parameters' => Parameters::where('device_id', $device->id),
             'parameters' => $parameters,
             'parameters_number' => $parameters_number,
-            'range' => (int)$request->input('range') ?: 1
+            'parameters_string' => $parameters_string,
+            'range' => $range,
+            'from' => $from,
+            'to' => $to
             // 'charts' => $this->renderChart($device->id, $parameters_number)
             // 'alerts' => $alert_log->paginate(10)->withQueryString()
         ];
         // dd($parameters_number);
-        $range = 1;
-        $range = (int)$request->input('range') ?: $range;
         if ($parameters_number) {
-            $data['charts'] = $this->renderChart($device->id, $parameters_number, $range);
+            $data['charts'] = $this->renderChart($device->id, $parameters_number, $range, $from, $to);
         }
         // $alert_log = App::make(DynamicModel::class, ['table_name' => 'device_' . $device->id . '_alert']);
         // dd($alert_log->first());
@@ -158,6 +173,15 @@ class DevicesController extends Controller
             'image' => 'image|file|max:1024',
             'description' => 'max:1024'
         ]);
+        if (array_key_exists('image', $validatedData)) {
+            Storage::delete('/public/images/' . $device->image);
+            $filename = $validatedData['image']->hashName();
+            $validatedData['image']->storeAs(
+                'public/images',
+                $filename
+            );
+            $validatedData['image'] = $filename;
+        }
         // ddd($request);
         Devices::where('uuid', $device->uuid)->update($validatedData);
         return redirect('/devices/' . $device->uuid . '/edit')->with('success', 'Post has been updated!');
@@ -169,9 +193,18 @@ class DevicesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
         //
+        $device = Devices::where('uuid', $request['uuid'])->first();
+        Storage::delete('/public/images/' . $device->image);
+        Devices::where('uuid', $request['uuid'])->delete();
+        Schema::dropIfExists('device_' . $device->id . 'log');
+        Schema::dropIfExists('device_' . $device->id . 'alert');
+        // Schema::table('device_' . $device_id . '_log', function ($table) use ($slug) {
+        //     $table->dropColumn($slug);
+        // });
+        return redirect('/devices')->with('success', 'Success!');
     }
 
     //custom method
@@ -188,50 +221,118 @@ class DevicesController extends Controller
     //     return view('devices.device', $data);
     // }
 
-    public function renderChart($device_id, $parameters, $requested_range)
+    public function renderChart($device_id, $parameters, $requested_range, $from, $to)
     {
-        $gauge_options = [
-            'type' => 'gauge',
-            'axisLine' => [
-                'lineStyle' => [
-                    'width' => 30,
-                    'color' => [
-                        [0.3, '#67e0e3'],
-                        [0.7, '#37a2da'],
-                        [1, '#fd666d']
+        $gauge_options =
+            [
+                'radius' => '50%',
+                'type' => 'gauge',
+                'center' => ['50%', '50%'],
+                'startAngle' => 200,
+                'endAngle' => -20,
+                'splitNumber' => 10,
+                'itemStyle' => [
+                    'color' => '#13678A'
+                ],
+                'progress' => [
+                    'show' => true,
+                    'width' => 30
+                ],
+                'pointer' => [
+                    'show' => false
+                ],
+                'axisLine' => [
+                    'lineStyle' => [
+                        'width' => 30
                     ]
+                ],
+                'axisTick' => [
+                    'distance' => -45,
+                    'splitNumber' => 5,
+                    'lineStyle' => [
+                        'width' => 2,
+                        'color' => '#000'
+                    ]
+                ],
+                'splitLine' => [
+                    'distance' => -52,
+                    'length' => 14,
+                    'lineStyle' => [
+                        'width' => 3,
+                        'color' => '#000'
+                    ]
+                ],
+                'axisLabel' => [
+                    'distance' => -15,
+                    'color' => '#000',
+                    'fontSize' => 18
+                ],
+                'anchor' => [
+                    'show' => false
+                ],
+                'title' => [
+                    'show' => false
+                ],
+                'detail' => [
+                    'valueAnimation' => true,
+                    'width' => '60%',
+                    'lineHeight' => 40,
+                    'borderRadius' => 8,
+                    'offsetCenter' => [0, '-15%'],
+                    'fontWeight' => 'bolder',
+                    'color' => 'auto',
+                    'fontSize' => 20,
                 ]
+            ];
+
+        $gauge_options2 = [
+            'radius' => '50%',
+            'type' => 'gauge',
+            'center' => ['50%', '50%'],
+            'startAngle' => 200,
+            'endAngle' => -20,
+            // 'itemStyle' => [
+            //     'color' => '#FD7347'
+            // ],
+            'progress' => [
+                'show' => false,
+                'width' => 8
             ],
             'pointer' => [
-                'itemStyle' => [
-                    'color' => 'auto'
+                'show' => false
+            ],
+            'axisLine' => [
+                'show' => true,
+                'lineStyle' => [
+                    'width' => -5,
+                    // 'color' => [
+                    //     [0.7, '#F49D1A'],
+                    //     [0.8, '#54B435'],
+                    //     [1, '#DC3535']
+                    // ]
                 ]
             ],
             'axisTick' => [
-                'distance' => -30,
-                'length' => 8,
-                'lineStyle' => [
-                    'color' => '#fff',
-                    'width' => 2
-                ]
+                'show' => false
             ],
             'splitLine' => [
-                'distance' => -30,
-                'length' => 30,
-                'lineStyle' => [
-                    'color' => '#fff',
-                    'width' => 4
-                ]
+                'show' => false
             ],
             'axisLabel' => [
-                'color' => 'auto',
-                'distance' => 40,
-                'fontSize' => 20
+                'show' => false
+            ],
+            'anchor' => [
+                'show' => false
+            ],
+            'title' => [
+                'show' => false
             ],
             'detail' => [
-                'valueAnimation' => true,
-                'color' => 'auto'
+                'show' => false
             ],
+            'data' => [
+                'value' => 55
+            ]
         ];
 
         $line_options = [
@@ -245,6 +346,7 @@ class DevicesController extends Controller
             //     'bottom' => '3%',
             //     'containLabel' => true
             // ],
+            'color' => '#13678A',
             'toolbox' => [
                 'feature' => [
                     'dataZoom' => [
@@ -267,14 +369,44 @@ class DevicesController extends Controller
             'dataZoom' => [
                 [
                     'type' => 'slider',
-                    'start' => 0,
-                    'end' => 100
+                    // 'start' => 0,
+                    // 'end' => 100
                 ],
                 // [
                 //     'start' => 0,
                 //     'end' => 20
                 // ]
             ],
+            // 'visualMap' => [
+            //     'show' => true,
+            //     'type' => 'piecewise',
+            //     'seriesIndex' => 0,
+            //     'min' => 200,
+            //     'max' => 400,
+            //     // 'inRange' => [
+            //     //     'color' => ['#F49D1A', '#54B435', '#DC3535'],
+            //     // ]
+            //     'pieces' => [
+            //         //     [0.7, '#F49D1A'],
+            //         //     [0.8, '#54B435'],
+            //         //     [1, '#DC3535']
+            //         [
+            //             'gt' => 0,
+            //             'lte' => 200,
+            //             'color' => '#45C4B0'
+            //         ],
+            //         [
+            //             'gt' => 200,
+            //             'lte' => 300,
+            //             'color' => '#13678A'
+            //         ],
+            //         [
+            //             'gt' => 300,
+            //             'lte' => 500,
+            //             'color' => '#012030'
+            //         ]
+            //     ]
+            // ]
 
             // 'dimensions' => [
             //     null, // use null if you do not want dimension name.
@@ -283,48 +415,80 @@ class DevicesController extends Controller
             // ]
         ];
 
-        $parameters_log = App::make(DynamicModel::class, ['table_name' => 'device_' . $device_id . '_log']);
         $charts_gauge = [];
         $charts_line = [];
-        $first_log = $parameters_log->latest()->first() ?: 0;
-        // $parameters_log_ranged = $parameters_log->where('created_at', '>=', Carbon::now()->subDay())->get();
-        $parameters_log_ranged = $parameters_log->where('created_at', '>=', Carbon::now()->subDays($requested_range))->latest()->get();
-        // dd($parameters_log_ranged);
+        $parameters_log_ranged = [];
+        // $table_ = 'device_' . $device_id . '_log';
+        // dd($table_);
+        $parameters_log = App::make(DynamicModel::class, ['table_name' => 'device_' . $device_id . '_log']);
+        if ($from && $to) {
+            $from = date("Y-m-d H:i:s", $from / 1000);
+            $to = date("Y-m-d H:i:s", $to / 1000);
+            $parameters_log_ranged = $parameters_log->where([
+                ['created_at', '>=', $from], ['created_at', '<=', $to]
+            ])->latest()->get();
+        } else {
+            $parameters_log_ranged = $parameters_log->where('created_at', '>=', Carbon::now()->subDays($requested_range))->latest()->get();
+        }
         foreach ($parameters as $parameter) {
+            $first_log = $parameters_log_ranged->first() ?: 0;
             $chart_gauge = new NumberParametersChart;
             $chart_gauge->dataset('', 'gauge', [$first_log ? $first_log->{$parameter->slug} : NULL])
                 ->options([
                     'detail' => [
                         'formatter' => '{value} ' . $parameter->unit,
-                    ]
+                    ],
+                    'min' => $parameter->min,
+                    'max' => $parameter->max,
                 ])
                 ->options($gauge_options);
+            $chart_gauge->dataset('', 'gauge', [0])
+                ->options([
+                    'min' => $parameter->min,
+                    'max' => $parameter->max,
+                    'axisLine' => [
+                        'lineStyle' => [
+                            'color' => [
+                                [$parameter->max ? ($parameter->th_L / $parameter->max) : 0, '#F49D1A'],
+                                [$parameter->max ? ($parameter->th_H / $parameter->max) : 0, '#54B435'],
+                                [1, '#DC3535']
+                            ]
+                        ]
+                    ],
+                ])
+                ->options($gauge_options2);;
             array_push($charts_gauge, $chart_gauge);
             $chart_line = new NumberParametersChart;
             $chart_line->dataset('', 'line', $first_log ? $parameters_log_ranged->map(function ($query) use ($parameter) {
                 return [$query->created_at, $query->{$parameter->slug}];
             }) : [NULL, NULL])->options([
                 'smooth' => true,
-                'markPoint' => [
-                    'data' => [
-                        ['type' => 'max', 'name' => 'Max', 'itemStyle' => ['color' => 'red']],
-                        ['type' => 'min', 'name' => 'Min', 'itemStyle' => ['color' => 'orange']]
-                    ]
+                // 'step' => 'start',
+                'areaStyle' => [
+                    'opacity' => 0.2
                 ],
-                // 'markLine' => [
-                //     'data' => [['type' => 'average', 'name' => 'Avg']]
-                // ]
+                'markLine' => [
+                    'silent' => false,
+                    'lineStyle' => [
+                        'color' => '#333'
+                    ],
+                    'data' => [
+                        [
+                            'yAxis' => $parameter->th_L,
+                        ],
+                        [
+                            'yAxis' => $parameter->th_H,
+                        ],
+                    ]
+                ]
+                // 'markPoint' => [
+                //     'data' => [
+                //         ['type' => 'max', 'name' => 'Max', 'itemStyle' => ['color' => 'blue']],
+                //         ['type' => 'min', 'name' => 'Min', 'itemStyle' => ['color' => 'green']]
+                //     ]
+                // ],
             ]);
             $chart_line->options($line_options);
-                // $chart_line->options([
-                //     'xAxis' => [
-                //         'data' => $first_log ? $parameters_log_ranged->map(function ($query) {
-                //             return $query->created_at;
-                //         })->toArray() : 0
-                //     ],
-                // ])
-            ;
-
             array_push($charts_line, $chart_line);
         }
         $data = [

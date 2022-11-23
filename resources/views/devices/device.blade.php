@@ -23,71 +23,6 @@
                     <span class="btn-inner--text">Device Configuration</span>
 
                 </a>
-                <div class="dropstart">
-                    <button class="btn btn-sm btn-white btn-icon d-flex align-items-center mb-0 me-2 dropdown-toggle"
-                        data-bs-toggle="dropdown" id="navbarDropdownMenuLink2">
-                        Range
-                    </button>
-                    <div class="dropdown-menu" style=" width: 500px !important;" aria-labelledby="navbarDropdownMenuLink2">
-                        <div class="row">
-                            <div class="col-6">
-                                <form class="ms-4 my-2">
-                                    <div class="mb-3">
-                                        <label for="from" class="form-label">From</label>
-                                        <input type="datetime-local" class="form-control" id="from">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="to" class="form-label">To</label>
-                                        <input type="datetime-local" class="form-control" id="to">
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Apply</button>
-                                </form>
-                            </div>
-                            <div class="d-flex col-1 justify-content-center px-0 mx-0">
-                                <div class="vr" style="height: 100%;"></div>
-                            </div>
-                            <div class="col-5">
-                                <div class="ms-0 me-4 my-2">
-                                    <form action="/devices/test" method="post">
-                                        @csrf
-                                        <input type="text" name="range" value="24_hours" hidden>
-                                        <button type="submit" class="dropdown-item rounded text-white bg-primary"
-                                            href="#">
-                                            Last 24 Hours (Default)
-                                        </button>
-                                    </form>
-                                    <form action="/devices/test" method="post">
-                                        @csrf
-                                        <input type="text" name="range" value="24_hours" hidden>
-                                        <button type="submit" class="dropdown-item rounded" href="#">
-                                            Last 7 Days
-                                        </button>
-                                    </form>
-                                    <form action="/devices/test" method="post">
-                                        @csrf
-                                        <input type="text" name="range" value="24_hours" hidden>
-                                        <button type="submit" class="dropdown-item rounded" href="#">
-                                            Last 30 Days
-                                        </button>
-                                    </form>
-                                    <form action="/devices/test" method="post">
-                                        @csrf
-                                        <input type="text" name="range" value="24_hours" hidden>
-                                        <button type="submit" class="dropdown-item rounded" href="#">
-                                            Last 90 Days
-                                        </button>
-                                    </form>
-                                    {{-- <a class="dropdown-item rounded" href="#">Last 7 Days</a>
-                                    <a class="dropdown-item rounded" href="#">Last 30 Days</a>
-                                    <a class="dropdown-item rounded" href="#">Last 90 Days</a>
-                                    <a class="dropdown-item rounded" href="#">Last 120 Days</a>
-                                    <a class="dropdown-item rounded" href="#">Last 180 Days</a>
-                                    <a class="dropdown-item rounded" href="#">Last 360 Days</a> --}}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <a type="button" class="btn btn-sm btn-dark btn-icon d-flex align-items-center mb-0">
                     <span class="btn-inner--icon">
                         <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -102,37 +37,11 @@
         </div>
     </div>
     <hr class="my-0">
-    <div class="row">
-        <div class="position-relative overflow-hidden">
-            <div class="swiper mySwiper mt-4 mb-2">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide">
-                        <div>
-                            <div
-                                class="card card-background shadow-none border-radius-xl card-background-after-none align-items-start mb-0">
-                                <div class="full-background bg-cover"
-                                    style="background-image: url('../assets/img/img-2.jpg')"></div>
-                                <div class="card-body text-start px-3 py-0 w-100">
-                                    <div class="row mt-12">
-                                        <div class="col-sm-3 mt-auto">
-                                            <h4 class="text-dark font-weight-bolder">#1</h4>
-                                            <p class="text-dark opacity-6 text-xs font-weight-bolder mb-0">Name</p>
-                                            <h5 class="text-dark font-weight-bolder">Secured</h5>
-                                        </div>
-                                        <div class="col-sm-3 ms-auto mt-auto">
-                                            <p class="text-dark opacity-6 text-xs font-weight-bolder mb-0">Category</p>
-                                            <h5 class="text-dark font-weight-bolder">Banking</h5>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="swiper-button-prev"></div>
-            <div class="swiper-button-next"></div>
-        </div>
+    <div class="row my-4 d-flex justify-content-center">
+        {{-- ../assets/img/img-2.jpg --}}
+        <img id="device_image" src="{{ asset('storage/images/' . $device->image) }}" class="col-lg-6"
+            style="height:auto;width:auto;max-height:500px" alt=""
+            onerror="this.onerror=null;this.src='/assets/img/img-2.jpg';">
     </div>
     <div class="row my-4">
         <div class="col-lg-4 col-md-6 mb-md-0 mb-4">
@@ -197,11 +106,11 @@
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="exampleModalLabel">Add new parameter
                                                 </h5>
-                                                <button type="button" class="btn-close text-dark"
-                                                    data-bs-dismiss="modal" aria-label="Close">
+                                                <button type="button" class="btn-close text-dark" data-bs-dismiss="modal"
+                                                    aria-label="Close">
                                                 </button>
                                             </div>
-                                            <div class="modal-body">
+                                            <div class="modal-body mx-3">
                                                 <div class="form-group">
                                                     <label for="parameter-name" class="col-form-label">Parameter
                                                         Name:</label>
@@ -266,6 +175,20 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="form-group">
+                                                    <label for="parameter-max" class="col-form-label">Maximum
+                                                        Value:</label>
+                                                    <input type="number" step="any" class="form-control"
+                                                        id="parameter-max" name="max" value="{{ old('max', 0) }}"
+                                                        required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="parameter-min" class="col-form-label">Minimum
+                                                        Value:</label>
+                                                    <input type="number" step="any" class="form-control"
+                                                        id="parameter-min" name="min" value="{{ old('min', 0) }}"
+                                                        required>
+                                                </div>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-white"
@@ -284,7 +207,7 @@
                         <thead>
                             <tr>
                                 <th>Parameter</th>
-                                <th>Value</th>
+                                <th>Identifier</th>
                                 <th>Unit</th>
                                 <th>Alert</th>
                                 <th>Type</th>
@@ -299,6 +222,53 @@
         </div>
     </div>
     <div class="row">
+        <div class="dropend col">
+            <button class="btn btn-sm btn-white btn-icon dropdown-toggle" data-bs-toggle="dropdown"
+                data-bs-auto-close="false" aria-expanded="false" id="rangeDropdown">
+                Range
+            </button>
+            <div class="dropdown-menu" style=" width: 500px !important;" aria-labelledby="rangeDropdown">
+                <div class="row">
+                    <div class="col">
+                        <div class="mx-4 my-2">
+                            <label for="datetimerange" class="form-label">Range</label>
+                            <div id="datetimerange"
+                                style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+                                <i class="fa fa-calendar"></i>&nbsp;
+                                <span></span> <i class="fa fa-caret-down"></i>
+                            </div>
+                        </div>
+                        <div class="mx-4 my-1">
+                            <a href="/devices/{{ $device->uuid }}?range=1"
+                                class="dropdown-item rounded {{ $range == 1 ? 'text-white bg-primary' : '' }} ">Last
+                                24 Hours (Default)</a>
+                            <a href="/devices/{{ $device->uuid }}?range=7"
+                                class="dropdown-item rounded {{ $range == 7 ? 'text-white bg-primary' : '' }}">Last
+                                7
+                                Days</a>
+                            <a href="/devices/{{ $device->uuid }}?range=30"
+                                class="dropdown-item rounded {{ $range == 30 ? 'text-white bg-primary' : '' }}">Last
+                                30
+                                Days</a>
+                            <a href="/devices/{{ $device->uuid }}?range=90"
+                                class="dropdown-item rounded {{ $range == 90 ? 'text-white bg-primary' : '' }}">Last
+                                90
+                                Days</a>
+                            <a href="/devices/{{ $device->uuid }}?range=180"
+                                class="dropdown-item rounded {{ $range == 180 ? 'text-white bg-primary' : '' }}">Last
+                                180
+                                Days</a>
+                            <a href="/devices/{{ $device->uuid }}?range=360"
+                                class="dropdown-item rounded {{ $range == 360 ? 'text-white bg-primary' : '' }}">Last
+                                360
+                                Days</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-md-12">
             <div class="d-md-flex align-items-center mb-3 mx-2">
                 <div class="mb-md-0 mb-3">
@@ -308,9 +278,42 @@
         </div>
     </div>
     <hr class="my-0">
-    @livewire('string-parameter', [
+    {{-- @livewire('string-parameter', [
         'device_id' => $device->id,
-    ])
+    ]) --}}
+    <div class="row mt-4">
+        @if (!$parameters_string->count())
+            <h3 class="col-12 text-center opacity-5">No data available.</h3>
+        @else
+            @foreach ($parameters_string as $parameter)
+                <div class="col-xl-2 col-sm-3 mb-xl-0">
+                    <div class="card border shadow-xs mb-4">
+                        <div class="card-body text-start p-3 w-100">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="w-100">
+                                        <h6 class="font-weight-semibold text-lg mb-0">{{ $parameter->name }}</h6>
+                                        <p class="text-sm text-secondary mb-1">Actual value:</p>
+                                        <h4 class="mb-2 font-weight-bold">
+                                            <span id="live_{{ $parameter->slug }}"></span>
+                                        </h4>
+                                        <div class="d-flex align-items-center">
+                                            {{-- <span class="text-sm text-success font-weight-bolder">55%
+                                            </span> --}}
+                                            <span class="text-sm ms-1">Previous value: <span
+                                                    id="previous_{{ $parameter->slug }}"></span></span>
+                                        </div>
+
+                                        {{-- {{ $parameters_log ? $parameters_log->{$parameter->slug} : 'NULL' }}</h4> --}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        @endif
+    </div>
     <div class="row">
         <div class="col-md-12">
             <div class="d-md-flex align-items-center mb-3 mx-2">
@@ -324,7 +327,7 @@
     {{-- @livewire('number-parameter', [
         'device_id' => $device->id,
     ]) --}}
-    <div class="row my-4">
+    <div class="row mt-4">
         @if (!$parameters_number->count())
             <h3 class="col-12 text-center opacity-5">No data available.</h3>
         @else
@@ -335,21 +338,17 @@
                             <div class="d-sm-flex align-items-center mb-3">
                                 <div>
                                     <h6 class="font-weight-semibold text-lg mb-0">{{ $parameter->name }}</h6>
-                                    <p class="text-sm mb-sm-0 mb-2">Here you have details about {{ $parameter->name }}.</p>
-                                </div>
-                                <div class="ms-auto d-flex">
-                                    <button type="button" class="btn btn-sm btn-white mb-0 me-2">
-                                        View report
-                                    </button>
+                                    <p class="text-sm mb-sm-0 mb-2">Here you have details about {{ $parameter->name }}.
+                                    </p>
                                 </div>
                             </div>
                         </div>
                         <div class="card-body p-3 row mt-3">
-                            <div class="col-lg-3">
+                            <div class="col-lg-4">
                                 {!! $charts['charts_gauge'][$loop->index]->container() !!}
                                 {!! $charts['charts_gauge'][$loop->index]->script() !!}
                             </div>
-                            <div class="col-lg-9">
+                            <div class="col-lg-8">
                                 <div class="chart mt-n5">
                                     {!! $charts['charts_line'][$loop->index]->container() !!}
                                     {!! $charts['charts_line'][$loop->index]->script() !!}

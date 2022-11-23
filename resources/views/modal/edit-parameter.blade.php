@@ -29,7 +29,7 @@
                     <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body text-start">
                     <div class="form-group">
                         <label for="parameter-unit" class="col-form-label">Unit:</label>
                         <input type="text" class="form-control" id="parameter-unit" name="unit"
@@ -58,8 +58,6 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col-12">
                             <div class="form-group">
                                 <label for="parameter-th-L" class="col-form-label">Threshold
@@ -82,6 +80,16 @@
                                 </select>
                             </div>
                         </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="parameter-max" class="col-form-label">Maximum Value:</label>
+                        <input type="text" class="form-control" id="parameter-max" name="max"
+                            value="{{ old('max', $parameter->max) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="parameter-min" class="col-form-label">Minimum Value:</label>
+                        <input type="text" class="form-control" id="parameter-min" name="min"
+                            value="{{ old('min', $parameter->min) }}">
                     </div>
                 </div>
                 <div class="modal-footer">

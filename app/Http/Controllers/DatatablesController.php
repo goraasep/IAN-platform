@@ -95,9 +95,10 @@ class DatatablesController extends Controller
     {
         $columns = array(
             0 => 'name',
-            1 => 'unit',
-            2 => 'alert',
-            3 => 'type',
+            1 => 'slug',
+            2 => 'unit',
+            3 => 'alert',
+            4 => 'type',
         );
         $collection = Parameters::where('device_id', $request->device_id);
         $totalData = $collection->count();
@@ -140,7 +141,7 @@ class DatatablesController extends Controller
                 $nestedData = [];
                 $alert = '<span class="badge badge-sm border border-success text-success bg-success">' . $row->alert . '</span>';
                 $nestedData[] = $row->name;
-                $nestedData[] = $row->actual_value;
+                $nestedData[] = $row->slug;
                 $nestedData[] = $row->unit;
                 $nestedData[] = $alert;
                 $nestedData[] = $row->type;

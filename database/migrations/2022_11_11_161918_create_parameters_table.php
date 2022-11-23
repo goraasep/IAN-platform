@@ -27,6 +27,8 @@ return new class extends Migration
             $table->integer('th_L_enable')->default(0);
             $table->string('alert')->default('Normal');
             $table->string('alert_prev')->default('Normal');
+            $table->double('max')->default(0);
+            $table->double('min')->default(0);
             $table->timestamps();
         });
     }

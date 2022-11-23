@@ -36,6 +36,7 @@
     </style>
     <link id="pagestyle" href="/assets/css/corporate-ui-dashboard.css?v=1.0.0" rel="stylesheet" />
     <link href="/assets/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="/assets/css/daterangepicker.css" rel="stylesheet" />
     @livewireStyles()
 </head>
 
@@ -61,6 +62,9 @@
     <script src="/assets/js/all.js"></script>
     <script src="/assets/js/jquery.dataTables.min.js"></script>
     <script src="/assets/js/dist/echarts.js"></script>
+    <script src="/assets/js/moment.min.js"></script>
+    <script src="/assets/js/daterangepicker.min.js"></script>
+
     @if (Request::is('devices'))
         <script>
             $(document).ready(function() {
@@ -80,6 +84,33 @@
     @endif
     @if (Request::is('devices/*') && !Request::is('devices/*/*'))
         <script>
+            // function standby() {
+            //     document.getElementById('device_image').src = '/assets/img/img-2.jpg'
+            // }
+            $(function() {
+                var start = moment().startOf('hour');
+                var end = moment().startOf('hour').add(32, 'hour');
+
+                function cb_date(start, end) {
+                    $('#datetimerange span').html(start.format('YYYY-MM-DD HH:mm:ss') + ' To ' + end.format(
+                        'YYYY-MM-DD HH:mm:ss'));
+                    // window.location.replace('google.com');
+                    window.location.replace("{{ url('devices') }}/{{ $device->uuid }}?from=" + start +
+                        "&to=" + end);
+                }
+                $('#datetimerange').daterangepicker({
+                    timePicker: true,
+                    // startDate: start,
+                    // endDate: end,
+                    // startDate: moment().startOf('hour'),
+                    // endDate: moment().startOf('hour').add(32, 'hour'),
+                    locale: {
+                        separator: " to ",
+                        format: 'YYYY-MM-DD HH:mm:ss'
+                    }
+                }, cb_date);
+                // cb_date(start, end);
+            });
             $(document).ready(function() {
                 $('#parameter_list').DataTable({
                     "processing": false, //Feature control the processing indicator.
@@ -122,52 +153,66 @@
                     }
                 });
             });
-            @if ($parameters_number->count())
-                $(document).ready(function() {
-                    setInterval(function() {
-                        $.ajax({
-                            type: 'POST',
-                            url: '{{ url('livedata') }}',
-                            async: true,
-                            dataType: 'json',
-                            data: {
-                                _token: "{{ csrf_token() }}",
-                                device_id: "{{ $device->id }}",
-                                range: "{{ $range }}"
-                            },
-                            success: function(data) {
-                                @foreach ($parameters_number as $parameter)
-                                    window.{{ $charts['charts_gauge'][$loop->index]->id }}
-                                        .setOption({
-                                            series: [{
-                                                data: [{
-                                                    value: data.value[
+            $(document).ready(function() {
+                let getLiveData = function() {
+                    $.ajax({
+                        type: 'POST',
+                        url: '{{ url('livedata') }}',
+                        async: true,
+                        dataType: 'json',
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            device_id: "{{ $device->id }}",
+                            range: "{{ $range }}",
+                            from: {{ $from }},
+                            to: {{ $to }}
+                        },
+                        success: function(data) {
+                            @foreach ($parameters_number as $parameter)
+                                window.{{ $charts['charts_gauge'][$loop->index]->id }}
+                                    .setOption({
+                                        series: [{
+                                            data: [{
+                                                value: data.value[
+                                                    '{{ $parameter->slug }}'
+                                                ]
+                                            }]
+                                        }]
+                                    });
+                                window.{{ $charts['charts_line'][$loop->index]->id }}
+                                    .setOption({
+                                        series: [{
+                                            data: data.log.map(
+                                                function(row) {
+                                                    return [row[
+                                                        'created_at'
+                                                    ], row[
                                                         '{{ $parameter->slug }}'
-                                                    ]
-                                                }]
-                                            }]
-                                        });
-                                    window.{{ $charts['charts_line'][$loop->index]->id }}
-                                        .setOption({
-                                            series: [{
-                                                data: data.log.map(
-                                                    function(row) {
-                                                        return [row[
-                                                            'created_at'
-                                                        ], row[
-                                                            '{{ $parameter->slug }}'
-                                                        ]];
-                                                    })
-                                            }]
-                                        });
-                                @endforeach
-                            }
-                        });
-                    }, 5000);
-                });
-            @endif
+                                                    ]];
+                                                })
+                                        }]
+                                    });
+                            @endforeach
+                            @foreach ($parameters_string as $parameter)
+                                $('#live_{{ $parameter->slug }}').html(data.value[
+                                    '{{ $parameter->slug }}'] ? data.value[
+                                    '{{ $parameter->slug }}'] : "NULL");
+                                $('#previous_{{ $parameter->slug }}').html(data.log[1] !== undefined ?
+                                    (data.log[1][
+                                        '{{ $parameter->slug }}'
+                                    ] ? data.log[1][
+                                        '{{ $parameter->slug }}'
+                                    ] : "NULL") : "NULL");
+                            @endforeach
+                        }
+                    });
+                }
+                getLiveData();
+                setInterval(getLiveData, 5000);
+            });
         </script>
     @endif
+
     <script>
         var win = navigator.platform.indexOf('Win') > -1;
         if (win && document.querySelector('#sidenav-scrollbar')) {

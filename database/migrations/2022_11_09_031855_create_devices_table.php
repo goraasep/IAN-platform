@@ -19,7 +19,7 @@ return new class extends Migration
             $table->uuid('uuid')->unique();
             $table->string('name');
             $table->longText('description');
-            $table->binary('image')->nullable();
+            $table->string('image')->nullable();
             // $table->json('rules')->default('{}');
             // $table->json('ruleles')->default(new Expression('(JSON_ARRAY())'));
             $table->timestamps();

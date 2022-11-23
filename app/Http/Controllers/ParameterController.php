@@ -52,6 +52,8 @@ class ParameterController extends Controller
             'th_H_enable' => 'required',
             'th_L' => 'required',
             'th_L_enable' => 'required',
+            'max' => 'required',
+            'min' => 'required',
         ]);
         // ddd($request);
         $slug = SlugService::createSlug(Parameters::class, 'slug', $validatedData['name']);
@@ -109,6 +111,8 @@ class ParameterController extends Controller
             'th_H_enable' => 'required',
             'th_L' => 'required',
             'th_L_enable' => 'required',
+            'max' => 'required',
+            'min' => 'required'
         ]);
         $affected_row = Parameters::where('slug', $slug)->update($validatedData);
         if ($affected_row) {
@@ -137,12 +141,22 @@ class ParameterController extends Controller
     //custom function
     public function liveData(Request $request)
     {
-        $range = 1;
-        $range = (int)$request->input('range') ?: $range;
-        // $request->slug
+        $range = (int)$request->input('range') ?: 1;
+        $from = $request->input('from');
+        $to = $request->input('to');
+        $parameters_log_ranged = [];
         $parameters_log = App::make(DynamicModel::class, ['table_name' => 'device_' . $request->device_id . '_log']);
-        $value = $parameters_log->latest()->first() ?: 0;
-        // dd($parameters_log->whereDate('created_at', '>', '2016-12-31')->get());
-        return json_encode(['value' => $value, 'log' => $parameters_log->where('created_at', '>=', Carbon::now()->subDays($range))->latest()->get()]);
+        if ($from && $to) {
+            $from = date("Y-m-d H:i:s", $request->input('from') / 1000);
+            $to = date("Y-m-d H:i:s", $request->input('to') / 1000);
+            $parameters_log_ranged = $parameters_log->where([
+                ['created_at', '>=', $from], ['created_at', '<=', $to]
+            ])->latest()->get();
+        } else {
+            $parameters_log_ranged = $parameters_log->where('created_at', '>=', Carbon::now()->subDays($range))->latest()->get();
+        }
+        $value = $parameters_log_ranged->first() ?: 0;
+
+        return json_encode(['value' => $value, 'log' => $parameters_log_ranged]);
     }
 }

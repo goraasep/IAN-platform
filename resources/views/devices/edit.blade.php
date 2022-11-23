@@ -15,7 +15,7 @@
                     <span class="btn-inner--text">Back to Device</span>
 
                 </a>
-                <button type="button" class="btn btn-sm btn-dark btn-icon d-flex align-items-center mb-0">
+                {{-- <button type="button" class="btn btn-sm btn-dark btn-icon d-flex align-items-center mb-0">
                     <span class="btn-inner--icon">
                         <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="d-block me-2">
@@ -24,42 +24,59 @@
                         </svg>
                     </span>
                     <span class="btn-inner--text">Refresh</span>
-                </button>
-            </div>
-        </div>
-    </div>
-    <hr class="my-0">
-    <div class="row">
-        <div class="position-relative overflow-hidden">
-            <div class="swiper mySwiper mt-4 mb-2">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide">
-                        <div>
-                            <div
-                                class="card card-background shadow-none border-radius-xl card-background-after-none align-items-start mb-0">
-                                <div class="full-background bg-cover"
-                                    style="background-image: url('../assets/img/img-2.jpg')"></div>
-                                <div class="card-body text-start px-3 py-0 w-100">
-                                    <div class="row mt-12">
-                                        <div class="col-sm-3 mt-auto">
-                                            <h4 class="text-dark font-weight-bolder">#1</h4>
-                                            <p class="text-dark opacity-6 text-xs font-weight-bolder mb-0">Name</p>
-                                            <h5 class="text-dark font-weight-bolder">Secured</h5>
-                                        </div>
-                                        <div class="col-sm-3 ms-auto mt-auto">
-                                            <p class="text-dark opacity-6 text-xs font-weight-bolder mb-0">Category</p>
-                                            <h5 class="text-dark font-weight-bolder">Banking</h5>
+                </button> --}}
+                <div class="d-flex">
+                    <button type="button" class="btn btn-sm btn-secondary btn-icon mb-0 me-2" data-bs-toggle="modal"
+                        data-bs-target="#addParamModal">
+                        <span class="btn-inner--icon me-2">
+                            <i class="fa-solid fa-trash"></i>
+                        </span>
+                        <span class="btn-inner--text">Delete Device</span>
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="addParamModal" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalMessageTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <form method="post" action="/devices/{{ $device->uuid }}">
+                                    @method('delete')
+                                    @csrf
+                                    <input type="text" class="form-control" id="device-uuid" name="uuid"
+                                        value="{{ $device->uuid }}" hidden required>
+                                    <div class="modal-header">
+                                        <h6 class="modal-title" id="modal-title-notification">Your attention is required
+                                        </h6>
+                                        <button type="button" class="btn-close text-dark" data-bs-dismiss="modal"
+                                            aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="py-3 text-center">
+                                            <i class="ni ni-bell-55 ni-3x"></i>
+                                            <h4 class="text-gradient text-danger mt-4">Delete {{ $device->name }} ?</h4>
+                                            <p>You will not be able to restore deleted device.
+                                            </p>
                                         </div>
                                     </div>
-                                </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-white" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-dark">Delete</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="swiper-button-prev"></div>
-            <div class="swiper-button-next"></div>
         </div>
+    </div>
+    <hr class="my-0">
+    <div class="row my-4 d-flex justify-content-center">
+        <img src="{{ asset('storage/images/' . $device->image) }}" class="col-lg-6" alt=""
+            style="height:auto;width:auto;max-height:500px" alt=""
+            onerror="this.onerror=null;this.src='/assets/img/img-2.jpg';">
     </div>
     <div class="row my-4">
         <div class="col-12">
