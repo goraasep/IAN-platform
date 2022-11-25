@@ -29,7 +29,7 @@
                     <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
                     </button>
                 </div>
-                <div class="modal-body text-start">
+                <div class="modal-body text-start mx-3">
                     <div class="form-group">
                         <label for="parameter-unit" class="col-form-label">Unit:</label>
                         <input type="text" class="form-control" id="parameter-unit" name="unit"
@@ -115,7 +115,7 @@
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body mx-3">
                     <div class="py-3 text-center">
                         <i class="ni ni-bell-55 ni-3x"></i>
                         <h4 class="text-gradient text-danger mt-4">Delete {{ $parameter->name }} ?</h4>

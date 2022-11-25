@@ -475,9 +475,17 @@ class DevicesController extends Controller
                     'data' => [
                         [
                             'yAxis' => $parameter->th_L,
+                            'label' => [
+                                'show' => true,
+                                'formatter' => '{c} Low'
+                            ],
                         ],
                         [
                             'yAxis' => $parameter->th_H,
+                            'label' => [
+                                'show' => true,
+                                'formatter' => '{c} High'
+                            ],
                         ],
                     ]
                 ]

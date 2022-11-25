@@ -1,7 +1,7 @@
 <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 bg-slate-900 fixed-start " id="sidenav-main">
     <div class="sidenav-header">
-        <div class="p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
-            aria-hidden="true" id="iconSidenav">X</div>
+        <div class="p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none" aria-hidden="true"
+            id="iconSidenav">x</div>
         <a class="navbar-brand d-flex align-items-center m-0"
             href=" https://demos.creative-tim.com/corporate-ui-dashboard/pages/dashboard.html " target="_blank">
             <span class="font-weight-bold text-lg">IAN Platform</span>
@@ -62,7 +62,7 @@
             </li> --}}
         </ul>
     </div>
-    <div class="sidenav-footer mx-4 ">
+    {{-- <div class="sidenav-footer mx-4 ">
         <div class="card bg-gray-500 border-radius-md" id="sidenavCard">
             <img class="w-50 mx-auto" src="/assets/img/iot/mascotPNG2.png" alt="sidebar_illustration">
             <div class="card-body text-center p-3 w-100 pt-0">
@@ -75,5 +75,5 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 </aside>

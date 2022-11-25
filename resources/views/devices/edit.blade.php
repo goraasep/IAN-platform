@@ -26,7 +26,7 @@
                     <span class="btn-inner--text">Refresh</span>
                 </button> --}}
                 <div class="d-flex">
-                    <button type="button" class="btn btn-sm btn-secondary btn-icon mb-0 me-2" data-bs-toggle="modal"
+                    <button type="button" class="btn btn-sm  btn-outline-danger btn-icon mb-0 me-2" data-bs-toggle="modal"
                         data-bs-target="#addParamModal">
                         <span class="btn-inner--icon me-2">
                             <i class="fa-solid fa-trash"></i>
@@ -117,7 +117,7 @@
                                 <label class="col-form-label" for="device-image">Image</label>
                                 <input type="file" class="form-control" id="device-image" name="image">
                             </div>
-                            <button type="submit" class="btn btn-primary mt-2">Submit</button>
+                            <button type="submit" class="btn btn-dark mt-2">Submit</button>
                         </form>
                     </div>
                 </div>

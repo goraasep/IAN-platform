@@ -10,9 +10,9 @@
                             <p class="text-sm">See information about all devices</p>
                         </div>
                         <div class="ms-auto d-flex">
-                            <button type="button" class="btn btn-sm btn-white me-2">
+                            {{-- <button type="button" class="btn btn-sm btn-white me-2">
                                 View all
-                            </button>
+                            </button> --}}
                             <!-- Button trigger modal -->
                             <button type="button" class="btn btn-sm btn-dark btn-icon d-flex align-items-center me-2"
                                 data-bs-toggle="modal" data-bs-target="#exampleModalMessage">

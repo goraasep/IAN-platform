@@ -16,14 +16,14 @@
 
                 </a>
                 <a href="/devices/{{ $device->uuid }}/edit" type="button"
-                    class=" btn btn-sm btn-white btn-icon d-flex align-items-center mb-0 me-2">
+                    class=" btn btn-sm btn-white btn-icon d-flex align-items-center mb-0">
                     <span class="btn-inner--icon">
                         <i class="fa-solid fa-gear d-flex ms-auto me-2"></i>
                     </span>
                     <span class="btn-inner--text">Device Configuration</span>
 
                 </a>
-                <a type="button" class="btn btn-sm btn-dark btn-icon d-flex align-items-center mb-0">
+                {{-- <a type="button" class="btn btn-sm btn-dark btn-icon d-flex align-items-center mb-0">
                     <span class="btn-inner--icon">
                         <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="d-block me-2">
@@ -32,7 +32,7 @@
                         </svg>
                     </span>
                     <span class="btn-inner--text">Refresh</span>
-                </a>
+                </a> --}}
             </div>
         </div>
     </div>

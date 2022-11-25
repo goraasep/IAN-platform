@@ -238,3 +238,63 @@
             url("/assets/fonts/open-sans-v34-latin-800italic.svg#OpenSans")
             format("svg"); /* Legacy iOS */
 }
+
+.btn-iot {
+    --bs-btn-color: #fff !important;
+    --bs-btn-bg: #13678A !important;
+    --bs-btn-border-color: #13678A !important;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #17769e;
+    --bs-btn-hover-border-color: #17769e;
+    --bs-btn-focus-shadow-rgb: 33, 158, 212;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #17769e;
+    --bs-btn-active-border-color: #17769e;
+    --bs-btn-active-shadow: none;
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #13678A;
+    --bs-btn-disabled-border-color: #13678A;
+  }
+
+  .btn-iot:hover {
+    background-color: #13678A;
+    border-color: #13678A;
+  }
+
+  .btn-iot .btn.bg-outline-iot {
+    border: 1px solid #13678A;
+  }
+
+  .btn-iot:not(:disabled):not(.disabled).active,
+  .btn-iot:not(:disabled):not(.disabled):active,
+  .show>.btn-iot.dropdown-toggle {
+    color: color-yiq(#13678A);
+    background-color: #13678A;
+  }
+
+  .btn-iot,
+.btn.bg-gradient-iot {
+  color: #fff;
+}
+
+.btn-iot:hover,
+.btn.bg-gradient-iot:hover {
+  color: #fff;
+  border-color: transparent;
+}
+
+.btn-iot:focus,
+.btn.bg-gradient-iot:focus {
+  border-color: transparent;
+}
+
+.text-bg-iot {
+    color: #fff !important;
+    background-color: RGBA(23, 118, 158, var(--bs-bg-opacity, 1)) !important;
+}
+.bg-iot {
+    background-color: #13678A !important;
+}
+.badge.bg-iot {
+    background: rgba(23, 118, 158, 0.1) !important;
+}
