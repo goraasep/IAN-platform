@@ -498,24 +498,4 @@
         </div>
     </div>
     {{-- map --}}
-    <script type="text/javascript">
-        function initMap() {
-            const myLatLng = {
-                lat: -6.2734719,
-                lng: 120.7512559
-            };
-            const map = new google.maps.Map(document.getElementById("map"), {
-                zoom: 5,
-                center: myLatLng,
-            });
-
-            new google.maps.Marker({
-                position: myLatLng,
-                map,
-                title: "Hello Gora!",
-            });
-        }
-
-        window.initMap = initMap;
-    </script>
 @endsection

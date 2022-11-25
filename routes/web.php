@@ -24,12 +24,14 @@ use App\Models\Devices;
 Route::get('/', function () {
     return view('dashboard.index', [
         'title' => 'Home',
-        'breadcrumb' => 'Dashboard'
+        'breadcrumb' => 'Dashboard',
+        'subtitle' => 'test'
     ]);
 })->middleware('auth');
 // Route::get('/devices/device/{devices:uuid}', [DevicesController::class, 'showDevice'])->middleware('auth');
 // Route::get('/devices/{devices:uuid}/', [DevicesController::class, 'showDevice'])->middleware('auth');
 Route::post('/alldevices', [DatatablesController::class, 'allDevices'])->middleware('auth');
+Route::post('/allsites', [DatatablesController::class, 'allSites'])->middleware('auth');
 Route::post('/allparameters', [DatatablesController::class, 'allParameters'])->middleware('auth');
 Route::post('/allalerts', [DatatablesController::class, 'allAlerts'])->middleware('auth');
 Route::post('/historicallog', [DatatablesController::class, 'historicalLog'])->middleware('auth');

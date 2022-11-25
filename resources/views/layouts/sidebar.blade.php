@@ -2,10 +2,9 @@
     <div class="sidenav-header">
         <div class="p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none" aria-hidden="true"
             id="iconSidenav">x</div>
-        <a class="navbar-brand d-flex align-items-center m-0"
-            href=" https://demos.creative-tim.com/corporate-ui-dashboard/pages/dashboard.html " target="_blank">
+        <div class="navbar-brand d-flex align-items-center m-0">
             <span class="font-weight-bold text-lg">IAN Platform</span>
-        </a>
+        </div>
     </div>
     <div class="collapse navbar-collapse px-4  w-auto " id="sidenav-collapse-main">
         <ul class="navbar-nav">

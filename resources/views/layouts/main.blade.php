@@ -82,11 +82,49 @@
             });
         </script>
     @endif
+    @if (Request::is('sites'))
+        <script>
+            $(document).ready(function() {
+                $('#site_list').DataTable({
+                    "processing": false, //Feature control the processing indicator.
+                    "serverSide": true, //Feature control DataTables' server-side processing mode.
+                    "ajax": {
+                        "url": "{{ url('allsites') }}",
+                        "type": "POST",
+                        "data": {
+                            _token: "{{ csrf_token() }}"
+                        }
+                    },
+                });
+            });
+        </script>
+    @endif
+    @if (Request::is('sites/*'))
+        <script type="text/javascript">
+            function initMap() {
+                const myLatLng = {
+                    lat: -6.2734719,
+                    lng: 120.7512559
+                };
+                const map = new google.maps.Map(document.getElementById("map"), {
+                    zoom: 5,
+                    center: myLatLng,
+                });
+
+                new google.maps.Marker({
+                    position: myLatLng,
+                    map,
+                    title: "Hello Gora!",
+                });
+            }
+
+            window.initMap = initMap;
+        </script>
+        <script type="text/javascript" src="https://maps.google.com/maps/api/js?key=&callback=initMap"></script>
+    @endif
+
     @if (Request::is('devices/*') && !Request::is('devices/*/*'))
         <script>
-            // function standby() {
-            //     document.getElementById('device_image').src = '/assets/img/img-2.jpg'
-            // }
             $(function() {
                 var start = moment().startOf('hour');
                 var end = moment().startOf('hour').add(32, 'hour');
@@ -222,7 +260,7 @@
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
         }
     </script>
-    <script>
+    {{-- <script>
         $(document).ready(function() {
             var span = document.getElementById('clock');
 
@@ -236,10 +274,30 @@
             }
             setInterval(time, 1000);
         });
-    </script>
+    </script> --}}
 
 
     @if (Request::is('/'))
+        <script type="text/javascript">
+            function initMap() {
+                const myLatLng = {
+                    lat: -6.2734719,
+                    lng: 120.7512559
+                };
+                const map = new google.maps.Map(document.getElementById("map"), {
+                    zoom: 5,
+                    center: myLatLng,
+                });
+
+                new google.maps.Marker({
+                    position: myLatLng,
+                    map,
+                    title: "Hello Gora!",
+                });
+            }
+
+            window.initMap = initMap;
+        </script>
         <script type="text/javascript" src="https://maps.google.com/maps/api/js?key=&callback=initMap"></script>
     @endif
     <!-- Github buttons -->

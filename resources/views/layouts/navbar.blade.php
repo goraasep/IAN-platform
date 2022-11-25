@@ -1,15 +1,24 @@
 <nav class="navbar navbar-main navbar-expand-lg mx-5 px-0 shadow-none rounded" id="navbarBlur" navbar-scroll="true">
     <div class="container-fluid py-1 px-2">
         <nav aria-label="breadcrumb">
+            <a href="javascript:;" class="nav-link text-body p-0  me-sm-3 me-2" id="iconNavbarSidenav">
+                <div class="sidenav-toggler-inner">
+                    <i class="sidenav-toggler-line"></i>
+                    <i class="sidenav-toggler-line"></i>
+                    <i class="sidenav-toggler-line"></i>
+                </div>
+            </a>
+        </nav>
+        <nav aria-label="breadcrumb">
             <ol class="breadcrumb bg-transparent mb-1 pb-0 pt-1 px-0 me-sm-6 me-5">
                 <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark"
-                        href="{{ url(Request::segment(1)) }}">{{ $title }}</a></li>
+                        href="{{ url(Request::segment(1) ?: '/') }}">{{ $title }}</a></li>
                 <li class="breadcrumb-item text-sm text-dark active" aria-current="page">{{ $breadcrumb }}</li>
             </ol>
             {{-- <h6 class="font-weight-bold mb-0">{{ $subtitle }}</h6> --}}
         </nav>
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
-            <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+            {{-- <div class="ms-md-auto pe-md-3 d-flex align-items-center">
                 <div class="input-group">
                     <span class="input-group-text text-body bg-white  border-end-0 ">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="none"
@@ -20,9 +29,9 @@
                     </span>
                     <input type="text" class="form-control ps-0" placeholder="Search">
                 </div>
-            </div>
-            <ul class="navbar-nav  justify-content-end">
-                <li class="nav-item px-3 d-flex align-items-center">
+            </div> --}}
+            <ul class="navbar-nav ms-md-auto justify-content-end">
+                {{-- <li class="nav-item px-3 d-flex align-items-center">
                     <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
                         <div class="sidenav-toggler-inner">
                             <i class="sidenav-toggler-line"></i>
@@ -30,7 +39,7 @@
                             <i class="sidenav-toggler-line"></i>
                         </div>
                     </a>
-                </li>
+                </li> --}}
                 {{-- <li class="nav-item px-3 d-flex align-items-center">
                     <a href="javascript:;" class="nav-link text-body p-0">
                         <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg"

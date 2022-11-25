@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Devices;
 use App\Models\Parameters;
+use App\Models\Sites;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\App;
 use LaracraftTech\LaravelDynamicModel\DynamicModel;
@@ -274,6 +275,77 @@ class DatatablesController extends Controller
                 foreach ($request->parameters as $parameter) {
                     $nestedData[] = $row->{$parameter};
                 }
+                $data[] = $nestedData;
+            }
+        }
+
+        $json_data = array(
+            "draw"            => intval($request->input('draw')),
+            "recordsTotal"    => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data"            => $data
+        );
+        echo json_encode($json_data);
+    }
+
+    public function allSites(Request $request)
+    {
+        $columns = array(
+            0 => 'name',
+            1 => 'description',
+            2 => 'lng',
+            3 => 'lat',
+            4 => 'created_at',
+        );
+
+        $totalData = Sites::count();
+
+        $totalFiltered = $totalData;
+
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+
+        if (empty($request->input('search.value'))) {
+            $table = Sites::offset($start)
+                ->limit($limit)
+                ->orderBy($order, $dir)
+                ->get();
+        } else {
+            $search = $request->input('search.value');
+            $table =  Sites::orWhere(function ($query) use ($columns, $search) {
+                foreach ($columns as $col) {
+                    $query->orWhere($col, 'LIKE', "%{$search}%");
+                }
+                return $query;
+            })
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy($order, $dir)
+                ->get();
+            $totalFiltered = Sites::where(function ($query) use ($columns, $search) {
+                foreach ($columns as $col) {
+                    $query->orWhere($col, 'LIKE', "%{$search}%");
+                }
+                return $query;
+            })->count();
+        }
+
+        $data = array();
+        if (!empty($table)) {
+            foreach ($table as $row) {
+
+                $nestedData = [];
+
+                $nestedData[] = $row->name;
+                $nestedData[] = $row->description;
+                $nestedData[] = 'Lng: ' . $row->lng . ', Lat: ' . $row->lat;
+                $nestedData[] = '<a href="/sites/' . $row->slug . '"
+                class="text-secondary font-weight-bold text-xs"
+                data-bs-toggle="tooltip" data-bs-title="Edit user">
+                <i class="fa-solid fa-pen-to-square"></i>
+                </a>';
                 $data[] = $nestedData;
             }
         }

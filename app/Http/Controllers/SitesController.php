@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Sites;
+use Illuminate\Support\Facades\Storage;
 
 class SitesController extends Controller
 {
@@ -42,6 +43,29 @@ class SitesController extends Controller
     public function store(Request $request)
     {
         //
+        // $attribute = array(
+        //     'lng' => 'longitude',
+        //     'lat' => 'latitude',
+        // );
+        // $validator = Validator::make ( Input::all (), $rules );
+        // $validator->setAttributeNames($attribute);
+        $validatedData = $request->validate([
+            'name' => 'required|max:255',
+            'image' => 'image|file|max:1024',
+            'description' => 'max:1024|required',
+            'lng' => 'required',
+            'lat' => 'required'
+        ]);
+        if (array_key_exists('image', $validatedData)) {
+            $filename = $validatedData['image']->hashName();
+            $validatedData['image']->storeAs(
+                'public/images',
+                $filename
+            );
+            $validatedData['image'] = $filename;
+        }
+        Sites::create($validatedData);
+        return redirect('/sites')->with('success', 'New site has been added!');
     }
 
     /**
@@ -50,9 +74,16 @@ class SitesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Sites $site, Request $request)
     {
         //
+        $data = [
+            'title' => 'Sites',
+            'breadcrumb' => 'Site',
+            'subtitle' => $site->name,
+            'site' => $site
+        ];
+        return view('sites.site', $data);
     }
 
     /**
@@ -61,9 +92,17 @@ class SitesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Sites $site)
     {
         //
+        $data = [
+            'title' => 'Sites',
+            'breadcrumb' => 'Site',
+            'subtitle' => $site->name,
+            'site' => $site
+        ];
+        // dd($data);
+        return view('sites.edit', $data);
     }
 
     /**
@@ -73,9 +112,28 @@ class SitesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Sites $site)
     {
         //
+        $validatedData = $request->validate([
+            'name' => 'required|max:255',
+            'image' => 'image|file|max:1024',
+            'description' => 'max:1024',
+            'lng' => 'required',
+            'lat' => 'required'
+        ]);
+        if (array_key_exists('image', $validatedData)) {
+            Storage::delete('/public/images/' . $site->image);
+            $filename = $validatedData['image']->hashName();
+            $validatedData['image']->storeAs(
+                'public/images',
+                $filename
+            );
+            $validatedData['image'] = $filename;
+        }
+        // ddd($request);
+        Sites::where('slug', $site->slug)->update($validatedData);
+        return redirect('/sites/' . $site->slug . '/edit')->with('success', 'Success!');
     }
 
     /**
@@ -84,8 +142,15 @@ class SitesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
         //
+        $site = Sites::where('slug', $request['slug'])->first();
+        Storage::delete('/public/images/' . $site->image);
+        Sites::where('slug', $request['slug'])->delete();
+        // Schema::table('device_' . $device_id . '_log', function ($table) use ($slug) {
+        //     $table->dropColumn($slug);
+        // });
+        return redirect('/sites')->with('success', 'Success!');
     }
 }

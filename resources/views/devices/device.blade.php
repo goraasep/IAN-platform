@@ -300,7 +300,7 @@
                                         <div class="d-flex align-items-center">
                                             {{-- <span class="text-sm text-success font-weight-bolder">55%
                                             </span> --}}
-                                            <span class="text-sm ms-1">Previous value: <span
+                                            <span class="text-sm">Previous value: <span
                                                     id="previous_{{ $parameter->slug }}"></span></span>
                                         </div>
 
