@@ -189,6 +189,14 @@
                                                         id="parameter-min" name="min" value="{{ old('min', 0) }}"
                                                         required>
                                                 </div>
+                                                <div class="form-group">
+                                                    <label for="parameter-show" class="col-form-label">Show on site
+                                                        overview ?</label>
+                                                    <select class="form-select" id="parameter-show" name="show">
+                                                        <option value="0">No</option>
+                                                        <option value="1">Yes</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-white"

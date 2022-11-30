@@ -58,6 +58,10 @@
                                                     <input type="number" step="any" class="form-control"
                                                         id="site-latitude" name="lat" value="{{ old('latitude') }}">
                                                 </div>
+                                                <div class="input-group mb-3">
+                                                    <input id="pac-input" placeholder="Enter your address" type="text" />
+                                                    <div id="googleMap" style="width:100%;height:400px;"></div>
+                                                </div>
                                                 <div class="form-group">
                                                     <label class="col-form-label" for="device-image">Image</label>
                                                     <input type="file" class="form-control" id="device-image"

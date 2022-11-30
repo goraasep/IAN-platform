@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\App;
 use LaracraftTech\LaravelDynamicModel\DynamicModel;
 use Illuminate\Support\Str;
 use App\Charts\NumberParametersChart;
+use App\Models\Sites;
 use SebastianBergmann\Type\NullType;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -30,7 +31,7 @@ class DevicesController extends Controller
             'title' => 'Devices',
             'breadcrumb' => 'List',
             'subtitle' => 'Devices',
-            'devices' => Devices::latest()->filter(request(['search']))->paginate(10)->withQueryString()
+            'sites' => Sites::all()
         ];
         return view('devices.index', $data);
     }
@@ -56,6 +57,7 @@ class DevicesController extends Controller
         //
         // return $request;
         $validatedData = $request->validate([
+            'site_id' => 'nullable',
             'name' => 'required|max:255',
             'image' => 'image|file|max:1024',
             'description' => 'max:1024|required'
@@ -152,7 +154,8 @@ class DevicesController extends Controller
             'title' => 'Devices',
             'breadcrumb' => 'Device',
             'subtitle' => $device->name,
-            'device' => $device
+            'device' => $device,
+            'sites' => Sites::all()
         ];
         return view('devices.edit', $data);
         // return 'sadsadsa';
@@ -169,6 +172,7 @@ class DevicesController extends Controller
     {
         //
         $validatedData = $request->validate([
+            'site_id' => 'nullable',
             'name' => 'required|max:255',
             'image' => 'image|file|max:1024',
             'description' => 'max:1024'

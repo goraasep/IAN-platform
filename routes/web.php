@@ -38,6 +38,7 @@ Route::post('/historicallog', [DatatablesController::class, 'historicalLog'])->m
 Route::resource('/devices', DevicesController::class)->middleware('auth');
 Route::resource('/parameter', ParameterController::class)->middleware('auth');
 Route::post('livedata', [ParameterController::class, 'liveData'])->middleware('auth');
+Route::post('livedata_overview', [ParameterController::class, 'liveDataOverview'])->middleware('auth');
 
 Route::resource('/sites', SitesController::class)->middleware('auth');
 Route::get('/login', [LoginController::class, 'index'])->name('login')->middleware('guest');

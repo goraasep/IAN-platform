@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Devices;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
@@ -35,5 +36,9 @@ class Sites extends Model
                     ->orWhere('lat', 'like', '%' . $search . '%');
             });
         });
+    }
+    public function devices()
+    {
+        return $this->hasMany(Devices::class, 'site_id', 'id');
     }
 }

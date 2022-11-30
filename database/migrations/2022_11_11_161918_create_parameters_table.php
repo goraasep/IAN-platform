@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string('alert_prev')->default('Normal');
             $table->double('max')->default(0);
             $table->double('min')->default(0);
+            $table->integer('show')->default(0);
             $table->timestamps();
         });
     }

@@ -91,6 +91,16 @@
                         <input type="text" class="form-control" id="parameter-min" name="min"
                             value="{{ old('min', $parameter->min) }}">
                     </div>
+                    <div class="form-group">
+                        <label for="parameter-show" class="col-form-label">Show on site
+                            overview ?</label>
+                        <select class="form-select" id="parameter-show" name="show">
+                            <option value="0" {{ old('show', $parameter->show) == 0 ? 'selected' : '' }}>No
+                            </option>
+                            <option value="1" {{ old('show', $parameter->show) == 1 ? 'selected' : '' }}>Yes
+                            </option>
+                        </select>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-white" data-bs-dismiss="modal">Close</button>

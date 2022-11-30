@@ -17,6 +17,7 @@ return new class extends Migration
         Schema::create('devices', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
+            $table->foreignId('site_id')->nullable();
             $table->string('name');
             $table->longText('description');
             $table->string('image')->nullable();

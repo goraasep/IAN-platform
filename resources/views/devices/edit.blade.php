@@ -114,6 +114,17 @@
                                 @enderror
                             </div>
                             <div class="form-group">
+                                <label for="device-site">Assign to site: </label>
+                                <select class="form-control" id="device-site" name="site_id">
+                                    <option value="">None</option>
+                                    @foreach ($sites as $site)
+                                        <option value="{{ $site->id }}"
+                                            {{ old('site_id', $device->site_id) == $site->id ? 'selected' : '' }}>
+                                            {{ $site->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label class="col-form-label" for="device-image">Image</label>
                                 <input type="file" class="form-control" id="device-image" name="image">
                             </div>

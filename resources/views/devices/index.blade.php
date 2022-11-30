@@ -37,17 +37,37 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-
                                                 @csrf
                                                 <div class="form-group">
                                                     <label for="device-name" class="col-form-label">Device Name:</label>
                                                     <input type="text" class="form-control" id="device-name"
                                                         name="name" value="{{ old('name') }}">
+                                                    @error('description')
+                                                        <div class="invalid-feedback">
+                                                            {{ $message }}
+                                                        </div>
+                                                    @enderror
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="device-description"
                                                         class="col-form-label">Description:</label>
                                                     <textarea class="form-control" id="device-description" name="description" required>{{ old('description') }}</textarea>
+                                                    @error('description')
+                                                        <div class="invalid-feedback">
+                                                            {{ $message }}
+                                                        </div>
+                                                    @enderror
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="device-site">Assign to site: </label>
+                                                    <select class="form-control" id="device-site" name="site_id">
+                                                        <option value="">None</option>
+                                                        @foreach ($sites as $site)
+                                                            <option value="{{ $site->id }}"
+                                                                {{ old('site_id') == $site->id ? 'selected' : '' }}>
+                                                                {{ $site->name }}</option>
+                                                        @endforeach
+                                                    </select>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-form-label" for="device-image">Image</label>

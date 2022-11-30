@@ -37,7 +37,7 @@
     <link id="pagestyle" href="/assets/css/corporate-ui-dashboard.css?v=1.0.0" rel="stylesheet" />
     <link href="/assets/css/jquery.dataTables.min.css" rel="stylesheet" />
     <link href="/assets/css/daterangepicker.css" rel="stylesheet" />
-    {{-- @livewireStyles() --}}
+    @livewireStyles()
 </head>
 
 <body class="g-sidenav-show  bg-gray-100">
@@ -55,7 +55,7 @@
     <script src="/assets/js/jquery-3.5.1.js"></script>
     <script src="/assets/js/core/popper.min.js"></script>
     <script src="/assets/js/core/bootstrap.min.js"></script>
-    <script src="/assets/js/plugins/perfect-scrollbar.min.js"></script>
+    {{-- <script src="/assets/js/plugins/perfect-scrollbar.min.js"></script> --}}
     <script src="/assets/js/plugins/smooth-scrollbar.min.js"></script>
     <script src="/assets/js/plugins/chartjs.min.js"></script>
     <script src="/assets/js/plugins/swiper-bundle.min.js" type="text/javascript"></script>
@@ -99,28 +99,144 @@
             });
         </script>
     @endif
-    @if (Request::is('sites/*'))
-        <script type="text/javascript">
+    @if (Request::is('sites') || Request::is('sites/*/*'))
+        <script>
             function initMap() {
-                const myLatLng = {
-                    lat: -6.2734719,
-                    lng: 120.7512559
+                @if (Request::is('sites/*/*'))
+                    const myLatlng = {
+                        lat: {{ $site->lat }},
+                        lng: {{ $site->lng }}
+                    };
+                @elseif (Request::is('sites'))
+                    const myLatlng = {
+                        lat: -6.193739172824711,
+                        lng: 106.76588773727418
+                    };
+                @endif
+
+
+                const map = new google.maps.Map(document.getElementById("googleMap"), {
+                    zoom: 15,
+                    center: myLatlng,
+                    streetViewControl: false,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                    gestureHandling: "greedy",
+                });
+
+
+                // Create the initial InfoWindow.
+                let infoWindow = new google.maps.InfoWindow({
+                    content: "Click the map to get Lat/Lng!",
+                    position: myLatlng,
+                });
+
+                infoWindow.open(map);
+                const input = document.getElementById("pac-input");
+                const autocomplete = new google.maps.places.Autocomplete(input);
+                google.maps.event.addListener(autocomplete, 'place_changed', function() {
+                    var place = autocomplete.getPlace();
+                    infoWindow.close();
+                    infoWindow = new google.maps.InfoWindow({
+                        position: {
+                            lat: place.geometry.location.lat(),
+                            lng: place.geometry.location.lng()
+                        },
+                    });
+                    infoWindow.setContent(
+                        JSON.stringify({
+                            lat: place.geometry.location.lat(),
+                            lng: place.geometry.location.lng()
+                        }, null, 2)
+
+                    );
+                    infoWindow.open(map);
+                    $("#site-latitude").val(place.geometry.location.lat());
+                    $("#site-longitude").val(place.geometry.location.lng());
+                });
+
+                // Configure the click listener.
+                map.addListener("click", (mapsMouseEvent) => {
+                    // Close the current InfoWindow.
+                    infoWindow.close();
+
+                    // Create a new InfoWindow.
+                    infoWindow = new google.maps.InfoWindow({
+                        position: mapsMouseEvent.latLng,
+                    });
+                    infoWindow.setContent(
+                        JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2)
+
+                    );
+                    infoWindow.open(map);
+                    $("#site-latitude").val(mapsMouseEvent.latLng.toJSON().lat);
+                    $("#site-longitude").val(mapsMouseEvent.latLng.toJSON().lng);
+                });
+
+            }
+            $(document).ready(
+                initMap
+            );
+        </script>
+        <script type="text/javascript"
+            src="https://maps.google.com/maps/api/js?key=AIzaSyAkvuKagRiFJGavzz2vXIhRJ4SWbd-A3-Y&libraries=places"></script>
+    @endif
+    @if (Request::is('sites/*') && !Request::is('sites/*/*'))
+        <script>
+            function initMap() {
+                const myLatlng = {
+                    lat: {{ $site->lat }},
+                    lng: {{ $site->lng }}
                 };
                 const map = new google.maps.Map(document.getElementById("map"), {
-                    zoom: 5,
-                    center: myLatLng,
+                    zoom: 10,
+                    center: myLatlng,
+                    streetViewControl: false,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                    // gestureHandling: "cooperative",
+                    // zoomControl: false,
                 });
-
                 new google.maps.Marker({
-                    position: myLatLng,
+                    position: myLatlng,
                     map,
-                    title: "Hello Gora!",
+                    // title: "Hello Gora!",
                 });
-            }
 
-            window.initMap = initMap;
+            }
+            $(document).ready(
+                initMap
+            );
+            $(document).ready(function() {
+                let getLiveData = function() {
+                    @foreach ($site->devices as $device)
+                        $.ajax({
+                            type: 'POST',
+                            url: '{{ url('livedata_overview') }}',
+                            async: true,
+                            dataType: 'json',
+                            data: {
+                                _token: "{{ csrf_token() }}",
+                                device_id: "{{ $device->id }}",
+                            },
+                            success: function(data) {
+                                @foreach ($device->parameters as $parameter)
+                                    $('#live_{{ $parameter->slug }}').html(data.value[
+                                            '{{ $parameter->slug }}'] ? data.value[
+                                            '{{ $parameter->slug }}'] + ' ' +
+                                        '{{ $parameter->unit }}' : "NULL");
+                                    $('#updated_{{ $parameter->slug }}').html(data.value[
+                                        'created_at'] ? data.value[
+                                        'created_at'] : "NULL");
+                                @endforeach
+                            }
+                        });
+                    @endforeach
+                }
+                getLiveData();
+                setInterval(getLiveData, 5000);
+            });
         </script>
-        <script type="text/javascript" src="https://maps.google.com/maps/api/js?key=&callback=initMap"></script>
+        <script type="text/javascript"
+            src="https://maps.google.com/maps/api/js?key=AIzaSyAkvuKagRiFJGavzz2vXIhRJ4SWbd-A3-Y&libraries=places"></script>
     @endif
 
     @if (Request::is('devices/*') && !Request::is('devices/*/*'))
@@ -302,8 +418,8 @@
     @endif
     <!-- Github buttons -->
     <!-- Control Center for Corporate UI Dashboard: parallax effects, scripts for the example pages etc -->
-    <script src="/assets/js/corporate-ui-dashboard.min.js?v=1.0.0"></script>
-    {{-- @livewireScripts() --}}
+    <script src="/assets/js/corporate-ui-dashboard.js?v=1.0.0"></script>
+    @livewireScripts()
 </body>
 
 </html>

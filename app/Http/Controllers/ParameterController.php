@@ -54,6 +54,7 @@ class ParameterController extends Controller
             'th_L_enable' => 'required',
             'max' => 'required',
             'min' => 'required',
+            'show' => 'required'
         ]);
         // ddd($request);
         $slug = SlugService::createSlug(Parameters::class, 'slug', $validatedData['name']);
@@ -112,7 +113,8 @@ class ParameterController extends Controller
             'th_L' => 'required',
             'th_L_enable' => 'required',
             'max' => 'required',
-            'min' => 'required'
+            'min' => 'required',
+            'show' => 'required'
         ]);
         $affected_row = Parameters::where('slug', $slug)->update($validatedData);
         if ($affected_row) {
@@ -158,5 +160,13 @@ class ParameterController extends Controller
         $value = $parameters_log_ranged->first() ?: 0;
 
         return json_encode(['value' => $value, 'log' => $parameters_log_ranged]);
+    }
+    public function liveDataOverview(Request $request)
+    {
+        // $parameters_log_ranged = [];
+        $parameters_log = App::make(DynamicModel::class, ['table_name' => 'device_' . $request->device_id . '_log']);
+        $value = $parameters_log->latest()->first() ?: 0;
+
+        return json_encode(['value' => $value]);
     }
 }

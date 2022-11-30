@@ -67,9 +67,9 @@
         <img src="{{ asset('storage/images/' . $site->image) }}" class="col-lg-6 mx-auto" alt=""
             style="height:auto;width:auto;max-height:400px" alt=""
             onerror="this.onerror=null;this.src='/assets/img/img-2.jpg';">
-        <div class="col-lg-6">
+        {{-- <div class="col-lg-6">
             <div id="map" style="max-height:400px"></div>
-        </div>
+        </div> --}}
         {{-- <img src="{{ asset('storage/images/' . $device->image) }}" class="col-lg-6" alt=""
             style="height:auto;width:auto;max-height:400px" alt=""
             onerror="this.onerror=null;this.src='/assets/img/img-2.jpg';"> --}}
@@ -111,8 +111,8 @@
                             </div>
                             <div class="form-group">
                                 <label for="site-longitude" class="col-form-label">Longitude:</label>
-                                <input type="number" step="any" class="form-control" id="site-longitude"
-                                    name="lng" value="{{ old('lng', $site->lng) }}">
+                                <input type="number" step="any" class="form-control" id="site-longitude" name="lng"
+                                    value="{{ old('lng', $site->lng) }}">
                                 @error('lng')
                                     <div class="invalid-feedback">
                                         {{ $message }}
@@ -128,6 +128,10 @@
                                         {{ $message }}
                                     </div>
                                 @enderror
+                            </div>
+                            <div class="input-group mb-3 overflow-scroll">
+                                <input id="pac-input" placeholder="Enter your address" type="text" />
+                                <div id="googleMap" style="width:100%;height:400px;"></div>
                             </div>
                             <div class="form-group">
                                 <label class="col-form-label" for="site-image">Image</label>
