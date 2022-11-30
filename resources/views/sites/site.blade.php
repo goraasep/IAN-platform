@@ -29,7 +29,7 @@
     <hr class="my-0">
     <div class="row my-4 d-flex justify-content-center">
         <div class="col-lg-4 d-flex justify-content-center"><img src="{{ asset('storage/images/' . $site->image) }}"
-                alt="" style="height:auto;width:auto;max-height:400px" alt=""
+                alt="" style="height:auto;width:auto;max-height:400px;max-width:400px" alt=""
                 onerror="this.onerror=null;this.src='/assets/img/img-2.jpg';"></div>
         <div class="col-lg-4">
             <div id="map" style="max-height:400px"></div>
@@ -76,38 +76,41 @@
     <hr class="my-0">
     {{-- @livewire('overview-site', ['site' => $site]) --}}
     <div class="row mt-4">
-        @foreach ($site->devices as $device)
-            @foreach ($device->parameters as $parameter)
-                @if ($parameter->show)
-                    <div class="col-xl-2 col-sm-3 mb-xl-0">
-                        <div class="card border shadow-xs mb-4">
-                            <div class="full-background bg-primary opacity-3 p-auto"></div>
-                            <div class="card-body text-start p-3 w-100">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div class="w-100">
-                                            <p class="text-primary font-weight-bold text-sm text-uppercase">
-                                                {{ $device->name }}
-                                            </p>
-                                            <h5 class="font-weight-semibold text-lg mb-0">{{ $parameter->name }}
-                                            </h5>
-                                            <p class="text-sm text-secondary mb-1">Actual value:</p>
-                                            <h4 class="mb-2 font-weight-bold">
-                                                <span id="live_{{ $parameter->slug }}"><i
-                                                        class="text-warning fa-solid fa-exclamation"></i> </span>
-                                            </h4>
-                                            <div class="d-flex align-items-center">
-                                                <span class="text-sm">Last Updated: <span
-                                                        id="updated_{{ $parameter->slug }}"></span></span>
+        @if (!$site->devices->count())
+            <h3 class="col-12 text-center opacity-5">No data available.</h3>
+        @else
+            @foreach ($site->devices as $device)
+                @foreach ($device->parameters as $parameter)
+                    @if ($parameter->show)
+                        <div class="col-xl-2 col-sm-3 mb-xl-0">
+                            <div class="card border shadow-xs mb-4">
+                                <div class="full-background bg-primary opacity-3 p-auto"></div>
+                                <div class="card-body text-start p-3 w-100">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="w-100">
+                                                <a class="text-primary font-weight-bold text-sm text-uppercase"
+                                                    href="{{ url('devices/' . $device->uuid) }}">{{ $device->name }}</a>
+                                                <h5 class="font-weight-semibold text-lg mb-0">{{ $parameter->name }}
+                                                </h5>
+                                                <p class="text-sm text-secondary mb-1">Actual value:</p>
+                                                <h4 class="mb-2 font-weight-bold">
+                                                    <span id="live_{{ $parameter->slug }}"><i
+                                                            class="text-warning fa-solid fa-exclamation"></i> </span>
+                                                </h4>
+                                                <div class="d-flex align-items-center">
+                                                    <span class="text-sm">Last Updated: <span
+                                                            id="updated_{{ $parameter->slug }}"></span></span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                @endif
+                    @endif
+                @endforeach
             @endforeach
-        @endforeach
+        @endif
     </div>
 @endsection

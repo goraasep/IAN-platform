@@ -77,12 +77,13 @@ class SitesController extends Controller
     public function show(Sites $site, Request $request)
     {
         //
-        // dd($site->with(['devices' => ['parameters']])->get()->first());
+        // dd($site->get()->first()->load(['devices' => ['parameters']]));
+        // dd($site->devices);
         $data = [
             'title' => 'Sites',
             'breadcrumb' => 'Site',
             'subtitle' => $site->name,
-            'site' => $site->with(['devices' => ['parameters']])->get()->first(),
+            'site' => $site,
             // 'Devices' => Sites::with(['devices' => ['parameters']])->get()
         ];
         return view('sites.site', $data);

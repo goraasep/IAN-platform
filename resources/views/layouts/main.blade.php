@@ -406,11 +406,16 @@
                     center: myLatLng,
                 });
 
-                new google.maps.Marker({
+                var marker = new google.maps.Marker({
                     position: myLatLng,
                     map,
+                    url: 'http://www.google.com/',
                     title: "Hello Gora!",
                 });
+                google.maps.event.addListener(marker, 'click', function() {
+                    window.location.href = marker.url;
+                });
+
             }
 
             window.initMap = initMap;
