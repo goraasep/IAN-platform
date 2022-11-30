@@ -55,7 +55,7 @@
     <script src="/assets/js/jquery-3.5.1.js"></script>
     <script src="/assets/js/core/popper.min.js"></script>
     <script src="/assets/js/core/bootstrap.min.js"></script>
-    {{-- <script src="/assets/js/plugins/perfect-scrollbar.min.js"></script> --}}
+    <script src="/assets/js/plugins/perfect-scrollbar.min.js"></script>
     <script src="/assets/js/plugins/smooth-scrollbar.min.js"></script>
     <script src="/assets/js/plugins/chartjs.min.js"></script>
     <script src="/assets/js/plugins/swiper-bundle.min.js" type="text/javascript"></script>
@@ -192,6 +192,7 @@
                     center: myLatlng,
                     streetViewControl: false,
                     mapTypeId: google.maps.MapTypeId.ROADMAP,
+                    gestureHandling: "greedy",
                     // gestureHandling: "cooperative",
                     // zoomControl: false,
                 });
