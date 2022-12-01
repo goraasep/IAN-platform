@@ -7,25 +7,6 @@
                     <h3 class="font-weight-bold mb-0">Hello, Admin</h3>
                     <p class="mb-0">These are your sites location!</p>
                 </div>
-                <button type="button"
-                    class="btn btn-sm btn-white btn-icon d-flex align-items-center mb-0 ms-md-auto mb-sm-0 mb-2 me-2">
-                    <span class="btn-inner--icon">
-                        <span class="p-1 bg-success rounded-circle d-flex ms-auto me-2">
-                            <span class="visually-hidden">New</span>
-                        </span>
-                    </span>
-                    <span class="btn-inner--text">Messages</span>
-                </button>
-                <button type="button" class="btn btn-sm btn-dark btn-icon d-flex align-items-center mb-0">
-                    <span class="btn-inner--icon">
-                        <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="d-block me-2">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-                        </svg>
-                    </span>
-                    <span class="btn-inner--text">Sync</span>
-                </button>
             </div>
         </div>
     </div>
@@ -52,7 +33,7 @@
                                 <div class="col-12">
                                     <div class="w-100">
                                         <p class="text-sm text-secondary mb-1">Sites</p>
-                                        <h4 class="mb-2 font-weight-bold">7</h4>
+                                        <h4 class="mb-2 font-weight-bold">{{ $sites_count }}</h4>
                                     </div>
                                 </div>
                             </div>
@@ -76,7 +57,7 @@
                                 <div class="col-12">
                                     <div class="w-100">
                                         <p class="text-sm text-secondary mb-1">Devices</p>
-                                        <h4 class="mb-2 font-weight-bold">24</h4>
+                                        <h4 class="mb-2 font-weight-bold">{{ $devices_count }}</h4>
                                     </div>
                                 </div>
                             </div>
@@ -100,7 +81,7 @@
                                 <div class="col-12">
                                     <div class="w-100">
                                         <p class="text-sm text-secondary mb-1">Parameter</p>
-                                        <h4 class="mb-2 font-weight-bold">329</h4>
+                                        <h4 class="mb-2 font-weight-bold">{{ $parameters_count }}</h4>
                                     </div>
                                 </div>
                             </div>
@@ -110,171 +91,32 @@
             </div>
             <div class="row">
                 <div class="col-lg-12 col-md-12">
-                    <div class="card shadow-xs border">
+                    <div class="card shadow-xs border" style="height: 400px">
                         <div class="card-header border-bottom pb-0">
                             <div class="d-sm-flex align-items-center mb-3">
                                 <div>
-                                    <h6 class="font-weight-semibold text-lg mb-0">Recent alerts</h6>
-                                    <p class="text-sm mb-sm-0 mb-2">These are details about the latest alerts
-                                    </p>
-                                </div>
-                                <div class="ms-auto d-flex">
-                                    <button type="button" class="btn btn-sm btn-white mb-0 me-2">
-                                        View report
-                                    </button>
-                                    <button type="button"
-                                        class="btn btn-sm btn-dark btn-icon d-flex align-items-center mb-0">
-                                        <span class="btn-inner--icon">
-                                            <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg"
-                                                fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                                stroke="currentColor" class="d-block me-2">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                            </svg>
-                                        </span>
-                                        <span class="btn-inner--text">Download</span>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="pb-3 d-sm-flex align-items-center">
-                                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                                    <input type="radio" class="btn-check" name="btnradiotable" id="btnradiotable1"
-                                        autocomplete="off" checked>
-                                    <label class="btn btn-white px-3 mb-0" for="btnradiotable1">All</label>
-                                    <input type="radio" class="btn-check" name="btnradiotable" id="btnradiotable2"
-                                        autocomplete="off">
-                                    <label class="btn btn-white px-3 mb-0" for="btnradiotable2">Monitored</label>
-                                    <input type="radio" class="btn-check" name="btnradiotable" id="btnradiotable3"
-                                        autocomplete="off">
-                                    <label class="btn btn-white px-3 mb-0" for="btnradiotable3">Unmonitored</label>
-                                </div>
-                                <div class="input-group w-sm-25 ms-auto">
-                                    <span class="input-group-text text-body">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px"
-                                            fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z">
-                                            </path>
-                                        </svg>
-                                    </span>
-                                    <input type="text" class="form-control" placeholder="Search">
+                                    <h6 class="font-weight-semibold text-lg mb-0">Active alerts</h6>
+                                    <p class="text-sm mb-sm-0 mb-2">These are details about ongoing alerts</p>
                                 </div>
                             </div>
                         </div>
-                        <div class="card-body px-0 py-0">
-                            <div class="table-responsive p-0">
+                        <div class="card-body px-0 py-0 overflow-auto">
+                            <div class="table-responsive p-0  ">
                                 <table class="table align-items-center justify-content-center mb-0">
                                     <thead class="bg-gray-100">
                                         <tr>
-                                            <th class="text-secondary text-xs font-weight-semibold opacity-7">
-                                                Alert</th>
-                                            <th class="text-secondary text-xs font-weight-semibold opacity-7 ps-2">
-                                                Severity</th>
-                                            <th class="text-secondary text-xs font-weight-semibold opacity-7 ps-2">
-                                                Date
+                                            <th class="text-secondary text-xs font-weight-semibold opacity-7 text-center">
+                                                Parameter
                                             </th>
-                                            <th class="text-secondary text-xs font-weight-semibold opacity-7 ps-2">
-                                                Site</th>
+                                            <th class="text-secondary text-xs font-weight-semibold opacity-7 text-center">
+                                                Alert
+                                            </th>
+                                            <th class="text-secondary text-xs font-weight-semibold opacity-7 text-center">
+                                                Site
+                                            </th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2">
-                                                    <div class="my-auto">
-                                                        <h6 class="mb-0 text-sm">KWH 1</h6>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <p class="text-sm font-weight-normal mb-0">High</p>
-                                            </td>
-                                            <td>
-                                                <span class="text-sm font-weight-normal">Wed 3:00pm</span>
-                                            </td>
-                                            <td class="align-middle">
-                                                <div class="d-flex">
-                                                    <div class="ms-2">
-                                                        <p class="text-dark text-sm mb-0">Site JKT-55</p>
-                                                        <p class="text-secondary text-sm mb-0">Device KWH Meter
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2">
-                                                    <div class="my-auto">
-                                                        <h6 class="mb-0 text-sm">KWH 1</h6>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <p class="text-sm font-weight-normal mb-0">High</p>
-                                            </td>
-                                            <td>
-                                                <span class="text-sm font-weight-normal">Wed 3:00pm</span>
-                                            </td>
-                                            <td class="align-middle">
-                                                <div class="d-flex">
-                                                    <div class="ms-2">
-                                                        <p class="text-dark text-sm mb-0">Site JKT-55</p>
-                                                        <p class="text-secondary text-sm mb-0">Device KWH Meter
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2">
-                                                    <div class="my-auto">
-                                                        <h6 class="mb-0 text-sm">KWH 1</h6>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <p class="text-sm font-weight-normal mb-0">High</p>
-                                            </td>
-                                            <td>
-                                                <span class="text-sm font-weight-normal">Wed 3:00pm</span>
-                                            </td>
-                                            <td class="align-middle">
-                                                <div class="d-flex">
-                                                    <div class="ms-2">
-                                                        <p class="text-dark text-sm mb-0">Site JKT-55</p>
-                                                        <p class="text-secondary text-sm mb-0">Device KWH Meter
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2">
-                                                    <div class="my-auto">
-                                                        <h6 class="mb-0 text-sm">KWH 1</h6>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <p class="text-sm font-weight-normal mb-0">High</p>
-                                            </td>
-                                            <td>
-                                                <span class="text-sm font-weight-normal">Wed 3:00pm</span>
-                                            </td>
-                                            <td class="align-middle">
-                                                <div class="d-flex">
-                                                    <div class="ms-2">
-                                                        <p class="text-dark text-sm mb-0">Site JKT-55</p>
-                                                        <p class="text-secondary text-sm mb-0">Device KWH Meter
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
+                                    @livewire('alert-list', ['dashboard' => true])
                                 </table>
                             </div>
                         </div>

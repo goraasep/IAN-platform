@@ -399,22 +399,59 @@
             function initMap() {
                 const myLatLng = {
                     lat: -6.2734719,
-                    lng: 120.7512559
+                    lng: 110.7512559
                 };
                 const map = new google.maps.Map(document.getElementById("map"), {
                     zoom: 5,
                     center: myLatLng,
                 });
 
-                var marker = new google.maps.Marker({
-                    position: myLatLng,
-                    map,
-                    url: 'http://www.google.com/',
-                    title: "Hello Gora!",
+                //ajax needed
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ url('sitemap') }}',
+                    async: true,
+                    dataType: 'json',
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                    },
+                    success: function(data) {
+                        // console.log(data);
+                        for (i = 0; i < data.length; i++) {
+                            marker = new google.maps.Marker({
+                                position: data[i].location,
+                                map,
+                                url: data[i].url
+                            });
+                            var hoverListener = google.maps.event.addListener(marker, 'mouseover', (
+                                function(marker, i) {
+                                    return function() {
+                                        var infowindow = new google.maps.InfoWindow({
+                                            content: data[i].contentData
+                                        });
+                                        infowindow.open(map, marker);
+                                        google.maps.event.addListener(marker, 'mouseout', (function(
+                                            marker, i) {
+                                            return function() {
+                                                infowindow.close();
+                                            }
+                                        })(marker, i))
+                                    }
+                                }
+                            )(marker, i));
+                            google.maps.event.addListener(marker, 'click', (
+                                function(marker, i) {
+                                    return function() {
+                                        window.location.href = marker.url;
+                                    }
+                                }
+                            )(marker, i));
+                        }
+                    }
                 });
-                google.maps.event.addListener(marker, 'click', function() {
-                    window.location.href = marker.url;
-                });
+
+                //
 
             }
 

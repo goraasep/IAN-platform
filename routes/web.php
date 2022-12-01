@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DatatablesController;
 use App\Http\Controllers\TestController;
 use App\Models\Devices;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,13 +22,8 @@ use App\Models\Devices;
 */
 
 
-Route::get('/', function () {
-    return view('dashboard.index', [
-        'title' => 'Home',
-        'breadcrumb' => 'Dashboard',
-        'subtitle' => 'test'
-    ]);
-})->middleware('auth');
+Route::resource('/', DashboardController::class)->middleware('auth');
+Route::post('/sitemap', [DashboardController::class, 'siteMap'])->middleware('auth');
 // Route::get('/devices/device/{devices:uuid}', [DevicesController::class, 'showDevice'])->middleware('auth');
 // Route::get('/devices/{devices:uuid}/', [DevicesController::class, 'showDevice'])->middleware('auth');
 Route::post('/alldevices', [DatatablesController::class, 'allDevices'])->middleware('auth');
