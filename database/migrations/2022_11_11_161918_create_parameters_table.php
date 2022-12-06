@@ -30,6 +30,10 @@ return new class extends Migration
             $table->double('max')->default(0);
             $table->double('min')->default(0);
             $table->integer('show')->default(0);
+            $table->string('base_parameter')->nullable();
+            $table->string('operator')->nullable();
+            $table->double('condition_value')->default(0);
+            $table->string('condition_rule')->nullable();
             $table->timestamps();
         });
     }

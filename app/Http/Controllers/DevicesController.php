@@ -112,6 +112,7 @@ class DevicesController extends Controller
         $parameters = Parameters::where('device_id', $device->id)->get();
         $parameters_number = $parameters->where('type', 'number');
         $parameters_string = $parameters->where('type', 'string');
+        $parameters_special = $parameters->where('type', 'special');
         // $range = 1;
         $range = (int)$request->input('range') ?: 1;
         $from = (int)$request->input('from') ?: 0;
@@ -125,6 +126,7 @@ class DevicesController extends Controller
             'parameters' => $parameters,
             'parameters_number' => $parameters_number,
             'parameters_string' => $parameters_string,
+            'parameters_special' => $parameters_special,
             'range' => $range,
             'from' => $from,
             'to' => $to

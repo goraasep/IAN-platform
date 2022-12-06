@@ -23,85 +23,178 @@
                 @csrf
                 <input type="text" class="form-control" id="device-uuid" name="uuid" value="{{ $device_uuid }}"
                     hidden required>
+                <input type="text" class="form-control" id="parameter-type" name="type"
+                    value="{{ $parameter->type }}" hidden required>
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Edit {{ $parameter->name }}
                     </h5>
                     <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
                     </button>
                 </div>
-                <div class="modal-body text-start mx-3">
-                    <div class="form-group">
-                        <label for="parameter-unit" class="col-form-label">Unit:</label>
-                        <input type="text" class="form-control" id="parameter-unit" name="unit"
-                            value="{{ old('unit', $parameter->unit) }}">
+                @if ($parameter->type == 'number')
+                    <div class="modal-body text-start mx-3">
+                        <div class="form-group">
+                            <label for="parameter-unit" class="col-form-label">Unit:</label>
+                            <input type="text" class="form-control" id="parameter-unit" name="unit"
+                                value="{{ old('unit', $parameter->unit) }}">
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="parameter-th-H" class="col-form-label">Threshold
+                                        High:</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <input type="number" step="any" class="form-control" id="parameter-th-H"
+                                        name="th_H" value="{{ old('th_H', $parameter->th_H) }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <select class="form-select" name="th_H_enable">
+                                        <option value="0" @if (old('th_H_enable', $parameter->th_H_enable) == 0) selected @endif>Disable
+                                        </option>
+                                        <option value="1" @if (old('th_H_enable', $parameter->th_H_enable) == 1) selected @endif>Enable
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="parameter-th-L" class="col-form-label">Threshold
+                                        Low:</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <input type="number" step="any" class="form-control" id="parameter-th-L"
+                                        name="th_L" value="{{ old('th_L', $parameter->th_L) }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <select class="form-select" name="th_L_enable">
+                                        <option value="0" @if (old('th_L_enable', $parameter->th_L_enable) == 0) selected @endif>Disable
+                                        </option>
+                                        <option value="1" @if (old('th_L_enable', $parameter->th_L_enable) == 1) selected @endif>Enable
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="parameter-max" class="col-form-label">Maximum Value:</label>
+                            <input type="text" class="form-control" id="parameter-max" name="max"
+                                value="{{ old('max', $parameter->max) }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="parameter-min" class="col-form-label">Minimum Value:</label>
+                            <input type="text" class="form-control" id="parameter-min" name="min"
+                                value="{{ old('min', $parameter->min) }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="parameter-show" class="col-form-label">Show on site
+                                overview ?</label>
+                            <select class="form-select" id="parameter-show" name="show">
+                                <option value="0" {{ old('show', $parameter->show) == 0 ? 'selected' : '' }}>No
+                                </option>
+                                <option value="1" {{ old('show', $parameter->show) == 1 ? 'selected' : '' }}>Yes
+                                </option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label for="parameter-th-H" class="col-form-label">Threshold
-                                    High:</label>
+                @elseif ($parameter->type == 'special')
+                    <div class="modal-body text-start mx-3">
+                        <div class="form-group">
+                            <label for="base-parameter" class="col-form-label">Base
+                                parameter</label>
+                            <select class="form-select" id="base-parameter" name="base_parameter">
+                                @foreach ($parameters as $p)
+                                    @if ($p->type == 'number')
+                                        <option value="{{ $p->slug }}"
+                                            {{ $p->slug == $parameter->base_parameter ? 'selected' : '' }}>
+                                            {{ $p->name }}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="col-form-label">Condition</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <select class="form-select" name="operator">
+                                        <option value="==" {{ $parameter->operator == '==' ? 'selected' : '' }}>==
+                                        </option>
+                                        <option value="!=" {{ $parameter->operator == '!=' ? 'selected' : '' }}>!=
+                                        </option>
+                                        <option value=">=" {{ $parameter->operator == '>=' ? 'selected' : '' }}>
+                                            &gt;=</option>
+                                        <option value="<=" {{ $parameter->operator == '<=' ? 'selected' : '' }}>
+                                            &lt;=</option>
+                                        <option value=">" {{ $parameter->operator == '>' ? 'selected' : '' }}>
+                                            &gt;
+                                        </option>
+                                        <option value="<" {{ $parameter->operator == '>' ? 'selected' : '' }}>
+                                            &lt;
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <input type="number" step="any" class="form-control" name="condition_value"
+                                        value="{{ old('condition_value', $parameter->condition_value) }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <select class="form-select" name="condition_rule">
+                                        <option value="last"
+                                            {{ $parameter->condition_rule == 'last' ? 'selected' : '' }}>Last</option>
+                                        <option value="first"
+                                            {{ $parameter->condition_rule == 'first' ? 'selected' : '' }}>First
+                                        </option>
+                                        <option value="count"
+                                            {{ $parameter->condition_rule == 'count' ? 'selected' : '' }}>Count
+                                        </option>
+                                        <option value="count_group"
+                                            {{ $parameter->condition_rule == 'count_group' ? 'selected' : '' }}>Count
+                                            Group</option>
+                                        <option value="max"
+                                            {{ $parameter->condition_rule == 'max' ? 'selected' : '' }}>Max</option>
+                                        <option value="min"
+                                            {{ $parameter->condition_rule == 'min' ? 'selected' : '' }}>Min</option>
+                                        <option value="average"
+                                            {{ $parameter->condition_rule == 'average' ? 'selected' : '' }}>Average
+                                        </option>
+                                        <option value="sum"
+                                            {{ $parameter->condition_rule == 'sum' ? 'selected' : '' }}>Sum</option>
+                                        <option value="difference"
+                                            {{ $parameter->condition_rule == 'difference' ? 'selected' : '' }}>
+                                            Difference (Last - First)
+                                        </option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <input type="number" step="any" class="form-control" id="parameter-th-H"
-                                    name="th_H" value="{{ old('th_H', $parameter->th_H) }}" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <select class="form-select" name="th_H_enable">
-                                    <option value="0" @if (old('th_H_enable', $parameter->th_H_enable) == 0) selected @endif>Disable
-                                    </option>
-                                    <option value="1" @if (old('th_H_enable', $parameter->th_H_enable) == 1) selected @endif>Enable
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label for="parameter-th-L" class="col-form-label">Threshold
-                                    Low:</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <input type="number" step="any" class="form-control" id="parameter-th-L"
-                                    name="th_L" value="{{ old('th_L', $parameter->th_L) }}" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <select class="form-select" name="th_L_enable">
-                                    <option value="0" @if (old('th_L_enable', $parameter->th_L_enable) == 0) selected @endif>Disable
-                                    </option>
-                                    <option value="1" @if (old('th_L_enable', $parameter->th_L_enable) == 1) selected @endif>Enable
-                                    </option>
-                                </select>
-                            </div>
+                        <div class="form-group">
+                            <label for="parameter-show" class="col-form-label">Show on site
+                                overview ?</label>
+                            <select class="form-select" id="parameter-show" name="show">
+                                <option value="0" {{ old('show', $parameter->show) == 0 ? 'selected' : '' }}>No
+                                </option>
+                                <option value="1" {{ old('show', $parameter->show) == 1 ? 'selected' : '' }}>Yes
+                                </option>
+                            </select>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="parameter-max" class="col-form-label">Maximum Value:</label>
-                        <input type="text" class="form-control" id="parameter-max" name="max"
-                            value="{{ old('max', $parameter->max) }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="parameter-min" class="col-form-label">Minimum Value:</label>
-                        <input type="text" class="form-control" id="parameter-min" name="min"
-                            value="{{ old('min', $parameter->min) }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="parameter-show" class="col-form-label">Show on site
-                            overview ?</label>
-                        <select class="form-select" id="parameter-show" name="show">
-                            <option value="0" {{ old('show', $parameter->show) == 0 ? 'selected' : '' }}>No
-                            </option>
-                            <option value="1" {{ old('show', $parameter->show) == 1 ? 'selected' : '' }}>Yes
-                            </option>
-                        </select>
-                    </div>
-                </div>
+                @endif
                 <div class="modal-footer">
                     <button type="button" class="btn btn-white" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-dark">Save</button>

@@ -110,7 +110,7 @@
                                                     aria-label="Close">
                                                 </button>
                                             </div>
-                                            <div class="modal-body mx-3">
+                                            <div class="modal-body mx-3" id="add-form-body">
                                                 <div class="form-group">
                                                     <label for="parameter-name" class="col-form-label">Parameter
                                                         Name:</label>
@@ -118,16 +118,17 @@
                                                         name="name" value="{{ old('name') }}" required>
                                                 </div>
                                                 <div class="form-group">
+                                                    <label for="parameter-type" class="col-form-label">Type:</label>
+                                                    <select class="form-select" id="parameter-type" name="type">
+                                                        <option value="string">String</option>
+                                                        <option value="number">Number</option>
+                                                        <option value="special">Special</option>
+                                                    </select>
+                                                </div>
+                                                {{-- <div class="form-group">
                                                     <label for="parameter-unit" class="col-form-label">Unit:</label>
                                                     <input type="text" class="form-control" id="parameter-unit"
                                                         name="unit" value="{{ old('unit') }}">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="parameter-type" class="col-form-label">Type:</label>
-                                                    <select class="form-select" id="parameter-type" name="type">
-                                                        <option value="number">Number</option>
-                                                        <option value="string">String</option>
-                                                    </select>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-12">
@@ -188,7 +189,8 @@
                                                     <input type="number" step="any" class="form-control"
                                                         id="parameter-min" name="min" value="{{ old('min', 0) }}"
                                                         required>
-                                                </div>
+                                                </div> --}}
+                                                <div id="dynamic-form"></div>
                                                 <div class="form-group">
                                                     <label for="parameter-show" class="col-form-label">Show on site
                                                         overview ?</label>
@@ -197,6 +199,57 @@
                                                         <option value="1">Yes</option>
                                                     </select>
                                                 </div>
+                                                {{-- special case --}}
+                                                {{-- <div class="form-group">
+                                                    <label for="parameter-show" class="col-form-label">Base
+                                                        parameter</label>
+                                                    <select class="form-select" id="parameter-show">
+                                                        <option value="0">Voltage R</option>
+                                                        <option value="1">Voltage S</option>
+                                                    </select>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="form-group">
+                                                            <label for="parameter-th-L"
+                                                                class="col-form-label">Condition</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <select class="form-select" name="operator">
+                                                                <option value="==">==</option>
+                                                                <option value="!=">!=</option>
+                                                                <option value=">=">&gt;=</option>
+                                                                <option value="<=">&lt;=</option>
+                                                                <option value=">">&gt;</option>
+                                                                <option value="<">&lt;</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <input type="number" step="any" class="form-control"
+                                                                id="parameter-th-L" name="th_L" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <select class="form-select" id="parameter-show">
+                                                                <option value="last">Last</option>
+                                                                <option value="first">First</option>
+                                                                <option value="count">Count</option>
+                                                                <option value="count_group">Count Group</option>
+                                                                <option value="max">Max</option>
+                                                                <option value="min">Min</option>
+                                                                <option value="average">Average</option>
+                                                                <option value="sum">Sum</option>
+                                                                <option value="difference">Difference (Last - First)
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div> --}}
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-white"
@@ -277,51 +330,94 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-12">
-            <div class="d-md-flex align-items-center mb-3 mx-2">
-                <div class="mb-md-0 mb-3">
-                    <p class="mb-0">String type parameter</p>
+        <div class="col-lg-6">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="d-md-flex align-items-center mb-3 mx-2">
+                        <div class="mb-md-0 mb-3">
+                            <p class="mb-0">String type parameter</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <hr class="my-0">
-    {{-- @livewire('string-parameter', [
-        'device_id' => $device->id,
-    ]) --}}
-    <div class="row mt-4">
-        @if (!$parameters_string->count())
-            <h3 class="col-12 text-center opacity-5">No data available.</h3>
-        @else
-            @foreach ($parameters_string as $parameter)
-                <div class="col-xl-2 col-sm-3 mb-xl-0">
-                    <div class="card border shadow-xs mb-4">
-                        <div class="card-body text-start p-3 w-100">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="w-100">
-                                        <h6 class="font-weight-semibold text-lg mb-0">{{ $parameter->name }}</h6>
-                                        <p class="text-sm text-secondary mb-1">Actual value:</p>
-                                        <h4 class="mb-2 font-weight-bold">
-                                            <span id="live_{{ $parameter->slug }}"></span>
-                                        </h4>
-                                        <div class="d-flex align-items-center">
-                                            {{-- <span class="text-sm text-success font-weight-bolder">55%
-                                            </span> --}}
-                                            <span class="text-sm">Previous value: <span
-                                                    id="previous_{{ $parameter->slug }}"></span></span>
-                                        </div>
+            <hr class="my-0">
+            <div class="row mt-4">
+                @if (!$parameters_string->count())
+                    <h3 class="col-12 text-center opacity-5">No data available.</h3>
+                @else
+                    @foreach ($parameters_string as $parameter)
+                        <div class="col-xl-4 col-sm-6 mb-xl-0">
+                            <div class="card border shadow-xs mb-4">
+                                <div class="card-body text-start p-3 w-100">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="w-100">
+                                                <h6 class="font-weight-semibold text-lg mb-0">{{ $parameter->name }}</h6>
+                                                <p class="text-sm text-secondary mb-1">Actual value:</p>
+                                                <h4 class="mb-2 font-weight-bold">
+                                                    <span id="live_{{ $parameter->slug }}"></span>
+                                                </h4>
+                                                <div class="d-flex align-items-center">
+                                                    {{-- <span class="text-sm text-success font-weight-bolder">55%
+                                                    </span> --}}
+                                                    <span class="text-sm">Previous value: <span
+                                                            id="previous_{{ $parameter->slug }}"></span></span>
+                                                </div>
 
-                                        {{-- {{ $parameters_log ? $parameters_log->{$parameter->slug} : 'NULL' }}</h4> --}}
+                                                {{-- {{ $parameters_log ? $parameters_log->{$parameter->slug} : 'NULL' }}</h4> --}}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    @endforeach
+                @endif
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="d-md-flex align-items-center mb-3 mx-2">
+                        <div class="mb-md-0 mb-3">
+                            <p class="mb-0">Special parameter</p>
+                        </div>
                     </div>
                 </div>
-            @endforeach
-        @endif
+            </div>
+            <hr class="my-0">
+            <div class="row mt-4">
+                @if (!$parameters_special->count())
+                    <h3 class="col-12 text-center opacity-5">No data available.</h3>
+                @else
+                    @foreach ($parameters_special as $parameter)
+                        <div class="col-xl-4 col-sm-6 mb-xl-0">
+                            <div class="card border shadow-xs mb-4">
+                                <div class="card-body text-start p-3 w-100">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="w-100">
+                                                <h6 class="font-weight-semibold text-lg mb-0">{{ $parameter->name }}</h6>
+                                                <p class="text-sm text-secondary mb-1">Actual value:</p>
+                                                <h4 class="mb-2 font-weight-bold">
+                                                    <span id="live_{{ $parameter->slug }}"></span>
+                                                </h4>
+                                                <div class="d-flex align-items-center">
+                                                    <span class="text-sm">Previous value: <span
+                                                            id="previous_{{ $parameter->slug }}"></span></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
+            </div>
+        </div>
     </div>
+
     <div class="row">
         <div class="col-md-12">
             <div class="d-md-flex align-items-center mb-3 mx-2">
@@ -413,7 +509,9 @@
                             <tr>
                                 <th>Created At</th>
                                 @foreach ($parameters as $parameter)
-                                    <th>{{ $parameter->name }}</th>
+                                    @if ($parameter->type != 'special')
+                                        <th>{{ $parameter->name }}</th>
+                                    @endif
                                 @endforeach
                             </tr>
                         </thead>

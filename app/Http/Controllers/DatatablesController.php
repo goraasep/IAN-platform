@@ -147,7 +147,7 @@ class DatatablesController extends Controller
                 $nestedData[] = $row->unit;
                 $nestedData[] = $alert;
                 $nestedData[] = $row->type;
-                $nestedData[] = view('modal.edit-parameter', ['parameter' => $row, 'device_uuid' => $request->device_uuid])->render();
+                $nestedData[] = view('modal.edit-parameter', ['parameters' => Parameters::all(), 'parameter' => $row, 'device_uuid' => $request->device_uuid])->render();
                 $data[] = $nestedData;
             }
         }

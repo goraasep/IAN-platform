@@ -366,6 +366,142 @@
                 setInterval(getLiveData, 5000);
             });
         </script>
+        <script>
+            $(document).ready(function() {
+                $('#parameter-type').change(function() {
+                    let selectedType = $(this).children("option:selected").val();
+                    if (selectedType == 'special') {
+                        $('#dynamic-form').empty();
+                        let inner = `<div class="form-group">
+                                                    <label for="base-parameter" class="col-form-label">Base
+                                                        parameter</label>
+                                                    <select class="form-select" id="base-parameter" name="base_parameter">
+                                                        @foreach( $parameters as $parameter)
+                                                        @if($parameter->type=='number')
+                                                        <option value="{{ $parameter->slug }}">{{ $parameter->name }}</option>
+                                                        @endif
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="form-group">
+                                                            <label class="col-form-label">Condition</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <select class="form-select" name="operator">
+                                                                <option value="==">==</option>
+                                                                <option value="!=">!=</option>
+                                                                <option value=">=">&gt;=</option>
+                                                                <option value="<=">&lt;=</option>
+                                                                <option value=">">&gt;</option>
+                                                                <option value="<">&lt;</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <input type="number" step="any" class="form-control" name="condition_value" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <select class="form-select" name="condition_rule">
+                                                                <option value="last">Last</option>
+                                                                <option value="first">First</option>
+                                                                <option value="count">Count</option>
+                                                                <option value="count_group">Count Group</option>
+                                                                <option value="max">Max</option>
+                                                                <option value="min">Min</option>
+                                                                <option value="average">Average</option>
+                                                                <option value="sum">Sum</option>
+                                                                <option value="difference">Difference (Last - First)
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>`;
+                        var div1 = document.getElementById("dynamic-form");
+                        div1.insertAdjacentHTML('beforeend', inner);
+                    } else if (selectedType == 'number') {
+                        $('#dynamic-form').empty();
+                        let inner = `
+                        <div class="form-group">
+                                                    <label for="parameter-unit" class="col-form-label">Unit:</label>
+                                                    <input type="text" class="form-control" id="parameter-unit"
+                                                        name="unit" value="{{ old('unit') }}">
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="form-group">
+                                                            <label for="parameter-th-H" class="col-form-label">Threshold
+                                                                High:</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <input type="number" step="any" class="form-control"
+                                                                id="parameter-th-H" name="th_H"
+                                                                value="{{ old('th_H', 0) }}" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <select class="form-select" name="th_H_enable">
+                                                                <option value="0">Disable</option>
+                                                                <option value="1">Enable</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="form-group">
+                                                            <label for="parameter-th-L" class="col-form-label">Threshold
+                                                                Low:</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <input type="number" step="any" class="form-control"
+                                                                id="parameter-th-L" name="th_L"
+                                                                value="{{ old('th_L', 0) }}" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <select class="form-select" name="th_L_enable">
+                                                                <option value="0">Disable</option>
+                                                                <option value="1">Enable</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="parameter-max" class="col-form-label">Maximum
+                                                        Value:</label>
+                                                    <input type="number" step="any" class="form-control"
+                                                        id="parameter-max" name="max" value="{{ old('max', 0) }}"
+                                                        required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="parameter-min" class="col-form-label">Minimum
+                                                        Value:</label>
+                                                    <input type="number" step="any" class="form-control"
+                                                        id="parameter-min" name="min" value="{{ old('min', 0) }}"
+                                                        required>
+                                                </div>
+                        `;
+                        var div1 = document.getElementById("dynamic-form");
+                        div1.insertAdjacentHTML('beforeend', inner);
+                    } else if (selectedType == 'string') {
+                        $('#dynamic-form').empty();
+                    }
+                });
+            });
+        </script>
     @endif
 
     <script>
@@ -377,23 +513,6 @@
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
         }
     </script>
-    {{-- <script>
-        $(document).ready(function() {
-            var span = document.getElementById('clock');
-
-            function time() {
-                var d = new Date();
-                var s = d.getSeconds();
-                var m = d.getMinutes();
-                var h = d.getHours();
-                span.textContent =
-                    ("0" + h).substr(-2) + ":" + ("0" + m).substr(-2) + ":" + ("0" + s).substr(-2);
-            }
-            setInterval(time, 1000);
-        });
-    </script> --}}
-
-
     @if (Request::is('/'))
         <script type="text/javascript">
             function initMap() {
