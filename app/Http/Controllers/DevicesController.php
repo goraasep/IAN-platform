@@ -7,14 +7,14 @@ use App\Models\Devices;
 use App\Models\Parameters;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\App;
-use LaracraftTech\LaravelDynamicModel\DynamicModel;
-use Illuminate\Support\Str;
+// use Illuminate\Support\Facades\DB;
+// use Illuminate\Support\Facades\App;
+// use LaracraftTech\LaravelDynamicModel\DynamicModel;
+// use Illuminate\Support\Str;
 use App\Charts\NumberParametersChart;
 use App\Models\Sites;
-use SebastianBergmann\Type\NullType;
-use Illuminate\Support\Carbon;
+// use SebastianBergmann\Type\NullType;
+// use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 
 class DevicesController extends Controller
@@ -421,23 +421,23 @@ class DevicesController extends Controller
 
         $charts_gauge = [];
         $charts_line = [];
-        $parameters_log_ranged = [];
+        // $parameters_log_ranged = [];
         // $table_ = 'device_' . $device_id . '_log';
         // dd($table_);
-        $parameters_log = App::make(DynamicModel::class, ['table_name' => 'device_' . $device_id . '_log']);
-        if ($from && $to) {
-            $from = date("Y-m-d H:i:s", $from / 1000);
-            $to = date("Y-m-d H:i:s", $to / 1000);
-            $parameters_log_ranged = $parameters_log->where([
-                ['created_at', '>=', $from], ['created_at', '<=', $to]
-            ])->latest()->get();
-        } else {
-            $parameters_log_ranged = $parameters_log->where('created_at', '>=', Carbon::now()->subDays($requested_range))->latest()->get();
-        }
+        // $parameters_log = App::make(DynamicModel::class, ['table_name' => 'device_' . $device_id . '_log']);
+        // if ($from && $to) {
+        //     $from = date("Y-m-d H:i:s", $from / 1000);
+        //     $to = date("Y-m-d H:i:s", $to / 1000);
+        //     $parameters_log_ranged = $parameters_log->where([
+        //         ['created_at', '>=', $from], ['created_at', '<=', $to]
+        //     ])->latest()->get();
+        // } else {
+        //     $parameters_log_ranged = $parameters_log->where('created_at', '>=', Carbon::now()->subDays($requested_range))->latest()->get();
+        // }
         foreach ($parameters as $parameter) {
-            $first_log = $parameters_log_ranged->first() ?: 0;
+            // $first_log = $parameters_log_ranged->first() ?: 0;
             $chart_gauge = new NumberParametersChart;
-            $chart_gauge->dataset('', 'gauge', [$first_log ? $first_log->{$parameter->slug} : NULL])
+            $chart_gauge->dataset('', 'gauge', [NULL])
                 ->options([
                     'detail' => [
                         'formatter' => '{value} ' . $parameter->unit,
@@ -463,9 +463,7 @@ class DevicesController extends Controller
                 ->options($gauge_options2);;
             array_push($charts_gauge, $chart_gauge);
             $chart_line = new NumberParametersChart;
-            $chart_line->dataset('', 'line', $first_log ? $parameters_log_ranged->map(function ($query) use ($parameter) {
-                return [$query->created_at, $query->{$parameter->slug}];
-            }) : [NULL, NULL])->options([
+            $chart_line->dataset('', 'line', [NULL, NULL])->options([
                 'smooth' => true,
                 // 'step' => 'start',
                 'areaStyle' => [

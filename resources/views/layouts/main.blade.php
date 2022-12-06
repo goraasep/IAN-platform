@@ -221,11 +221,11 @@
                             success: function(data) {
                                 @foreach ($device->parameters as $parameter)
                                     $('#live_{{ $parameter->slug }}').html(data.value[
-                                            '{{ $parameter->slug }}'] ? data.value[
+                                            '{{ $parameter->slug }}'] !== undefined ? data.value[
                                             '{{ $parameter->slug }}'] + ' ' +
                                         '{{ $parameter->unit }}' : "NULL");
                                     $('#updated_{{ $parameter->slug }}').html(data.value[
-                                        'created_at'] ? data.value[
+                                        'created_at'] !== undefined ? data.value[
                                         'created_at'] : "NULL");
                                 @endforeach
                             }

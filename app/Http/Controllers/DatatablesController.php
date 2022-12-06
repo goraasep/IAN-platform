@@ -7,8 +7,9 @@ use App\Models\Devices;
 use App\Models\Parameters;
 use App\Models\Sites;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\App;
-use LaracraftTech\LaravelDynamicModel\DynamicModel;
+// use Illuminate\Support\Facades\App;
+// use LaracraftTech\LaravelDynamicModel\DynamicModel;
+use Illuminate\Support\Facades\DB;
 
 class DatatablesController extends Controller
 {
@@ -166,7 +167,8 @@ class DatatablesController extends Controller
             1 => 'value',
             2 => 'created_at',
         );
-        $collection = App::make(DynamicModel::class, ['table_name' => 'device_' . $request->device_id . '_alert']);
+        // $collection = App::make(DynamicModel::class, ['table_name' => 'device_' . $request->device_id . '_alert']);
+        $collection = DB::table('device_' . $request->device_id . '_alert');
         $totalData = $collection->count();
 
         $totalFiltered = $totalData;
@@ -232,7 +234,8 @@ class DatatablesController extends Controller
         $columns = ['created_at'];
         if ($request->parameters)
             array_merge($columns, $request->parameters);
-        $collection = App::make(DynamicModel::class, ['table_name' => 'device_' . $request->device_id . '_log']);
+        // $collection = App::make(DynamicModel::class, ['table_name' => 'device_' . $request->device_id . '_log']);
+        $collection = DB::table('device_' . $request->device_id . '_log');
         $totalData = $collection->count();
 
         $totalFiltered = $totalData;

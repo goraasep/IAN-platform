@@ -7,10 +7,11 @@ use App\Models\Parameters;
 use App\Models\Devices;
 use Illuminate\Support\Facades\Schema;
 use \Cviebrock\EloquentSluggable\Services\SlugService;
-use Exception;
-use Illuminate\Support\Facades\App;
-use LaracraftTech\LaravelDynamicModel\DynamicModel;
+// use Exception;
+// use Illuminate\Support\Facades\App;
+// use LaracraftTech\LaravelDynamicModel\DynamicModel;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ParameterController extends Controller
 {
@@ -147,7 +148,8 @@ class ParameterController extends Controller
         $from = $request->input('from');
         $to = $request->input('to');
         $parameters_log_ranged = [];
-        $parameters_log = App::make(DynamicModel::class, ['table_name' => 'device_' . $request->device_id . '_log']);
+        // $parameters_log = App::make(DynamicModel::class, ['table_name' => 'device_' . $request->device_id . '_log']);
+        $parameters_log = DB::table('device_' . $request->device_id . '_log');
         if ($from && $to) {
             $from = date("Y-m-d H:i:s", $request->input('from') / 1000);
             $to = date("Y-m-d H:i:s", $request->input('to') / 1000);
@@ -164,7 +166,8 @@ class ParameterController extends Controller
     public function liveDataOverview(Request $request)
     {
         // $parameters_log_ranged = [];
-        $parameters_log = App::make(DynamicModel::class, ['table_name' => 'device_' . $request->device_id . '_log']);
+        // $parameters_log = App::make(DynamicModel::class, ['table_name' => 'device_' . $request->device_id . '_log']);
+        $parameters_log = DB::table('device_' . $request->device_id . '_log');
         $value = $parameters_log->latest()->first() ?: 0;
 
         return json_encode(['value' => $value]);
