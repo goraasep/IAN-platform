@@ -129,7 +129,8 @@ class DevicesController extends Controller
             'parameters_special' => $parameters_special,
             'range' => $range,
             'from' => $from,
-            'to' => $to
+            'to' => $to,
+            'request' => $request
             // 'charts' => $this->renderChart($device->id, $parameters_number)
             // 'alerts' => $alert_log->paginate(10)->withQueryString()
         ];

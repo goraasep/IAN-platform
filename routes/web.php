@@ -33,7 +33,9 @@ Route::post('/allalerts', [DatatablesController::class, 'allAlerts'])->middlewar
 Route::post('/historicallog', [DatatablesController::class, 'historicalLog'])->middleware('auth');
 Route::resource('/devices', DevicesController::class)->middleware('auth');
 Route::resource('/parameter', ParameterController::class)->middleware('auth');
+//livedata
 Route::post('livedata', [ParameterController::class, 'liveData'])->middleware('auth');
+Route::post('livedata_once', [ParameterController::class, 'liveDataOnce'])->middleware('auth');
 Route::post('livedata_overview', [ParameterController::class, 'liveDataOverview'])->middleware('auth');
 
 Route::resource('/sites', SitesController::class)->middleware('auth');

@@ -184,6 +184,27 @@ class ParameterController extends Controller
     }
 
     //custom function
+    public function liveDataOnce(Request $request)
+    {
+        $range = (int)$request->input('range') ?: 1;
+        $from = $request->input('from');
+        $to = $request->input('to');
+        $parameters_log_ranged = [];
+        // $parameters_log = App::make(DynamicModel::class, ['table_name' => 'device_' . $request->device_id . '_log']);
+        $parameters_log = DB::table('device_' . $request->device_id . '_log');
+        if ($from && $to) {
+            $from = date("Y-m-d H:i:s", $request->input('from') / 1000);
+            $to = date("Y-m-d H:i:s", $request->input('to') / 1000);
+            $parameters_log_ranged = $parameters_log->where([
+                ['created_at', '>=', $from], ['created_at', '<=', $to]
+            ])->get();
+        } else {
+            $parameters_log_ranged = $parameters_log->where('created_at', '>=', Carbon::now()->subDays($range))->get();
+        }
+        $value = $parameters_log_ranged->last() ?: 0;
+
+        return json_encode(['value' => $value, 'log' => $parameters_log_ranged]);
+    }
     public function liveData(Request $request)
     {
         $range = (int)$request->input('range') ?: 1;
@@ -197,13 +218,13 @@ class ParameterController extends Controller
             $to = date("Y-m-d H:i:s", $request->input('to') / 1000);
             $parameters_log_ranged = $parameters_log->where([
                 ['created_at', '>=', $from], ['created_at', '<=', $to]
-            ])->latest()->get();
+            ])->latest();
         } else {
-            $parameters_log_ranged = $parameters_log->where('created_at', '>=', Carbon::now()->subDays($range))->latest()->get();
+            $parameters_log_ranged = $parameters_log->where('created_at', '>=', Carbon::now()->subDays($range))->latest();
         }
         $value = $parameters_log_ranged->first() ?: 0;
 
-        return json_encode(['value' => $value, 'log' => $parameters_log_ranged]);
+        return json_encode(['value' => $value]);
     }
     public function liveDataSpecial(Request $request)
     {
@@ -231,18 +252,26 @@ class ParameterController extends Controller
             $buffer = $parameters_log_ranged->where($parameter->base_parameter, $parameter->operator, $parameter->condition_value);
             switch ($parameter->condition_rule) {
                 case "first":
-                    $buffer->orderBy('created_at', 'desc')->first()->{$parameter->base_parameter};
+                    $result[$parameter->slug] = $buffer->orderBy('created_at', 'desc')->first()->{$parameter->base_parameter};
                 case "last":
-                    $buffer->orderBy('created_at', 'asc')->first()->{$parameter->base_parameter};
+                    $result[$parameter->slug] = $buffer->orderBy('created_at', 'asc')->first()->{$parameter->base_parameter};
                 case "count":
-                    $buffer->count();
+                    $result[$parameter->slug] = $buffer->count();
                 case "count_group":
-                    $buffer->count();
+                    $result[$parameter->slug] = $buffer->count();
                     // $buffer->groupBy($parameter->base_parameter)->count();
                 case "max":
-                    $buffer->max($parameter->base_parameter);
+                    $result[$parameter->slug] = $buffer->max($parameter->base_parameter);
+                case "min":
+                    $result[$parameter->slug] = $buffer->min($parameter->base_parameter);
+                case "average":
+                    $result[$parameter->slug] = $buffer->average($parameter->base_parameter);
+                case "sum":
+                    $result[$parameter->slug] = $buffer->sum($parameter->base_parameter);
+                case "difference":
+                    $result[$parameter->slug] = $buffer->last()->{$parameter->base_parameter} - $buffer->first()->{$parameter->base_parameter};
             }
-            $result[$parameter->slug] = $buffer->first()->{$parameter->base_parameter};
+            // $result[$parameter->slug] = $buffer->first()->{$parameter->base_parameter};
 
             //if parameter->
         }

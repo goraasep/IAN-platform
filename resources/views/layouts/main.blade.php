@@ -243,28 +243,41 @@
     @if (Request::is('devices/*') && !Request::is('devices/*/*'))
         <script>
             $(function() {
-                var start = moment().startOf('hour');
-                var end = moment().startOf('hour').add(32, 'hour');
+                var url = new URL(("{{ $request->fullUrl() }}").replace('&amp;', '&'));
+                var start = url.searchParams.has('from') ? moment.unix(url.searchParams.get('from')) : moment()
+                    .startOf(
+                        'hour').subtract(1, "days");
+                var end = url.searchParams.has('to') ? moment.unix(url.searchParams.get('to')) : moment().startOf(
+                    'hour');
 
                 function cb_date(start, end) {
-                    $('#datetimerange span').html(start.format('YYYY-MM-DD HH:mm:ss') + ' To ' + end.format(
-                        'YYYY-MM-DD HH:mm:ss'));
+
                     // window.location.replace('google.com');
-                    window.location.replace("{{ url('devices') }}/{{ $device->uuid }}?from=" + start +
-                        "&to=" + end);
+                    var url2 = new URL((
+                            "{{ $request->fullUrlWithQuery(['range' => null, 'from' => null, 'to' => null]) }}"
+                        )
+                        .replace('&amp;', '&'));
+                    url2.searchParams.set('from', start.unix());
+                    url2.searchParams.set('to', end.unix());
+                    window.location.replace(url2);
+
+                    // fetch({{ url('/') }})
                 }
                 $('#datetimerange').daterangepicker({
                     timePicker: true,
-                    // startDate: start,
-                    // endDate: end,
+                    startDate: start,
+                    endDate: end,
                     // startDate: moment().startOf('hour'),
                     // endDate: moment().startOf('hour').add(32, 'hour'),
                     locale: {
                         separator: " to ",
                         format: 'YYYY-MM-DD HH:mm:ss'
                     }
+                    // cb_date(start, end);
                 }, cb_date);
-                // cb_date(start, end);
+                $('#datetimerange span').html(start.format('YYYY-MM-DD HH:mm:ss') + ' To ' + end.format(
+                    'YYYY-MM-DD HH:mm:ss'));
+
             });
             $(document).ready(function() {
                 $('#parameter_list').DataTable({
@@ -301,7 +314,7 @@
                         "data": {
                             _token: "{{ csrf_token() }}",
                             device_id: "{{ $device->id }}",
-                            parameters: {!! $parameters->map(function ($query) {
+                            parameters: {!! $parameters->where('type', '<>','special')->map(function ($query) {
                                 return $query->slug;
                             }) !!}
                         }
@@ -309,18 +322,21 @@
                 });
             });
             $(document).ready(function() {
-                let getLiveData = function() {
+                let created_at;
+                let datapoll;
+                let isLoaded = false;
+                let getLiveDataOnce = function() {
                     $.ajax({
                         type: 'POST',
-                        url: '{{ url('livedata') }}',
+                        url: '{{ url('livedata_once') }}',
                         async: true,
                         dataType: 'json',
                         data: {
                             _token: "{{ csrf_token() }}",
                             device_id: "{{ $device->id }}",
-                            range: "{{ $range }}",
-                            from: {{ $from }},
-                            to: {{ $to }}
+                            range: {{ request('range') ?: 'null' }},
+                            from: {{ request('from') ?: 'null' }},
+                            to: {{ request('to') ?: 'null' }},
                         },
                         success: function(data) {
                             @foreach ($parameters_number as $parameter)
@@ -359,10 +375,71 @@
                                         '{{ $parameter->slug }}'
                                     ] : "NULL") : "NULL");
                             @endforeach
+                            datapoll = data.log;
+                            isLoaded = true;
                         }
                     });
                 }
-                getLiveData();
+                let getLiveData = function() {
+                    if (isLoaded) {
+                        $.ajax({
+                            type: 'POST',
+                            url: '{{ url('livedata') }}',
+                            async: true,
+                            dataType: 'json',
+                            data: {
+                                _token: "{{ csrf_token() }}",
+                                device_id: "{{ $device->id }}",
+                                range: {{ request('range') ?: 'null' }},
+                                from: {{ request('from') ?: 'null' }},
+                                to: {{ request('to') ?: 'null' }},
+                            },
+                            success: function(data) {
+                                if (created_at != data.value['created_at']) {
+                                    datapoll.push(data.value);
+                                    @foreach ($parameters_number as $parameter)
+                                        window.{{ $charts['charts_gauge'][$loop->index]->id }}
+                                            .setOption({
+                                                series: [{
+                                                    data: [{
+                                                        value: data.value[
+                                                            '{{ $parameter->slug }}'
+                                                        ]
+                                                    }]
+                                                }]
+                                            });
+                                        window.{{ $charts['charts_line'][$loop->index]->id }}
+                                            .setOption({
+                                                series: [{
+                                                    data: datapoll.map(
+                                                        function(row) {
+                                                            return [row[
+                                                                'created_at'
+                                                            ], row[
+                                                                '{{ $parameter->slug }}'
+                                                            ]];
+                                                        })
+                                                }]
+                                            });
+                                    @endforeach
+                                    created_at = data.value['created_at'];
+                                }
+                                @foreach ($parameters_string as $parameter)
+                                    $('#live_{{ $parameter->slug }}').html(data.value[
+                                        '{{ $parameter->slug }}'] ? data.value[
+                                        '{{ $parameter->slug }}'] : "NULL");
+                                    $('#previous_{{ $parameter->slug }}').html(data.log[1] !== undefined ?
+                                        (data.log[1][
+                                            '{{ $parameter->slug }}'
+                                        ] ? data.log[1][
+                                            '{{ $parameter->slug }}'
+                                        ] : "NULL") : "NULL");
+                                @endforeach
+                            }
+                        });
+                    }
+                }
+                getLiveDataOnce();
                 setInterval(getLiveData, 5000);
             });
         </script>

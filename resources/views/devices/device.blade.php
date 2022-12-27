@@ -283,7 +283,45 @@
         </div>
     </div>
     <div class="row">
-        <div class="dropend col">
+        <div class="dropdown me-3 mb-2">
+            <button class="btn btn-outline-primary mb-0 dropdown-toggle" type="button" id="dropdown-time"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                Time Range :
+                {{ request('from') && request('to') ? date('Y-m-d H:i:s', request('from')) . ' to ' . date('Y-m-d H:i:s', request('to')) : (request('range') ? 'Last ' . request('range') . ' Day(s)' : 'Last 1 Day') }}
+            </button>
+            <div class="dropdown-menu" style=" width: 500px !important;" aria-labelledby="dropdown-time">
+                <div class="row">
+                    <div class="col">
+                        <div class="mx-4 my-2">
+                            {{-- <label for="datetimerange" class="form-label">Range</label> --}}
+                            <div id="datetimerange"
+                                style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+                                <i class="fa fa-calendar"></i>&nbsp;
+                                <span></span> <i class="fa fa-caret-down"></i>
+                            </div>
+                        </div>
+                        <div class="mx-4 my-1">
+                            <a href="{{ $request->fullUrlWithQuery(['range' => 1, 'from' => null, 'to' => null]) }}"
+                                class="dropdown-item rounded  ">Last
+                                1 Day</a>
+                            <a href="{{ $request->fullUrlWithQuery(['range' => 7, 'from' => null, 'to' => null]) }}"
+                                class="dropdown-item rounded 'text-white bg-primary'">Last
+                                7
+                                Days</a>
+                            <a href="{{ $request->fullUrlWithQuery(['range' => 30, 'from' => null, 'to' => null]) }}"
+                                class="dropdown-item rounded">Last
+                                30
+                                Days</a>
+                            <a href="{{ $request->fullUrlWithQuery(['range' => 90, 'from' => null, 'to' => null]) }}"
+                                class="dropdown-item rounded ">Last
+                                90
+                                Days</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{-- <div class="dropend col">
             <button class="btn btn-sm btn-white btn-icon dropdown-toggle" data-bs-toggle="dropdown"
                 data-bs-auto-close="false" aria-expanded="false" id="rangeDropdown">
                 Range
@@ -327,7 +365,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
     <div class="row">
         <div class="col-lg-6">
