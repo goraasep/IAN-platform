@@ -37,6 +37,7 @@ Route::resource('/parameter', ParameterController::class)->middleware('auth');
 Route::post('livedata', [ParameterController::class, 'liveData'])->middleware('auth');
 Route::post('livedata_once', [ParameterController::class, 'liveDataOnce'])->middleware('auth');
 Route::post('livedata_overview', [ParameterController::class, 'liveDataOverview'])->middleware('auth');
+Route::post('livedata_special', [ParameterController::class, 'liveDataSpecial'])->middleware('auth');
 
 Route::resource('/sites', SitesController::class)->middleware('auth');
 Route::get('/login', [LoginController::class, 'index'])->name('login')->middleware('guest');

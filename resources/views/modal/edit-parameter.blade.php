@@ -129,9 +129,9 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <select class="form-select" name="operator">
-                                        <option value="==" {{ $parameter->operator == '==' ? 'selected' : '' }}>==
+                                        <option value="=" {{ $parameter->operator == '=' ? 'selected' : '' }}>==
                                         </option>
-                                        <option value="!=" {{ $parameter->operator == '!=' ? 'selected' : '' }}>!=
+                                        <option value="<>" {{ $parameter->operator == '<>' ? 'selected' : '' }}>!=
                                         </option>
                                         <option value=">=" {{ $parameter->operator == '>=' ? 'selected' : '' }}>
                                             &gt;=</option>
@@ -140,7 +140,7 @@
                                         <option value=">" {{ $parameter->operator == '>' ? 'selected' : '' }}>
                                             &gt;
                                         </option>
-                                        <option value="<" {{ $parameter->operator == '>' ? 'selected' : '' }}>
+                                        <option value="<" {{ $parameter->operator == '<' ? 'selected' : '' }}>
                                             &lt;
                                         </option>
                                     </select>
@@ -163,9 +163,6 @@
                                         <option value="count"
                                             {{ $parameter->condition_rule == 'count' ? 'selected' : '' }}>Count
                                         </option>
-                                        <option value="count_group"
-                                            {{ $parameter->condition_rule == 'count_group' ? 'selected' : '' }}>Count
-                                            Group</option>
                                         <option value="max"
                                             {{ $parameter->condition_rule == 'max' ? 'selected' : '' }}>Max</option>
                                         <option value="min"

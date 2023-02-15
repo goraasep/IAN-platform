@@ -93,7 +93,7 @@ class ParameterController extends Controller
                 }
             });
         }
-        return redirect('/devices/' . $request['uuid'])->with('success', 'New post has been added!');
+        return redirect()->back()->with('success', 'New post has been added!');
     }
 
     /**
@@ -161,9 +161,9 @@ class ParameterController extends Controller
         $validatedData = $request->validate($rules);
         $affected_row = Parameters::where('slug', $slug)->update($validatedData);
         if ($affected_row) {
-            return redirect('/devices/' . $request['uuid'])->with('success', 'Success!');
+            return redirect()->back()->with('success', 'Success!');
         }
-        return redirect('/devices/' . $request['uuid'])->with('failed', 'Failed!');
+        return redirect()->back()->with('failed', 'Failed!');
     }
 
     /**
@@ -180,7 +180,7 @@ class ParameterController extends Controller
         Schema::table('device_' . $device_id . '_log', function ($table) use ($slug) {
             $table->dropColumn($slug);
         });
-        return redirect('/devices/' . $request['uuid'])->with('success', 'Success!');
+        return redirect()->back()->with('success', 'Success!');
     }
 
     //custom function
@@ -203,7 +203,7 @@ class ParameterController extends Controller
         }
         $value = $parameters_log_ranged->last() ?: 0;
 
-        return json_encode(['value' => $value, 'log' => $parameters_log_ranged]);
+        return json_encode(['value' => $value, 'log' => $parameters_log_ranged, 'special' => $this->liveDataSpecial($request)]);
     }
     public function liveData(Request $request)
     {
@@ -226,7 +226,7 @@ class ParameterController extends Controller
 
         return json_encode(['value' => $value]);
     }
-    public function liveDataSpecial(Request $request)
+    public function liveDataSpecial($request)
     {
         $range = (int)$request->input('range') ?: 1;
         $from = $request->input('from');
@@ -239,47 +239,62 @@ class ParameterController extends Controller
             $to = date("Y-m-d H:i:s", $request->input('to') / 1000);
             $parameters_log_ranged = $parameters_log->where([
                 ['created_at', '>=', $from], ['created_at', '<=', $to]
-            ])->latest()->get();
+            ])->latest();
         } else {
-            $parameters_log_ranged = $parameters_log->where('created_at', '>=', Carbon::now()->subDays($range))->latest()->get();
+            $parameters_log_ranged = $parameters_log->where('created_at', '>=', Carbon::now()->subDays($range))->latest();
         }
 
         //need to process here
-        $special_parameter = Parameters::where('type', 'special');
+        $special_parameter = Parameters::where('type', 'special')->get();
         $result = [];
         foreach ($special_parameter as $parameter) {
             // $parameters_log_ranged->where($parameter->base_parameter,$parameter->operator,$parameter->condition_value)->first()->{$parameter->base_parameter}
             $buffer = $parameters_log_ranged->where($parameter->base_parameter, $parameter->operator, $parameter->condition_value);
+            // dd($buffer);
             switch ($parameter->condition_rule) {
                 case "first":
-                    $result[$parameter->slug] = $buffer->orderBy('created_at', 'desc')->first()->{$parameter->base_parameter};
+                    $result[$parameter->slug] = $buffer->get()->sortBy('created_at')->first()->{$parameter->base_parameter};
+
+                    // dd($result[$parameter->slug]);
+                    break;
                 case "last":
-                    $result[$parameter->slug] = $buffer->orderBy('created_at', 'asc')->first()->{$parameter->base_parameter};
+                    $result[$parameter->slug] = $buffer->get()->sortByDesc('created_at')->first()->{$parameter->base_parameter};
+                    break;
                 case "count":
-                    $result[$parameter->slug] = $buffer->count();
-                case "count_group":
-                    $result[$parameter->slug] = $buffer->count();
+                    $result[$parameter->slug] = $buffer->get()->count();
+                    break;
+                    // case "count_group":
+                    //     $result[$parameter->slug] = $buffer->get()->count();
                     // $buffer->groupBy($parameter->base_parameter)->count();
+                    // break;
                 case "max":
                     $result[$parameter->slug] = $buffer->max($parameter->base_parameter);
+                    break;
                 case "min":
                     $result[$parameter->slug] = $buffer->min($parameter->base_parameter);
+                    break;
                 case "average":
                     $result[$parameter->slug] = $buffer->average($parameter->base_parameter);
+                    break;
                 case "sum":
                     $result[$parameter->slug] = $buffer->sum($parameter->base_parameter);
+                    break;
                 case "difference":
-                    $result[$parameter->slug] = $buffer->last()->{$parameter->base_parameter} - $buffer->first()->{$parameter->base_parameter};
+                    $result[$parameter->slug] = $buffer->get()->sortByDesc('created_at')->first()->{$parameter->base_parameter} - $buffer->get()->sortBy('created_at')->first()->{$parameter->base_parameter};
+                    // dd($result[$parameter->slug]);
+                    break;
+                default:
+                    $result[$parameter->slug] = NULL;
             }
             // $result[$parameter->slug] = $buffer->first()->{$parameter->base_parameter};
 
             //if parameter->
         }
 
-
+        // dd($special_parameter);
         // $value = $parameters_log_ranged->first() ?: 0;
-
-        // return json_encode(['value' => $value, 'log' => $parameters_log_ranged]);
+        // dd($result);
+        return $result;
     }
     public function liveDataOverview(Request $request)
     {

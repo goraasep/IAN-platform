@@ -375,6 +375,11 @@
                                         '{{ $parameter->slug }}'
                                     ] : "NULL") : "NULL");
                             @endforeach
+                            @foreach ($parameters_special as $parameter)
+                                $('#live_{{ $parameter->slug }}').html(data.special[
+                                    '{{ $parameter->slug }}'] ? data.special[
+                                    '{{ $parameter->slug }}'] : "NULL");
+                            @endforeach
                             datapoll = data.log;
                             isLoaded = true;
                         }
@@ -469,8 +474,8 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <select class="form-select" name="operator">
-                                                                <option value="==">==</option>
-                                                                <option value="!=">!=</option>
+                                                                <option value="=">==</option>
+                                                                <option value="<>">!=</option>
                                                                 <option value=">=">&gt;=</option>
                                                                 <option value="<=">&lt;=</option>
                                                                 <option value=">">&gt;</option>
@@ -489,7 +494,6 @@
                                                                 <option value="last">Last</option>
                                                                 <option value="first">First</option>
                                                                 <option value="count">Count</option>
-                                                                <option value="count_group">Count Group</option>
                                                                 <option value="max">Max</option>
                                                                 <option value="min">Min</option>
                                                                 <option value="average">Average</option>
