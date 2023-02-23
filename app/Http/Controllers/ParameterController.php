@@ -245,7 +245,7 @@ class ParameterController extends Controller
         }
 
         //need to process here
-        $special_parameter = Parameters::where('type', 'special')->get();
+        $special_parameter = Parameters::where('type', 'special')->where('device_id', $request->device_id)->get();
         $result = [];
         foreach ($special_parameter as $parameter) {
             // $parameters_log_ranged->where($parameter->base_parameter,$parameter->operator,$parameter->condition_value)->first()->{$parameter->base_parameter}

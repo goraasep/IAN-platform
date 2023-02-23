@@ -44,6 +44,8 @@ Route::get('/login', [LoginController::class, 'index'])->name('login')->middlewa
 Route::post('/login', [LoginController::class, 'authenticate']);
 Route::post('/logout', [LoginController::class, 'logout']);
 Route::get('/test', [TestController::class, 'test']);
+Route::get('/account', [LoginController::class, 'showAccount'])->middleware('auth');
+Route::post('/update_password', [LoginController::class, 'updatePassword'])->middleware('auth');
 // Route::get('/test', function () {
 //     return view('test', [
 //         'title' => 'test',

@@ -33,6 +33,10 @@
             width: "100%";
             height: 600px;
         }
+
+        .pac-container {
+            z-index: 99999;
+        }
     </style>
     <link id="pagestyle" href="/assets/css/corporate-ui-dashboard.css?v=1.0.0" rel="stylesheet" />
     <link href="/assets/css/jquery.dataTables.min.css" rel="stylesheet" />
@@ -239,9 +243,17 @@
         <script type="text/javascript"
             src="https://maps.google.com/maps/api/js?key=AIzaSyAkvuKagRiFJGavzz2vXIhRJ4SWbd-A3-Y&libraries=places"></script>
     @endif
-
     @if (Request::is('devices/*') && !Request::is('devices/*/*'))
         <script>
+            function waitForElement(elementPath, callBack) {
+                window.setTimeout(function() {
+                    if ($(elementPath).length) {
+                        callBack(elementPath, $(elementPath));
+                    } else {
+                        waitForElement(elementPath, callBack);
+                    }
+                }, 500)
+            }
             $(function() {
                 var url = new URL(("{{ $request->fullUrl() }}").replace('&amp;', '&'));
                 var start = url.searchParams.has('from') ? moment.unix(url.searchParams.get('from')) : moment()
@@ -314,7 +326,7 @@
                         "data": {
                             _token: "{{ csrf_token() }}",
                             device_id: "{{ $device->id }}",
-                            parameters: {!! $parameters->where('type', '<>','special')->map(function ($query) {
+                            parameters: {!! $parameters->where('type', '<>', 'special')->map(function ($query) {
                                 return $query->slug;
                             }) !!}
                         }
@@ -355,6 +367,9 @@
                                         series: [{
                                             data: data.log.map(
                                                 function(row) {
+                                                    created_at = row[
+                                                        'created_at'
+                                                    ]
                                                     return [row[
                                                         'created_at'
                                                     ], row[
@@ -433,7 +448,8 @@
                                     $('#live_{{ $parameter->slug }}').html(data.value[
                                         '{{ $parameter->slug }}'] ? data.value[
                                         '{{ $parameter->slug }}'] : "NULL");
-                                    $('#previous_{{ $parameter->slug }}').html(data.log[1] !== undefined ?
+                                    $('#previous_{{ $parameter->slug }}').html(data.log[1] !==
+                                        undefined ?
                                         (data.log[1][
                                             '{{ $parameter->slug }}'
                                         ] ? data.log[1][
@@ -444,8 +460,17 @@
                         });
                     }
                 }
-                getLiveDataOnce();
-                setInterval(getLiveData, 5000);
+                waitForElement(
+                    "#{{ $charts['charts_line'] ? $charts['charts_line'][sizeof($charts['charts_line']) - 1]->id : 0 }}",
+                    function() {
+                        getLiveDataOnce();
+                        setInterval(getLiveData, 5000);
+                    });
+
+
+                // getLiveDataOnce();
+                // setInterval(getLiveData, 5000);
+
             });
         </script>
         <script>
@@ -458,8 +483,8 @@
                                                     <label for="base-parameter" class="col-form-label">Base
                                                         parameter</label>
                                                     <select class="form-select" id="base-parameter" name="base_parameter">
-                                                        @foreach( $parameters as $parameter)
-                                                        @if($parameter->type=='number')
+                                                        @foreach ($parameters as $parameter)
+                                                        @if ($parameter->type == 'number')
                                                         <option value="{{ $parameter->slug }}">{{ $parameter->name }}</option>
                                                         @endif
                                                         @endforeach
@@ -657,7 +682,8 @@
 
             window.initMap = initMap;
         </script>
-        <script type="text/javascript" src="https://maps.google.com/maps/api/js?key=&callback=initMap"></script>
+        <script type="text/javascript"
+            src="https://maps.google.com/maps/api/js?key=AIzaSyAkvuKagRiFJGavzz2vXIhRJ4SWbd-A3-Y&callback=initMap"></script>
     @endif
     <!-- Github buttons -->
     <!-- Control Center for Corporate UI Dashboard: parallax effects, scripts for the example pages etc -->

@@ -146,16 +146,17 @@
                     </a>
                     <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4"
                         aria-labelledby="dropdownMenuButton2">
-                        <li class="mb-2">
-                            <a class="dropdown-item border-radius-md" href="javascript:;">
-                                <div class="d-flex py-1">
-                                    <form action="/logout" method="post">
-                                        @csrf
-                                        <button type="submit" class="nav-link px-3 bg-dark border-0">Logout <span
-                                                data-feather="log-out" class="align-text-bottom"></span>
-                                        </button>
-                                    </form>
-                                </div>
+                        <li><a class="dropdown-item" href="/account">Account Setting</a></li>
+                        {{-- <li><a class="dropdown-item" href="javascript:;">Another action</a></li>
+                        <li><a class="dropdown-item" href="javascript:;">Something else here</a></li> --}}
+                        <li>
+                            <a class="" href="javascript:;">
+                                <form action="/logout" method="post">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item">Logout <span
+                                            data-feather="log-out"></span>
+                                    </button>
+                                </form>
                             </a>
                         </li>
                     </ul>
