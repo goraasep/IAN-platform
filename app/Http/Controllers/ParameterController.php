@@ -253,12 +253,12 @@ class ParameterController extends Controller
             // dd($buffer);
             switch ($parameter->condition_rule) {
                 case "first":
-                    $result[$parameter->slug] = $buffer->get()->sortBy('created_at')->first()->{$parameter->base_parameter};
+                    $result[$parameter->slug] = $buffer->get()->sortBy('created_at')->first() ? $buffer->get()->sortBy('created_at')->first()->{$parameter->base_parameter} : NULL;
 
                     // dd($result[$parameter->slug]);
                     break;
                 case "last":
-                    $result[$parameter->slug] = $buffer->get()->sortByDesc('created_at')->first()->{$parameter->base_parameter};
+                    $result[$parameter->slug] = $buffer->get()->sortByDesc('created_at')->first() ? $buffer->get()->sortByDesc('created_at')->first()->{$parameter->base_parameter} : NULL;
                     break;
                 case "count":
                     $result[$parameter->slug] = $buffer->get()->count();
@@ -268,19 +268,19 @@ class ParameterController extends Controller
                     // $buffer->groupBy($parameter->base_parameter)->count();
                     // break;
                 case "max":
-                    $result[$parameter->slug] = $buffer->max($parameter->base_parameter);
+                    $result[$parameter->slug] = $buffer->max($parameter->base_parameter) ?: NULL;
                     break;
                 case "min":
-                    $result[$parameter->slug] = $buffer->min($parameter->base_parameter);
+                    $result[$parameter->slug] = $buffer->min($parameter->base_parameter) ?: NULL;
                     break;
                 case "average":
-                    $result[$parameter->slug] = $buffer->average($parameter->base_parameter);
+                    $result[$parameter->slug] = $buffer->average($parameter->base_parameter) ?: NULL;
                     break;
                 case "sum":
-                    $result[$parameter->slug] = $buffer->sum($parameter->base_parameter);
+                    $result[$parameter->slug] = $buffer->sum($parameter->base_parameter) ?: NULL;
                     break;
                 case "difference":
-                    $result[$parameter->slug] = $buffer->get()->sortByDesc('created_at')->first()->{$parameter->base_parameter} - $buffer->get()->sortBy('created_at')->first()->{$parameter->base_parameter};
+                    $result[$parameter->slug] = $buffer->get()->sortByDesc('created_at')->first() ? $buffer->get()->sortByDesc('created_at')->first()->{$parameter->base_parameter} - $buffer->get()->sortBy('created_at')->first()->{$parameter->base_parameter} : NULL;
                     // dd($result[$parameter->slug]);
                     break;
                 default:
