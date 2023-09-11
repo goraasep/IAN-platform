@@ -69,7 +69,7 @@
     <script src="/assets/js/moment.min.js"></script>
     <script src="/assets/js/daterangepicker.min.js"></script>
 
-    @if (Request::is('devices'))
+    {{-- @if (Request::is('devices'))
         <script>
             $(document).ready(function() {
                 $('#device_list').DataTable({
@@ -182,7 +182,7 @@
             );
         </script>
         <script type="text/javascript"
-            src="https://maps.google.com/maps/api/js?key=AIzaSyAkvuKagRiFJGavzz2vXIhRJ4SWbd-A3-Y&libraries=places"></script>
+            src="https://maps.google.com/maps/api/js?key=AIzaSyD8qpfVRZSZsQfuGZdN8DF9HGo9Xt_NC8U&libraries=places"></script>
     @endif
     @if (Request::is('sites/*') && !Request::is('sites/*/*'))
         <script>
@@ -608,6 +608,35 @@
                 });
             });
         </script>
+    @endif --}}
+
+    @if (Request::is('admin-panel'))
+        <script>
+            $(document).ready(function() {
+                $('#parameter_list').DataTable({
+                    "processing": true, //Feature control the processing indicator.
+                    "serverSide": true, //Feature control DataTables' server-side processing mode.
+                    "ajax": {
+                        "url": "{{ url('datatables/parameter_list') }}",
+                        "type": "POST",
+                        "data": {
+                            _token: "{{ csrf_token() }}"
+                        }
+                    },
+                });
+                $('#dashboard_list').DataTable({
+                    "processing": true, //Feature control the processing indicator.
+                    "serverSide": true, //Feature control DataTables' server-side processing mode.
+                    "ajax": {
+                        "url": "{{ url('datatables/dashboard_list') }}",
+                        "type": "POST",
+                        "data": {
+                            _token: "{{ csrf_token() }}"
+                        }
+                    },
+                });
+            });
+        </script>
     @endif
 
     <script>
@@ -619,7 +648,7 @@
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
         }
     </script>
-    @if (Request::is('/'))
+    {{-- @if (Request::is('/'))
         <script type="text/javascript">
             function initMap() {
                 const myLatLng = {
@@ -684,7 +713,7 @@
         </script>
         <script type="text/javascript"
             src="https://maps.google.com/maps/api/js?key=AIzaSyAkvuKagRiFJGavzz2vXIhRJ4SWbd-A3-Y&callback=initMap"></script>
-    @endif
+    @endif --}}
     <!-- Github buttons -->
     <!-- Control Center for Corporate UI Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="/assets/js/corporate-ui-dashboard.js?v=1.0.0"></script>

@@ -11,8 +11,8 @@
         </nav>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb bg-transparent mb-1 pb-0 pt-1 px-0 me-sm-6 me-5">
-                <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark"
-                        href="{{ url(Request::segment(1) ?: '/') }}">{{ $title }}</a></li>
+                {{-- <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark"
+                        href="{{ url(Request::segment(1) ?: '/') }}">{{ $title }}</a></li> --}}
                 <li class="breadcrumb-item text-sm text-dark active" aria-current="page">{{ $breadcrumb }}</li>
             </ol>
             {{-- <h6 class="font-weight-bold mb-0">{{ $subtitle }}</h6> --}}

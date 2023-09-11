@@ -8,16 +8,29 @@
     </div>
     <div class="collapse navbar-collapse px-4  w-auto " id="sidenav-collapse-main">
         <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link {{ Request::is('/') ? 'active' : '' }}" href="/">
-                    <div
-                        class="{{ Request::is('/') ? 'text-primary' : '' }} icon icon-shape icon-sm px-0 text-center d-flex align-items-center justify-content-center">
-                        <i class="fa-solid fa-house"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Home</span>
-                </a>
-            </li>
-            <li class="nav-item">
+            @role('Admin')
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('admin-panel') ? 'active' : '' }}" href="/admin-panel">
+                        <div
+                            class="{{ Request::is('admin-panel') ? 'text-primary' : '' }} icon icon-shape icon-sm px-0 text-center d-flex align-items-center justify-content-center">
+                            <i class="fa-solid fa-house"></i>
+                        </div>
+                        <span class="nav-link-text ms-1">Admin Panel</span>
+                    </a>
+                </li>
+            @else
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('/') ? 'active' : '' }}" href="/">
+                        <div
+                            class="{{ Request::is('/') ? 'text-primary' : '' }} icon icon-shape icon-sm px-0 text-center d-flex align-items-center justify-content-center">
+                            <i class="fa-solid fa-house"></i>
+                        </div>
+                        <span class="nav-link-text ms-1">Home</span>
+                    </a>
+                </li>
+            @endrole
+
+            {{-- <li class="nav-item">
                 <a class="nav-link  {{ Request::is('sites') ? 'active' : '' }}" href="/sites">
                     <div
                         class="{{ Request::is('sites') ? 'text-primary' : '' }} icon icon-shape icon-sm px-0 text-center d-flex align-items-center justify-content-center">
@@ -34,7 +47,7 @@
                     </div>
                     <span class="nav-link-text ms-1">Devices</span>
                 </a>
-            </li>
+            </li> --}}
             {{-- <li class="nav-item dropdown">
                 <div class="d-flex align-items-center nav-link">
                     <div

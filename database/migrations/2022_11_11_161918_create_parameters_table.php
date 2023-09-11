@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('parameters', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('device_id');
+            // $table->foreignId('device_id');
             $table->string('name');
             $table->string('slug')->unique();
             $table->string('type');
@@ -30,10 +30,10 @@ return new class extends Migration
             $table->double('max')->default(0);
             $table->double('min')->default(0);
             $table->integer('show')->default(0);
-            $table->string('base_parameter')->nullable();
-            $table->string('operator')->nullable();
-            $table->double('condition_value')->default(0);
-            $table->string('condition_rule')->nullable();
+            // $table->string('base_parameter')->nullable();
+            // $table->string('operator')->nullable();
+            // $table->double('condition_value')->default(0);
+            // $table->string('condition_rule')->nullable();
             $table->timestamps();
         });
     }
