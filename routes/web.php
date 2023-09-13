@@ -47,11 +47,28 @@ use App\Http\Controllers\DashboardController;
 Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('role:Admin')->group(function () {
         Route::get('/admin-panel', [AdminAdminController::class, 'index']);
+        //dashboard
         Route::post('/admin-panel/dashboard', [AdminDashboardController::class, 'store']);
         Route::get('/admin-panel/dashboard/{dashboard}', [AdminDashboardController::class, 'show']);
+        Route::put('/admin-panel/dashboard/{dashboard}', [AdminDashboardController::class, 'update']);
+        Route::delete('/admin-panel/dashboard/{dashboard}', [AdminDashboardController::class, 'destroy']);
+        //panel
         Route::post('/admin-panel/panel', [AdminPanelController::class, 'store']);
+        Route::put('/admin-panel/panel/{panel}', [AdminPanelController::class, 'update']);
+        Route::delete('/admin-panel/panel/{panel}', [AdminPanelController::class, 'destroy']);
+        //parameter
+        Route::post('/admin-panel/parameter', [AdminParameterController::class, 'store']);
+        Route::get('/admin-panel/parameter/{parameter}', [AdminParameterController::class, 'show']);
+        Route::put('/admin-panel/parameter/{parameter}', [AdminParameterController::class, 'update']);
+        Route::delete('/admin-panel/parameter/{parameter}', [AdminParameterController::class, 'destroy']);
+
         Route::post('/datatables/parameter_list', [AdminParameterController::class, 'parameter_list']);
         Route::post('/datatables/dashboard_list', [AdminDashboardController::class, 'dashboard_list']);
+
+        Route::post('/datatables/historical_log', [AdminParameterController::class, 'historical_log']);
+        Route::post('/datatables/alert_log', [AdminParameterController::class, 'alert_log']);
+
+        Route::post('/livedata', [AdminParameterController::class, 'liveData']);
     });
     Route::middleware('role:User')->group(function () {
         Route::resource('/', DashboardController::class);

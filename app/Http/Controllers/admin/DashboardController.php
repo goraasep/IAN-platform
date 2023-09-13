@@ -7,6 +7,7 @@ use App\Models\Dashboard;
 use App\Models\Panel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class DashboardController extends Controller
 {
@@ -23,19 +24,56 @@ class DashboardController extends Controller
             'dashboard' => $dashboard->load(['panels' => function ($panels) {
                 $panels->orderBy('order', 'ASC');
             }]),
-            'panels' => Panel::where('dashboard_id', $dashboard->id)->get()
+            // 'panels' => Panel::where('dashboard_id', $dashboard->id)->get()
         ]);
     }
 
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'dashboard_name' => 'required|max:255',
-            'description' => 'max:1024|required',
-        ]);
-        Dashboard::create($validatedData);
-        return redirect('/admin-panel')->with('success', 'New site has been added!');
+        try {
+            $validatedData = $request->validate([
+                'dashboard_name' => 'required|max:255',
+                'description' => 'max:1024|required',
+            ]);
+            Dashboard::create($validatedData);
+            // return redirect('/admin-panel')->with('success', 'New site has been added!');
+            alert()->success('Success', 'New dashboard has been added!');
+            return back()->with('success', "New dashboard has been added!");
+        } catch (Throwable $e) {
+            alert()->warning('Failed', "Add dashboard failed, " . $e->getMessage());
+            return back()->with('failed', "Add dashboard failed, " . $e->getMessage());
+        }
     }
+
+    public function update(Request $request, Dashboard $dashboard)
+    {
+        try {
+            $validatedData = $request->validate([
+                'dashboard_name' => 'required|max:255',
+                'description' => 'max:1024|required',
+            ]);
+            Dashboard::where('id', $dashboard->id)->update($validatedData);
+            alert()->success('Success', 'Edit dashboard success!');
+            return back()->with('success', "Edit dashboard success");
+        } catch (Throwable $e) {
+            alert()->warning('Failed', "Edit dashboard failed, " . $e->getMessage());
+            return back()->with('failed', "Edit dashboard failed, " . $e->getMessage());
+        }
+    }
+
+    public function destroy(Dashboard $dashboard)
+    {
+        try {
+            Dashboard::where('id', $dashboard->id)->delete();
+            // return back()->with('success', "Delete dashboard success");
+            alert()->success('Success', 'Delete dashboard success!');
+            return redirect('/admin-panel')->with('success', 'Delete dashboard success!');
+        } catch (Throwable $e) {
+            alert()->warning('Failed', "Delete dashboard failed, " . $e->getMessage());
+            return back()->with('failed', "Delete dashboard failed, " . $e->getMessage());
+        }
+    }
+
 
     public function dashboard_list(Request $request)
     {

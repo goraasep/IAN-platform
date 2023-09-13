@@ -42,9 +42,11 @@
     <link href="/assets/css/jquery.dataTables.min.css" rel="stylesheet" />
     <link href="/assets/css/daterangepicker.css" rel="stylesheet" />
     @livewireStyles()
+
 </head>
 
 <body class="g-sidenav-show  bg-gray-100">
+    @include('sweetalert::alert')
     @include('layouts.sidebar')
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         <!-- Navbar -->
@@ -635,6 +637,86 @@
                         }
                     },
                 });
+            });
+        </script>
+    @endif
+    @if (Request::is('admin-panel/parameter/*'))
+        <script>
+            function waitForElement(elementPath, callBack) {
+                window.setTimeout(function() {
+                    if ($(elementPath).length) {
+                        callBack(elementPath, $(elementPath));
+                    } else {
+                        waitForElement(elementPath, callBack);
+                    }
+                }, 500)
+            }
+            $(document).ready(function() {
+                let getLiveData = function() {
+                    $.ajax({
+                        type: 'POST',
+                        url: '{{ url('livedata') }}',
+                        async: true,
+                        dataType: 'json',
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            parameter_id: "{{ $parameter->id }}",
+                        },
+                        success: function(data) {
+                            window.{{ $charts['chart_gauge']->id }}
+                                .setOption({
+                                    series: [{
+                                        data: [{
+                                            value: data.actual_value
+                                        }]
+                                    }]
+                                });
+                        }
+                    });
+                }
+                waitForElement(
+                    "#{{ $charts['chart_gauge']->id }}",
+                    function() {
+                        console.log({{ $charts['chart_gauge']->id }})
+                        // getLiveDataOnce();
+                        getLiveData();
+                        setInterval(getLiveData, 5000);
+                    });
+
+                // console.log({{ $charts['chart_gauge']->id }})
+                // getLiveDataOnce();
+                // setInterval(getLiveData, 5000);
+
+            });
+        </script>
+        <script>
+            $(document).ready(function() {
+                $('#historical_log').DataTable({
+                    "processing": true, //Feature control the processing indicator.
+                    "serverSide": true, //Feature control DataTables' server-side processing mode.
+                    "ajax": {
+                        "url": "{{ url('datatables/historical_log') }}",
+                        "type": "POST",
+                        "data": {
+                            _token: "{{ csrf_token() }}",
+                            "parameter_id": {{ $parameter->id }}
+                        }
+                    },
+                });
+                @if ($parameter->type == 'number')
+                    $('#alert_log').DataTable({
+                        "processing": true, //Feature control the processing indicator.
+                        "serverSide": true, //Feature control DataTables' server-side processing mode.
+                        "ajax": {
+                            "url": "{{ url('datatables/alert_log') }}",
+                            "type": "POST",
+                            "data": {
+                                _token: "{{ csrf_token() }}",
+                                "parameter_id": {{ $parameter->id }}
+                            }
+                        },
+                    });
+                @endif
             });
         </script>
     @endif
