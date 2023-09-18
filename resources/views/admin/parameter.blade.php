@@ -359,17 +359,18 @@
     </div> --}}
     <div class="row mt-4">
         <form class="" role="form">
+            @csrf
             <div class="mb-3 row g-3">
                 <div class="col-sm-12 col-lg-2">
-                    <label for="datetimerange" class="col-form-label">Choose Range :</label>
+                    <label for="datetimerange" class="col-form-label">Choose Range</label>
                 </div>
                 <div class="col-xs-auto col-lg-5">
-                    <input type="text" name="datetimerange" id="datetimerange"
-                        value="2023-09-12 00:00:00 to 2023-09-12 23:59:59" class="form-control" onfocus="focused(this)"
-                        onfocusout="defocused(this)">
+                    <input type="text" name="datetimerange" id="datetimerange" value="{{ $datetimerange ?: '' }}"
+                        class="form-control">
                 </div>
                 <div class="col-xs-auto col-lg-5">
-                    <button type="submit" value="Submit" name="apply" formmethod="post" formaction="#"
+                    <button type="submit" value="Submit" name="apply" formmethod="post"
+                        formaction="{{ url('admin-panel/parameter/' . $parameter->id) }}"
                         class="btn btn-dark">Apply</button>
                 </div>
             </div>
@@ -395,7 +396,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-body table-responsive">
+                    <div class="card-body">
                         {!! $charts['chart_gauge']->container() !!}
                         {!! $charts['chart_gauge']->script() !!}
                     </div>
@@ -411,7 +412,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-body table-responsive">
+                    <div class="card-body">
                         {!! $charts['chart_line']->container() !!}
                         {!! $charts['chart_line']->script() !!}
                     </div>
@@ -440,8 +441,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-body table-responsive">
-                        SOMETHING
+                    <div class="card-body">
+                        <div class="text-center">
+                            <h1><span id="live_string">{{ $parameter->actual_string }}</span></h1>
+                        </div>
                     </div>
                 </div>
             </div>

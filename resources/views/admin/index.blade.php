@@ -301,13 +301,68 @@
                         </div>
                         <div class="ms-auto d-flex">
                             <button type="button" class="btn btn-sm btn-dark btn-icon d-flex align-items-center me-2"
-                                data-bs-toggle="modal" data-bs-target="#exampleModalMessage">
+                                data-bs-toggle="modal" data-bs-target="#addUserModal">
                                 <span class="btn-inner--icon me-2">
                                     <i class="fa-solid fa-plus"></i>
                                 </span>
                                 <span class="btn-inner--text">Add User</span>
                             </button>
                             <!-- Modal -->
+                            <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog"
+                                aria-labelledby="exampleModalMessageTitle" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <form method="post" action="/admin-panel/user">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Add new User
+                                                </h5>
+                                                <button type="button" class="btn-close text-dark"
+                                                    data-bs-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body mx-3">
+                                                @csrf
+                                                <div class="form-group">
+                                                    <label for="user-name" class="col-form-label">Name:</label>
+                                                    <input type="text" class="form-control" id="user-name"
+                                                        name="name" value="{{ old('name') }}">
+                                                    @error('name')
+                                                        <div class="invalid-feedback">
+                                                            {{ $message }}
+                                                        </div>
+                                                    @enderror
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="user-email" class="col-form-label">Email:</label>
+                                                    <input type="text" class="form-control" id="user-email"
+                                                        name="email" value="{{ old('email') }}">
+                                                    @error('email')
+                                                        <div class="invalid-feedback">
+                                                            {{ $message }}
+                                                        </div>
+                                                    @enderror
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="user-password" class="col-form-label">Password:</label>
+                                                    <input type="password" class="form-control" id="user-password"
+                                                        name="password" value="{{ old('password') }}">
+                                                    @error('password')
+                                                        <div class="invalid-feedback">
+                                                            {{ $message }}
+                                                        </div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-white"
+                                                    data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-dark">Save</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -315,10 +370,10 @@
                     <table id="user_list" class="display text-center" style="width:100%">
                         <thead>
                             <tr>
+                                <th>ID</th>
                                 <th>User</th>
-                                <th>Dashboard Access</th>
                                 <th>Created At</th>
-                                <th></th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>

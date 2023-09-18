@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Panel extends Model
+class AccessRights extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
-    public function parameter()
+    public function dashboard()
     {
-        return $this->hasOne(Parameters::class, 'id', 'parameter_id');
+        return $this->hasOne(Dashboard::class, 'id', 'dashboard_id');
     }
 }

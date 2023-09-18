@@ -24,13 +24,14 @@
                     </span>
                     <span class="btn-inner--text">Back to Admin Panel</span>
                 </a>
-                {{-- <a href="" type="button"
-                    class=" btn btn-sm btn-white btn-icon d-md-flex align-items-center mb-0 mb-md-0 mb-2 me-md-2">
-                    <span class="btn-inner--icon">
-                        <i class="fa-solid fa-gear d-md-flex ms-auto me-2"></i>
+                <button type="button"
+                    class="btn btn-sm btn-white btn-icon d-md-flex align-items-center mb-md-0 mb-2 mb-0 me-md-2"
+                    data-bs-toggle="modal" data-bs-target="#addDashboardModal">
+                    <span class="btn-inner--icon me-2">
+                        <i class="fa-solid fa-plus"></i>
                     </span>
-                    <span class="btn-inner--text">Dashboard Setting</span>
-                </a> --}}
+                    <span class="btn-inner--text">Add Dashboard Panel</span>
+                </button>
                 <button type="button"
                     class="btn btn-sm btn-white btn-icon d-md-flex align-items-center mb-md-0 mb-2 mb-0 me-md-2"
                     data-bs-toggle="modal" data-bs-target="#settingDashboardModal">
@@ -40,19 +41,12 @@
                     <span class="btn-inner--text">Dashboard Setting</span>
                 </button>
                 <button type="button"
-                    class="btn btn-sm btn-icon btn-outline-danger d-md-flex align-items-center mb-md-0 mb-2 mb-0 me-md-2"
+                    class="btn btn-sm btn-icon btn-outline-danger d-md-flex align-items-center mb-md-0 mb-2 mb-0"
                     data-bs-toggle="modal" data-bs-target="#deleteDashboardModal">
                     <span class="btn-inner--icon me-2">
                         <i class="fa-solid fa-trash"></i>
                     </span>
                     <span class="btn-inner--text">Delete Dashboard</span>
-                </button>
-                <button type="button" class="btn btn-sm btn-white btn-icon d-md-flex align-items-center mb-md-0 mb-2 mb-0"
-                    data-bs-toggle="modal" data-bs-target="#addDashboardModal">
-                    <span class="btn-inner--icon me-2">
-                        <i class="fa-solid fa-plus"></i>
-                    </span>
-                    <span class="btn-inner--text">Add Dashboard Panel</span>
                 </button>
                 <!-- Modal -->
                 <div class="modal fade" id="settingDashboardModal" tabindex="-1" role="dialog"
@@ -159,15 +153,35 @@
                                         @enderror
                                     </div>
                                     <div class="form-group">
-                                        <label for="parameter" class="col-form-label">Parameter:</label>
-                                        <input type="number" class="form-control" id="parameter" name="parameter_id"
-                                            value="{{ old('parameter_id') }}" required>
+                                        <label for="parameter_id" class="col-form-label">Parameter:</label>
+                                        <select class="form-control" id="parameter_id" name="parameter_id" required>
+                                            @foreach ($parameters as $parameter)
+                                                <option value="{{ $parameter->id }}">
+                                                    {{ $parameter->name . ' (Identifier: ' . $parameter->slug . ')' }}
+                                                </option>
+                                            @endforeach
+                                        </select>
                                         @error('parameter_id')
                                             <div class="invalid-feedback">
                                                 {{ $message }}
                                             </div>
                                         @enderror
                                     </div>
+                                    {{-- <div class="form-group">
+                                        <label for="parameter" class="col-form-label">Parameter:</label>
+                                        <select class="form-control" id="parameter" name="parameter">
+                                            @foreach ($parameters as $parameter)
+                                                <option value="{{ $parameter->id }}">
+                                                    {{ $parameter->name . ' | ' . $parameter->slug }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('th_L_enable')
+                                            <div class="invalid-feedback">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+                                    </div> --}}
                                     {{-- <div class="form-group">
                                         <label for="type" class="col-form-label">Type:</label>
                                         <input type="number" class="form-control" id="type" name="type"
@@ -217,169 +231,344 @@
             <h3 class="col-12 text-center opacity-5">No data available.</h3>
         @else
             @foreach ($dashboard->panels as $panel)
-                <div class="col-md-{{ $panel->size }} mb-3">
-                    <div class="card border shadow-xs mb-4 h-100">
-                        <div class="full-background bg-primary opacity-3 p-auto"></div>
-                        <div class="card-header border-bottom pb-0">
-                            <div class="d-sm-flex align-items-center mb-3">
-                                <div>
-                                    <h6 class="font-weight-semibold text-lg mb-0">{{ $panel->panel_name }}</h6>
-                                </div>
-                                <div class="ms-auto d-flex">
-                                    {{-- <button type="button" class="btn btn-sm btn-white mb-0">
-                                        Setting
-                                    </button> --}}
-                                    <button type="button"
-                                        class="btn btn-sm btn-white btn-icon d-md-flex align-items-center mb-md-0 mb-2 mb-0 me-2"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#deleteDashboardModalPanel-{{ $panel->id }}">
-                                        <span class="btn-inner--icon me-2">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </span>
-                                        <span class="btn-inner--text">Delete</span>
-                                    </button>
-                                    <button type="button"
-                                        class="btn btn-sm btn-white btn-icon d-md-flex align-items-center mb-md-0 mb-2 mb-0"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#addDashboardModalPanel-{{ $panel->id }}">
-                                        <span class="btn-inner--icon me-2">
-                                            <i class="fa-solid fa-gear"></i>
-                                        </span>
-                                        <span class="btn-inner--text">Setting</span>
-                                    </button>
-                                </div>
-                                <!-- Modal -->
-                                <div class="modal fade" id="addDashboardModalPanel-{{ $panel->id }}" tabindex="-1"
-                                    role="dialog" aria-labelledby="exampleModalMessageTitle" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered" role="document">
-                                        <div class="modal-content">
-                                            <form method="post" action="/admin-panel/panel/{{ $panel->id }}">
-                                                @method('PUT')
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">Edit Panel
-                                                    </h5>
-                                                    <button type="button" class="btn-close text-dark"
-                                                        data-bs-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">×</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body mx-3">
-                                                    @csrf
-                                                    {{-- <input type="number" name="panel_id" value="{{ $panel->id }}"
-                                                        required hidden> --}}
-                                                    <div class="form-group">
-                                                        <label for="dashboard-name" class="col-form-label">Panel
-                                                            Name:</label>
-                                                        <input type="text" class="form-control" id="dashboard-name"
-                                                            name="panel_name"
-                                                            value="{{ old('panel_name', $panel->panel_name) }}" required>
-                                                        @error('panel_name')
-                                                            <div class="invalid-feedback">
-                                                                {{ $message }}
-                                                            </div>
-                                                        @enderror
+                @if ($panel->parameter)
+                    <div class="col-md-{{ $panel->size }} mb-3">
+                        <div class="card border shadow-xs mb-4 h-100">
+                            <div class="full-background bg-primary opacity-3 p-auto"></div>
+                            <div class="card-header border-bottom pb-0">
+                                <div class="d-sm-flex align-items-center mb-3">
+                                    <div>
+                                        <h6 class="font-weight-semibold text-lg mb-0">{{ $panel->panel_name }}</h6>
+                                    </div>
+                                    <div class="ms-auto d-flex">
+                                        {{-- <button type="button" class="btn btn-sm btn-white mb-0">
+                                    Setting
+                                </button> --}}
+                                        {{-- <button type="button"
+                                    class="btn btn-sm btn-white btn-icon d-md-flex align-items-center mb-md-0 mb-2 mb-0 me-2"
+                                    data-bs-toggle="modal" data-bs-target="#deleteModalPanel-{{ $panel->id }}">
+                                    <span class="btn-inner--icon">
+                                        <i class="fa-solid fa-external-link-alt"></i>
+                                    </span>
+                                </button> --}}
+                                        <a href="{{ url('admin-panel/parameter/' . $panel->parameter->id) }}"
+                                            type="button"
+                                            class="btn btn-sm btn-white btn-icon d-flex align-items-center mb-0 ms-md-auto mb-sm-0 mb-2 me-2">
+                                            <span class="btn-inner--icon">
+                                                <i class="fa-solid fa-external-link-alt"></i>
+                                            </span>
+                                        </a>
+                                        <button type="button"
+                                            class="btn btn-sm btn-white btn-icon d-md-flex align-items-center mb-md-0 mb-2 mb-0 me-2"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModalPanel-{{ $panel->id }}">
+                                            <span class="btn-inner--icon">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </span>
+                                        </button>
+                                        <button type="button"
+                                            class="btn btn-sm btn-white btn-icon d-md-flex align-items-center mb-md-0 mb-2 mb-0"
+                                            data-bs-toggle="modal" data-bs-target="#editModalPanel-{{ $panel->id }}">
+                                            <span class="btn-inner--icon">
+                                                <i class="fa-solid fa-gear"></i>
+                                            </span>
+                                        </button>
+                                    </div>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="editModalPanel-{{ $panel->id }}" tabindex="-1"
+                                        role="dialog" aria-labelledby="exampleModalMessageTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <form method="post" action="/admin-panel/panel/{{ $panel->id }}">
+                                                    @method('PUT')
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Edit Panel
+                                                        </h5>
+                                                        <button type="button" class="btn-close text-dark"
+                                                            data-bs-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">×</span>
+                                                        </button>
                                                     </div>
-                                                    <div class="form-group">
-                                                        <label for="parameter" class="col-form-label">Parameter:</label>
-                                                        <input type="number" class="form-control" id="parameter"
-                                                            name="parameter_id"
-                                                            value="{{ old('parameter_id', $panel->parameter_id) }}"
-                                                            required>
-                                                        @error('parameter_id')
-                                                            <div class="invalid-feedback">
-                                                                {{ $message }}
-                                                            </div>
-                                                        @enderror
+                                                    <div class="modal-body mx-3">
+                                                        @csrf
+                                                        {{-- <input type="number" name="panel_id" value="{{ $panel->id }}"
+                                                    required hidden> --}}
+                                                        <div class="form-group">
+                                                            <label for="dashboard-name" class="col-form-label">Panel
+                                                                Name:</label>
+                                                            <input type="text" class="form-control"
+                                                                id="dashboard-name" name="panel_name"
+                                                                value="{{ old('panel_name', $panel->panel_name) }}"
+                                                                required>
+                                                            @error('panel_name')
+                                                                <div class="invalid-feedback">
+                                                                    {{ $message }}
+                                                                </div>
+                                                            @enderror
+                                                        </div>
+                                                        {{-- <div class="form-group">
+                                                    <label for="parameter" class="col-form-label">Parameter:</label>
+                                                    <input type="number" class="form-control" id="parameter"
+                                                        name="parameter_id"
+                                                        value="{{ old('parameter_id', $panel->parameter_id) }}"
+                                                        required>
+                                                    @error('parameter_id')
+                                                        <div class="invalid-feedback">
+                                                            {{ $message }}
+                                                        </div>
+                                                    @enderror
+                                                </div> --}}
+                                                        <div class="form-group">
+                                                            <label for="parameter_id"
+                                                                class="col-form-label">Parameter:</label>
+                                                            <select class="form-control" id="parameter_id"
+                                                                name="parameter_id" required>
+                                                                @foreach ($parameters as $parameter)
+                                                                    <option value="{{ $parameter->id }}"
+                                                                        {{ $panel->parameter->id == $parameter->id ? 'selected' : '' }}>
+                                                                        {{ $parameter->name . ' (Identifier: ' . $parameter->slug . ')' }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                            @error('parameter_id')
+                                                                <div class="invalid-feedback">
+                                                                    {{ $message }}
+                                                                </div>
+                                                            @enderror
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="size" class="col-form-label">Size (1 -
+                                                                12):</label>
+                                                            <input type="number" class="form-control" id="size"
+                                                                name="size" value="{{ old('size', $panel->size) }}"
+                                                                required>
+                                                            @error('size')
+                                                                <div class="invalid-feedback">
+                                                                    {{ $message }}
+                                                                </div>
+                                                            @enderror
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="order" class="col-form-label">Order:</label>
+                                                            <input type="number" class="form-control" id="order"
+                                                                name="order" value="{{ old('order', $panel->order) }}"
+                                                                required>
+                                                            @error('order')
+                                                                <div class="invalid-feedback">
+                                                                    {{ $message }}
+                                                                </div>
+                                                            @enderror
+                                                        </div>
                                                     </div>
-                                                    <div class="form-group">
-                                                        <label for="size" class="col-form-label">Size (1 -
-                                                            12):</label>
-                                                        <input type="number" class="form-control" id="size"
-                                                            name="size" value="{{ old('size', $panel->size) }}"
-                                                            required>
-                                                        @error('size')
-                                                            <div class="invalid-feedback">
-                                                                {{ $message }}
-                                                            </div>
-                                                        @enderror
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-white"
+                                                            data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-dark">Save</button>
                                                     </div>
-                                                    <div class="form-group">
-                                                        <label for="order" class="col-form-label">Order:</label>
-                                                        <input type="number" class="form-control" id="order"
-                                                            name="order" value="{{ old('order', $panel->order) }}"
-                                                            required>
-                                                        @error('order')
-                                                            <div class="invalid-feedback">
-                                                                {{ $message }}
-                                                            </div>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-white"
-                                                        data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-dark">Save</button>
-                                                </div>
-                                            </form>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="modal fade" id="deleteDashboardModalPanel-{{ $panel->id }}"
-                                    tabindex="-1" role="dialog" aria-labelledby="exampleModalMessageTitle"
-                                    aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered" role="document">
-                                        <div class="modal-content">
-                                            <form method="post" action="/admin-panel/panel/{{ $panel->id }}">
-                                                @method('DELETE')
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">Delete Panel
-                                                    </h5>
-                                                    <button type="button" class="btn-close text-dark"
-                                                        data-bs-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">×</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body mx-3">
-                                                    @csrf
-                                                    <h5>Are you sure you want
-                                                        to delete panel {{ $panel->panel_name }} ?</h5>
-                                                    {{-- <input type="number" name="panel_id" value="{{ $panel->id }}"
-                                                        required hidden> --}}
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-white"
-                                                        data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                                </div>
-                                            </form>
+                                    <div class="modal fade" id="deleteModalPanel-{{ $panel->id }}" tabindex="-1"
+                                        role="dialog" aria-labelledby="exampleModalMessageTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <form method="post" action="/admin-panel/panel/{{ $panel->id }}">
+                                                    @method('DELETE')
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Delete Panel
+                                                        </h5>
+                                                        <button type="button" class="btn-close text-dark"
+                                                            data-bs-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">×</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body mx-3">
+                                                        @csrf
+                                                        <h5>Are you sure you want
+                                                            to delete panel {{ $panel->panel_name }} ?</h5>
+                                                        {{-- <input type="number" name="panel_id" value="{{ $panel->id }}"
+                                                    required hidden> --}}
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-white"
+                                                            data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                                    </div>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="card-body text-start p-3 w-100">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="w-100">
-                                        {{-- <a class="text-primary font-weight-bold text-sm text-uppercase"
-                                            href="{{ url('devices/' . $device->uuid) }}">{{ $device->name }}</a> --}}
-                                        <p class="text-sm text-secondary mb-1">Actual value:</p>
-                                        {{-- <h4 class="mb-2 font-weight-bold">
-                                            <span id="live_{{ $parameter->slug }}">
-                                                <i class="text-warning fa-solid fa-exclamation"></i>
-                                             </span>
-                                        </h4> --}}
-                                        <div class="d-flex align-items-center">
-                                            <span class="text-sm">Last Updated:
-                                                {{-- <span id="updated_{{ $parameter->slug }}"></span> --}}
+                            <div class="card-body">
+                                @if ($panel->parameter->type == 'number')
+                                    {!! $charts[$loop->index]->container() !!}
+                                    {!! $charts[$loop->index]->script() !!}
+                                @else
+                                    <div class="d-flex align-items-center h-100">
+                                        <h1 class="mx-auto text-center">
+                                            <span
+                                                id="live_string-{{ $panel->parameter->id }}">{{ $panel->parameter->actual_string }}
                                             </span>
+                                        </h1>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                @else
+                    <div class="col-md-{{ $panel->size }} mb-3">
+                        <div class="card border shadow-xs mb-4 h-100">
+                            <div class="full-background bg-primary opacity-3 p-auto"></div>
+                            <div class="card-header border-bottom pb-0">
+                                <div class="d-sm-flex align-items-center mb-3">
+                                    <div>
+                                        <h6 class="font-weight-semibold text-lg mb-0">{{ $panel->panel_name }}</h6>
+                                    </div>
+                                    <div class="ms-auto d-flex">
+                                        <button type="button"
+                                            class="btn btn-sm btn-white btn-icon d-md-flex align-items-center mb-md-0 mb-2 mb-0 me-2"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModalPanel-{{ $panel->id }}">
+                                            <span class="btn-inner--icon">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </span>
+                                        </button>
+                                        <button type="button"
+                                            class="btn btn-sm btn-white btn-icon d-md-flex align-items-center mb-md-0 mb-2 mb-0"
+                                            data-bs-toggle="modal" data-bs-target="#editModalPanel-{{ $panel->id }}">
+                                            <span class="btn-inner--icon">
+                                                <i class="fa-solid fa-gear"></i>
+                                            </span>
+                                        </button>
+                                    </div>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="editModalPanel-{{ $panel->id }}" tabindex="-1"
+                                        role="dialog" aria-labelledby="exampleModalMessageTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <form method="post" action="/admin-panel/panel/{{ $panel->id }}">
+                                                    @method('PUT')
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Edit Panel
+                                                        </h5>
+                                                        <button type="button" class="btn-close text-dark"
+                                                            data-bs-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">×</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body mx-3">
+                                                        @csrf
+                                                        {{-- <input type="number" name="panel_id" value="{{ $panel->id }}"
+                                                    required hidden> --}}
+                                                        <div class="form-group">
+                                                            <label for="dashboard-name" class="col-form-label">Panel
+                                                                Name:</label>
+                                                            <input type="text" class="form-control"
+                                                                id="dashboard-name" name="panel_name"
+                                                                value="{{ old('panel_name', $panel->panel_name) }}"
+                                                                required>
+                                                            @error('panel_name')
+                                                                <div class="invalid-feedback">
+                                                                    {{ $message }}
+                                                                </div>
+                                                            @enderror
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="parameter_id"
+                                                                class="col-form-label">Parameter:</label>
+                                                            <select class="form-control" id="parameter_id"
+                                                                name="parameter_id" required>
+                                                                @foreach ($parameters as $parameter)
+                                                                    <option value="{{ $parameter->id }}">
+                                                                        {{ $parameter->name . ' (Identifier: ' . $parameter->slug . ')' }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                            @error('parameter_id')
+                                                                <div class="invalid-feedback">
+                                                                    {{ $message }}
+                                                                </div>
+                                                            @enderror
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="size" class="col-form-label">Size (1 -
+                                                                12):</label>
+                                                            <input type="number" class="form-control" id="size"
+                                                                name="size" value="{{ old('size', $panel->size) }}"
+                                                                required>
+                                                            @error('size')
+                                                                <div class="invalid-feedback">
+                                                                    {{ $message }}
+                                                                </div>
+                                                            @enderror
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="order" class="col-form-label">Order:</label>
+                                                            <input type="number" class="form-control" id="order"
+                                                                name="order" value="{{ old('order', $panel->order) }}"
+                                                                required>
+                                                            @error('order')
+                                                                <div class="invalid-feedback">
+                                                                    {{ $message }}
+                                                                </div>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-white"
+                                                            data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-dark">Save</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal fade" id="deleteModalPanel-{{ $panel->id }}" tabindex="-1"
+                                        role="dialog" aria-labelledby="exampleModalMessageTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <form method="post" action="/admin-panel/panel/{{ $panel->id }}">
+                                                    @method('DELETE')
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Delete Panel
+                                                        </h5>
+                                                        <button type="button" class="btn-close text-dark"
+                                                            data-bs-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">×</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body mx-3">
+                                                        @csrf
+                                                        <h5>Are you sure you want
+                                                            to delete panel {{ $panel->panel_name }} ?</h5>
+                                                        {{-- <input type="number" name="panel_id" value="{{ $panel->id }}"
+                                                    required hidden> --}}
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-white"
+                                                            data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body text-start p-3 w-100">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="w-100">
+                                            <h3>PARAMETER IS MISSING</h3>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                @endif
             @endforeach
         @endif
     </div>

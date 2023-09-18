@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\admin;
 
+use App\Charts\NumberParametersChart;
 use App\Http\Controllers\Controller;
 use App\Models\Dashboard;
 use App\Models\Panel;
+use App\Models\Parameters;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Throwable;
+
+use function PHPSTORM_META\map;
 
 class DashboardController extends Controller
 {
@@ -17,14 +21,31 @@ class DashboardController extends Controller
         // $issue->load(['services' => function ($services) {
         //     $services->with(['verifications'])->get();
         // }, 'vehicle']
+        $dashboard = $dashboard->load(['panels' => function ($panels) {
+            $panels->orderBy('order', 'ASC');
+            $panels->with(['parameter']);
+        }]);
+        // $test = [];
+        // foreach ($dashboard->panels as $panel) {
+        //     // $this->renderGauge($panel->parameter);
+        //     $test = array_merge($test, [$panel->parameter->id => $this->renderGauge($panel->parameter)]);
+        // }
+        $charts = $dashboard->panels->map(
+            function ($panel) {
+                // dd($panel->parameter->type);
+                if ($panel->parameter) {
+                    return $this->renderGauge($panel->parameter);
+                }
+            }
+        );
+        // dd($test);
         return view('admin.dashboard', [
             'title' => 'Home',
             'breadcrumb' => 'Dashboard',
             'subtitle' => 'test',
-            'dashboard' => $dashboard->load(['panels' => function ($panels) {
-                $panels->orderBy('order', 'ASC');
-            }]),
-            // 'panels' => Panel::where('dashboard_id', $dashboard->id)->get()
+            'dashboard' => $dashboard,
+            'parameters' => Parameters::all(),
+            'charts' => $charts
         ]);
     }
 
@@ -139,5 +160,146 @@ class DashboardController extends Controller
             "data"            => $data
         );
         echo json_encode($json_data);
+    }
+
+    private function renderGauge($parameter)
+    {
+        $gauge_options =
+            [
+                'radius' => '50%',
+                'type' => 'gauge',
+                'center' => ['50%', '50%'],
+                'startAngle' => 200,
+                'endAngle' => -20,
+                'splitNumber' => 10,
+                'itemStyle' => [
+                    'color' => '#13678A'
+                ],
+                'progress' => [
+                    'show' => true,
+                    'width' => 30
+                ],
+                'pointer' => [
+                    'show' => false
+                ],
+                'axisLine' => [
+                    'lineStyle' => [
+                        'width' => 30
+                    ]
+                ],
+                'axisTick' => [
+                    'distance' => -45,
+                    'splitNumber' => 5,
+                    'lineStyle' => [
+                        'width' => 2,
+                        'color' => '#000'
+                    ]
+                ],
+                'splitLine' => [
+                    'distance' => -52,
+                    'length' => 14,
+                    'lineStyle' => [
+                        'width' => 3,
+                        'color' => '#000'
+                    ]
+                ],
+                'axisLabel' => [
+                    'distance' => -15,
+                    'color' => '#000',
+                    'fontSize' => 18
+                ],
+                'anchor' => [
+                    'show' => false
+                ],
+                'title' => [
+                    'show' => false
+                ],
+                'detail' => [
+                    'valueAnimation' => true,
+                    'width' => '60%',
+                    'lineHeight' => 40,
+                    'borderRadius' => 8,
+                    'offsetCenter' => [0, '-15%'],
+                    'fontWeight' => 'bolder',
+                    'color' => 'auto',
+                    'fontSize' => 20,
+                ]
+            ];
+        $gauge_options2 =
+            [
+                'radius' => '50%',
+                'type' => 'gauge',
+                'center' => ['50%', '50%'],
+                'startAngle' => 200,
+                'endAngle' => -20,
+                // 'itemStyle' => [
+                //     'color' => '#FD7347'
+                // ],
+                'progress' => [
+                    'show' => false,
+                    'width' => 8
+                ],
+                'pointer' => [
+                    'show' => false
+                ],
+                'axisLine' => [
+                    'show' => true,
+                    'lineStyle' => [
+                        'width' => -5,
+                        // 'color' => [
+                        //     [0.7, '#F49D1A'],
+                        //     [0.8, '#54B435'],
+                        //     [1, '#DC3535']
+                        // ]
+                    ]
+                ],
+                'axisTick' => [
+                    'show' => false
+                ],
+                'splitLine' => [
+                    'show' => false
+                ],
+                'axisLabel' => [
+                    'show' => false
+                ],
+                'anchor' => [
+                    'show' => false
+                ],
+                'title' => [
+                    'show' => false
+                ],
+                'detail' => [
+                    'show' => false
+                ],
+                'data' => [
+                    'value' => 55
+                ]
+            ];
+        $chart_gauge = new NumberParametersChart;
+        $chart_gauge->dataset('', 'gauge', [$parameter->actual_value])
+            ->options([
+                'detail' => [
+                    'formatter' => '{value} ' . $parameter->unit,
+                ],
+                'min' => $parameter->min,
+                'max' => $parameter->max,
+            ])
+            ->options($gauge_options);
+        $chart_gauge->dataset('', 'gauge', [0])
+            ->options([
+                'min' => $parameter->min,
+                'max' => $parameter->max,
+                'axisLine' => [
+                    'lineStyle' => [
+                        'color' => [
+                            [$parameter->max ? ($parameter->th_L / $parameter->max) : 0, '#F49D1A'],
+                            [$parameter->max ? ($parameter->th_H / $parameter->max) : 0, '#54B435'],
+                            [1, '#DC3535']
+                        ]
+                    ]
+                ],
+            ])
+            ->options($gauge_options2);;
+        return $chart_gauge;
     }
 }

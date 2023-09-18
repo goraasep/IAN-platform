@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Charts\NumberParametersChart;
 use App\Http\Controllers\Controller;
 use App\Models\Parameters;
+use Carbon\Carbon;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,10 +16,11 @@ use Throwable;
 class ParameterController extends Controller
 {
     //
-    public function show(Parameters $parameter)
+    public function show(Request $request, Parameters $parameter)
     {
         // return $parameter;
-
+        // dd($request->datetimerange);
+        $default_time = $request->datetimerange ?: Carbon::now()->toDateString() . ' 00:00:00 to ' . Carbon::now()->toDateString() . ' 23:59:00';
         $data = [
             'title' => 'Home',
             'breadcrumb' => 'Parameter',
@@ -26,8 +28,9 @@ class ParameterController extends Controller
             'parameter' => $parameter,
             'charts' => [
                 'chart_gauge' => $this->renderGauge($parameter),
-                'chart_line' => $this->renderLine($parameter)
-            ]
+                'chart_line' => $this->renderLine($parameter, $default_time)
+            ],
+            'datetimerange' => $default_time
         ];
         // $data['charts'] = $this->renderChart($parameter);
         return view('admin.parameter', $data);
@@ -39,7 +42,7 @@ class ParameterController extends Controller
             $validatedData = $request->validate([
                 'name' => 'required|max:255',
                 'type' => 'required|max:255',
-                'unit' => 'required|max:255',
+                'unit' => 'max:255',
                 'th_H' => 'required|numeric',
                 'th_H_enable' => 'required|integer',
                 'th_L' => 'required|numeric',
@@ -315,7 +318,7 @@ class ParameterController extends Controller
                 ]
             ];
         $chart_gauge = new NumberParametersChart;
-        $chart_gauge->dataset('', 'gauge', [NULL])
+        $chart_gauge->dataset('', 'gauge', [$parameter->actual_value])
             ->options([
                 'detail' => [
                     'formatter' => '{value} ' . $parameter->unit,
@@ -342,8 +345,22 @@ class ParameterController extends Controller
         return $chart_gauge;
     }
 
-    private function renderLine($parameter)
+    private function renderLine($parameter, $datetimerange)
     {
+        $datetimeexplode = explode(' to ', $datetimerange);
+        $datetimestart = $datetimeexplode[0];
+        $datetimeend = $datetimeexplode[1];
+        $parameter_log = DB::table('parameter_log_' . $parameter->id)
+            ->select('created_at', 'log_value')
+            ->where([
+                ['created_at', '>=', $datetimestart],
+                ['created_at', '<=',  $datetimeend],
+            ])
+            ->get();
+        $arr_parameter_log = collect($parameter_log)->map(function ($log) {
+            return [$log->created_at, $log->log_value];
+        });
+
         $line_options = [
             'tooltip' => [
                 'trigger' => 'axis',
@@ -376,7 +393,7 @@ class ParameterController extends Controller
         ];
 
         $chart_line = new NumberParametersChart;
-        $chart_line->dataset('', 'line', [NULL, NULL])->options([
+        $chart_line->dataset('', 'line', $arr_parameter_log)->options([
             'smooth' => true,
             'areaStyle' => [
                 'opacity' => 0.2
@@ -415,14 +432,41 @@ class ParameterController extends Controller
         return json_encode($parameter);
     }
 
+    public function graphData(Request $request)
+    {
+        $parameter_id = $request->input('parameter_id');
+        $datetimerange = $request->input('datetimerange');
+        $datetimeexplode = explode(' to ', $datetimerange);
+        $datetimestart = $datetimeexplode[0];
+        $datetimeend = $datetimeexplode[1];
+        $parameter_log = DB::table('parameter_log_' . $parameter_id)
+            ->where([
+                ['created_at', '>=', $datetimestart],
+                ['created_at', '<=',  $datetimeend],
+            ])->get();
+        // $parameter_log = DB::table('parameter_log_' . $parameter_id)
+        //     ->get();
+        return json_encode($parameter_log);
+    }
+
     public function historical_log(Request $request)
     {
+
+        $datetimerange = $request->input('datetimerange');
+        $datetimeexplode = explode(' to ', $datetimerange);
+        $datetimestart = $datetimeexplode[0];
+        $datetimeend = $datetimeexplode[1];
+
         $columns = array(
             'created_at',
             'log_value',
         );
         $parameter_id = $request->input('parameter_id');
-        $collection = DB::table('parameter_log_' . $parameter_id);
+        $collection = DB::table('parameter_log_' . $parameter_id)
+            ->where([
+                ['created_at', '>=', $datetimestart],
+                ['created_at', '<=',  $datetimeend],
+            ]);
         $totalData = $collection->count();
 
         $totalFiltered = $totalData;
@@ -478,12 +522,21 @@ class ParameterController extends Controller
 
     public function alert_log(Request $request)
     {
+        $datetimerange = $request->input('datetimerange');
+        $datetimeexplode = explode(' to ', $datetimerange);
+        $datetimestart = $datetimeexplode[0];
+        $datetimeend = $datetimeexplode[1];
+
         $columns = array(
             'created_at',
             'alert',
         );
         $parameter_id = $request->input('parameter_id');
         $collection = DB::table('parameter_alert_' . $parameter_id);
+        // ->where([
+        //     ['created_at', '>=', $datetimestart],
+        //     ['created_at', '<=',  $datetimeend],
+        // ]);
         $totalData = $collection->count();
 
         $totalFiltered = $totalData;

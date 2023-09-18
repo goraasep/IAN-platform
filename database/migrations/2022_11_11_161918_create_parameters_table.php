@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->string('type');
             $table->double('actual_value')->default(0);
+            $table->string('actual_string')->default('None');
             $table->string('unit')->nullable();
             $table->double('th_H')->default(0);
             $table->integer('th_H_enable')->default(0);
