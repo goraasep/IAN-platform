@@ -50,7 +50,7 @@
                         </svg>
                     </a>
                 </li> --}}
-                <li class="nav-item dropdown pe-2 d-flex align-items-center">
+                {{-- <li class="nav-item dropdown pe-2 d-flex align-items-center">
                     <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         <svg height="16" width="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
@@ -138,11 +138,11 @@
                             </a>
                         </li>
                     </ul>
-                </li>
+                </li> --}}
                 <li class="nav-item ps-2 d-flex align-items-center dropdown">
                     <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton2"
                         data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="/assets/img/team-2.jpg" class="avatar avatar-sm" alt="avatar" />
+                        <img src="/assets/img/iot/favicon.png" class="avatar avatar-sm" alt="avatar" />
                     </a>
                     <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4"
                         aria-labelledby="dropdownMenuButton2">
@@ -164,13 +164,4 @@
             </ul>
         </div>
     </div>
-    {{-- @if (session()->has('success'))
-        <div class="alert alert-success" role="alert">
-            {{ session('success') }}
-        </div>
-    @elseif (session()->has('failed'))
-        <div class="alert alert-danger" role="alert">
-            {{ session('failed') }}
-        </div>
-    @endif --}}
 </nav>

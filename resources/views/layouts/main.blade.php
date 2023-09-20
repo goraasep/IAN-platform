@@ -683,6 +683,15 @@
                                             }]
                                         }]
                                     });
+                                if (data.alert == 'High' || data.alert == 'Low') {
+                                    $('#alert-parameter').html(
+                                        `<i class="fa-solid fa-exclamation-triangle ms-2 text-danger"></i>`
+                                    );
+                                } else {
+                                    $('#alert-parameter').html(
+                                        ``
+                                    );
+                                }
                             }
                         }
                     });
@@ -761,15 +770,6 @@
 
     @if (Request::is('admin-panel/dashboard/*'))
         <script>
-            // function waitForElement(elementPath, callBack) {
-            //     window.setTimeout(function() {
-            //         if ($(elementPath).length) {
-            //             callBack(elementPath, $(elementPath));
-            //         } else {
-            //             waitForElement(elementPath, callBack);
-            //         }
-            //     }, 500)
-            // }
             $(document).ready(function() {
                 let getLiveData = function() {
                     @foreach ($dashboard->panels as $panel)
@@ -794,6 +794,15 @@
                                                         }]
                                                     }]
                                                 });
+                                            if (data.alert == 'High' || data.alert == 'Low') {
+                                                $('#alert-parameter-' + data.id).html(
+                                                    `<i class="fa-solid fa-exclamation-triangle ms-2 text-danger"></i>`
+                                                );
+                                            } else {
+                                                $('#alert-parameter').html(
+                                                    ``
+                                                );
+                                            }
                                         }
                                     }
                                 });
@@ -824,21 +833,202 @@
     @endif
 
     @if (Request::is('admin-panel/user/*'))
-    <script>
-        $(document).ready(function() {
-            $('#access_list').DataTable({
-                "processing": true, //Feature control the processing indicator.
-                "serverSide": true, //Feature control DataTables' server-side processing mode.
-                "ajax": {
-                    "url": "{{ url('datatables/access_list') }}",
-                    "type": "POST",
-                    "data": {
-                        _token: "{{ csrf_token() }}"
-                    }
-                },
+        <script>
+            $(document).ready(function() {
+                $('#access_list').DataTable({
+                    "processing": true, //Feature control the processing indicator.
+                    "serverSide": true, //Feature control DataTables' server-side processing mode.
+                    "ajax": {
+                        "url": "{{ url('datatables/access_list') }}",
+                        "type": "POST",
+                        "data": {
+                            _token: "{{ csrf_token() }}"
+                        }
+                    },
+                });
             });
-        });
-    </script>
+        </script>
+    @endif
+
+    @if (Request::is('dashboard/*') && !Request::is('dashboard/*/*'))
+        <script>
+            $(document).ready(function() {
+                let getLiveData = function() {
+                    @foreach ($dashboard->panels as $panel)
+                        @if ($panel->parameter)
+                            @if ($panel->parameter->type == 'number')
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '{{ url('userlivedata') }}',
+                                    async: true,
+                                    dataType: 'json',
+                                    data: {
+                                        _token: "{{ csrf_token() }}",
+                                        parameter_id: "{{ $panel->parameter->id }}",
+                                    },
+                                    success: function(data) {
+                                        if (data.type == 'number') {
+                                            window.{{ $charts[$loop->index]->id }}
+                                                .setOption({
+                                                    series: [{
+                                                        data: [{
+                                                            value: data.actual_value
+                                                        }]
+                                                    }]
+                                                });
+                                            if (data.alert == 'High' || data.alert == 'Low') {
+                                                $('#alert-parameter-' + data.id).html(
+                                                    `<i class="fa-solid fa-exclamation-triangle ms-2 text-danger"></i>`
+                                                );
+                                            } else {
+                                                $('#alert-parameter').html(
+                                                    ``
+                                                );
+                                            }
+                                        }
+                                    }
+                                });
+                            @else
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '{{ url('userlivedata') }}',
+                                    async: true,
+                                    dataType: 'json',
+                                    data: {
+                                        _token: "{{ csrf_token() }}",
+                                        parameter_id: "{{ $panel->parameter->id }}",
+                                    },
+                                    success: function(data) {
+                                        data.actual_value
+                                        $('#live_string-{{ $panel->parameter->id }}').html(data
+                                            .actual_string);
+                                    }
+                                });
+                            @endif
+                        @endif
+                    @endforeach
+
+                }
+                setInterval(getLiveData, 3000);
+            });
+        </script>
+    @endif
+
+    @if (Request::is('dashboard/parameter/*'))
+        <script>
+            function waitForElement(elementPath, callBack) {
+                window.setTimeout(function() {
+                    if ($(elementPath).length) {
+                        callBack(elementPath, $(elementPath));
+                    } else {
+                        waitForElement(elementPath, callBack);
+                    }
+                }, 500)
+            }
+            $(document).ready(function() {
+                let getLiveData = function() {
+                    $.ajax({
+                        type: 'POST',
+                        url: '{{ url('userlivedata') }}',
+                        async: true,
+                        dataType: 'json',
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            parameter_id: "{{ $parameter->id }}",
+                        },
+                        success: function(data) {
+                            if (data.type == 'number') {
+                                window.{{ $charts['chart_gauge']->id }}
+                                    .setOption({
+                                        series: [{
+                                            data: [{
+                                                value: data.actual_value
+                                            }]
+                                        }]
+                                    });
+                                if (data.alert == 'High' || data.alert == 'Low') {
+                                    $('#alert-parameter').html(
+                                        `<i class="fa-solid fa-exclamation-triangle ms-2 text-danger"></i>`
+                                    );
+                                } else {
+                                    $('#alert-parameter').html(
+                                        ``
+                                    );
+                                }
+                            }
+                        }
+                    });
+                }
+                waitForElement(
+                    "#{{ $charts['chart_gauge']->id }}",
+                    function() {
+                        setInterval(getLiveData, 3000);
+                    });
+            });
+            $(document).ready(function() {
+                let getLiveString = function() {
+                    $.ajax({
+                        type: 'POST',
+                        url: '{{ url('userlivedata') }}',
+                        async: true,
+                        dataType: 'json',
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            parameter_id: "{{ $parameter->id }}",
+                        },
+                        success: function(data) {
+                            data.actual_value
+                            $('#live_string').html(data.actual_string);
+                        }
+                    });
+                }
+                setInterval(getLiveString, 3000);
+            });
+        </script>
+        <script>
+            $(document).ready(function() {
+                $('#historical_log').DataTable({
+                    "processing": true, //Feature control the processing indicator.
+                    "serverSide": true, //Feature control DataTables' server-side processing mode.
+                    "ajax": {
+                        "url": "{{ url('datatables/user_historical_log') }}",
+                        "type": "POST",
+                        "data": {
+                            _token: "{{ csrf_token() }}",
+                            "parameter_id": {{ $parameter->id }},
+                            "datetimerange": "{{ $datetimerange }}"
+                        }
+                    },
+                });
+                @if ($parameter->type == 'number')
+                    $('#alert_log').DataTable({
+                        "processing": true, //Feature control the processing indicator.
+                        "serverSide": true, //Feature control DataTables' server-side processing mode.
+                        "ajax": {
+                            "url": "{{ url('datatables/user_alert_log') }}",
+                            "type": "POST",
+                            "data": {
+                                _token: "{{ csrf_token() }}",
+                                "parameter_id": {{ $parameter->id }},
+                                "datetimerange": "{{ $datetimerange }}"
+                            }
+                        },
+                    });
+                @endif
+            });
+        </script>
+        <script>
+            $(function() {
+                $('input[name="datetimerange"]').daterangepicker({
+                    timePicker: true,
+                    timePicker24Hour: true,
+                    locale: {
+                        separator: " to ",
+                        format: 'YYYY-MM-DD HH:mm:ss'
+                    }
+                });
+            });
+        </script>
     @endif
 
     <script>

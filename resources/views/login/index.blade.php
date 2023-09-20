@@ -52,7 +52,7 @@
                         <div class="col-md-6">
                             <div class="position-absolute w-40 top-0 start-0 h-100 d-md-block d-none">
                                 <div class="oblique-image position-absolute d-flex fixed-top ms-auto h-100 z-index-0 bg-cover me-n8"
-                                    style="background-image:url('../assets/img/image-sign-up.jpg')">
+                                    style="background-image:url('../assets/img/iot/image1_0.jpg')">
                                     <div class="my-auto text-start max-width-350 ms-7">
                                         <h1 class="mt-3 text-white font-weight-bolder">IAN PLATFORM
                                         </h1>
@@ -93,7 +93,8 @@
                             </div>
                         </div>
                         <div class="col-md-4 d-flex flex-column mx-auto">
-                            <div class="card card-plain mt-8">
+                            <div class="card card-plain mt-3">
+                                <img src="../assets/img/iot/iot_croped.png" class="mx-auto d-block" alt="...">
                                 <div class="card-header pb-0 text-left bg-transparent">
                                     <h3 class="font-weight-black text-dark display-6">Welcome back</h3>
                                     <p class="mb-0">Please enter your details.</p>
@@ -104,9 +105,7 @@
                                         <label>Email Address</label>
                                         <div class="mb-3">
                                             <input type="email" name="email"
-                                                class="form-control @error('email')
-                      is-invalid
-                  @enderror"
+                                                class="form-control  @error('email') is-invalid @enderror"
                                                 placeholder="Enter your email address" autofocus
                                                 value="{{ old('email') }}" required>
                                         </div>

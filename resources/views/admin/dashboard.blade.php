@@ -167,31 +167,6 @@
                                             </div>
                                         @enderror
                                     </div>
-                                    {{-- <div class="form-group">
-                                        <label for="parameter" class="col-form-label">Parameter:</label>
-                                        <select class="form-control" id="parameter" name="parameter">
-                                            @foreach ($parameters as $parameter)
-                                                <option value="{{ $parameter->id }}">
-                                                    {{ $parameter->name . ' | ' . $parameter->slug }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        @error('th_L_enable')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
-                                        @enderror
-                                    </div> --}}
-                                    {{-- <div class="form-group">
-                                        <label for="type" class="col-form-label">Type:</label>
-                                        <input type="number" class="form-control" id="type" name="type"
-                                            value="{{ old('type') }}" required>
-                                        @error('type')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
-                                        @enderror
-                                    </div> --}}
                                     <div class="form-group">
                                         <label for="size" class="col-form-label">Size (1 - 12):</label>
                                         <input type="number" class="form-control" id="size" name="size"
@@ -238,7 +213,8 @@
                             <div class="card-header border-bottom pb-0">
                                 <div class="d-sm-flex align-items-center mb-3">
                                     <div>
-                                        <h6 class="font-weight-semibold text-lg mb-0">{{ $panel->panel_name }}</h6>
+                                        <h6 class="font-weight-semibold text-lg mb-0">{{ $panel->panel_name }} <span
+                                                id="alert-parameter-{{ $panel->parameter->id }}"></h6>
                                     </div>
                                     <div class="ms-auto d-flex">
                                         {{-- <button type="button" class="btn btn-sm btn-white mb-0">

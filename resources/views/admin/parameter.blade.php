@@ -391,8 +391,11 @@
                     <div class="card-header border-bottom pb-0">
                         <div class="d-sm-flex align-items-center">
                             <div>
-                                <h6 class="font-weight-semibold text-lg">Actual Value</h6>
-                                {{-- <p class="text-sm">See information about all parameters</p> --}}
+                                <h6 class="font-weight-semibold text-lg">Actual Value <span id="alert-parameter"></span>
+                                </h6>
+                                {{-- <h6 class="font-weight-semibold text-lg">Actual Value <i
+                                    class="fa-solid fa-exclamation-triangle ms-2 text-danger"></i>
+                            </h6> --}}
                             </div>
                         </div>
                     </div>

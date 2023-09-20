@@ -28,6 +28,18 @@
                         <span class="nav-link-text ms-1">Home</span>
                     </a>
                 </li>
+                @foreach ($dashboards as $dashboard_access)
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::is('/dashboard/' . $dashboard_access->id) ? 'active' : '' }}"
+                            href="/dashboard/{{ $dashboard_access->id }}">
+                            <div
+                                class="{{ Request::is('/dashboard/' . $dashboard_access->id) ? 'text-primary' : '' }} icon icon-shape icon-sm px-0 text-center d-flex align-items-center justify-content-center">
+                                <i class="fa-solid fa-th-large"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Dashboard {{ $dashboard_access->dashboard_name }}</span>
+                        </a>
+                    </li>
+                @endforeach
             @endrole
 
             {{-- <li class="nav-item">

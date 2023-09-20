@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Dashboard;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -44,10 +45,28 @@ class LoginController extends Controller
     }
     public function showAccount()
     {
-        $data = [
-            'title' => 'Home',
-            'breadcrumb' => 'Account'
-        ];
+        $data = [];
+        $user = Auth::user();
+        if ($user->hasRole('Admin')) {
+            $data = [
+                'title' => 'Home',
+                'breadcrumb' => 'Account'
+            ];
+        } else {
+            $access = Auth::user()->access;
+            $dashboards = [];
+            if (sizeof($access) > 0) {
+                $dashboard = Dashboard::find($access[0]->dashboard_id);
+                array_push($dashboards, $dashboard);
+            }
+            $data = [
+                'title' => 'Home',
+                'breadcrumb' => 'Account',
+                'dashboards' => $dashboards
+            ];
+        }
+
+
         return view('account.index', $data);
     }
 

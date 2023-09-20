@@ -15,6 +15,8 @@ use App\Http\Controllers\DatatablesController;
 use App\Http\Controllers\TestController;
 use App\Models\Devices;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\user\DashboardController as UserDashboardController;
+use App\Http\Controllers\user\ParameterController as UserParameterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -84,7 +86,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/graphdata', [AdminParameterController::class, 'graphData']);
     });
     Route::middleware('role:User')->group(function () {
-        Route::resource('/', DashboardController::class);
+        Route::get('/', [UserDashboardController::class, 'index']);
+        Route::get('/dashboard/{dashboard}', [UserDashboardController::class, 'show']);
+        Route::get('/dashboard/parameter/{parameter}', [UserParameterController::class, 'show']);
+        Route::post('/userlivedata', [UserParameterController::class, 'liveData']);
+        Route::post('/usergraphdata', [UserParameterController::class, 'graphData']);
+        Route::post('/datatables/user_historical_log', [UserParameterController::class, 'historical_log']);
+        Route::post('/datatables/user_alert_log', [UserParameterController::class, 'alert_log']);
+        // Route::post('/usergraphdata', [AdminParameterController::class, 'graphData']);
     });
 });
 
