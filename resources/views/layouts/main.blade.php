@@ -45,7 +45,7 @@
 
 </head>
 
-<body class="g-sidenav-show  bg-gray-100">
+<body class="g-sidenav-show bg-gray-100">
     @include('sweetalert::alert')
     @include('layouts.sidebar')
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
@@ -799,7 +799,7 @@
                                                     `<i class="fa-solid fa-exclamation-triangle ms-2 text-danger"></i>`
                                                 );
                                             } else {
-                                                $('#alert-parameter').html(
+                                                $('#alert-parameter-' + data.id).html(
                                                     ``
                                                 );
                                             }
@@ -842,7 +842,8 @@
                         "url": "{{ url('datatables/access_list') }}",
                         "type": "POST",
                         "data": {
-                            _token: "{{ csrf_token() }}"
+                            _token: "{{ csrf_token() }}",
+                            "user_id": {{ $user->id }}
                         }
                     },
                 });
@@ -881,7 +882,7 @@
                                                     `<i class="fa-solid fa-exclamation-triangle ms-2 text-danger"></i>`
                                                 );
                                             } else {
-                                                $('#alert-parameter').html(
+                                                $('#alert-parameter-' + data.id).html(
                                                     ``
                                                 );
                                             }

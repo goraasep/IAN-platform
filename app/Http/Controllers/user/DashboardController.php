@@ -16,8 +16,10 @@ class DashboardController extends Controller
         $access = Auth::user()->access;
         $dashboards = [];
         if (sizeof($access) > 0) {
-            $dashboard = Dashboard::find($access[0]->dashboard_id);
-            array_push($dashboards, $dashboard);
+            foreach ($access as $dashboard_list) {
+                $dashboard = Dashboard::find($dashboard_list->dashboard_id);
+                array_push($dashboards, $dashboard);
+            }
         }
         return view('user.index', [
             'title' => 'Home',
@@ -46,8 +48,10 @@ class DashboardController extends Controller
             );
             $dashboards = [];
             if (sizeof($access) > 0) {
-                $dashboard = Dashboard::find($access[0]->dashboard_id);
-                array_push($dashboards, $dashboard);
+                foreach ($access as $dashboard_list) {
+                    $_dashboard = Dashboard::find($dashboard_list->dashboard_id);
+                    array_push($dashboards, $_dashboard);
+                }
             }
             return view('user.dashboard', [
                 'title' => 'Home',

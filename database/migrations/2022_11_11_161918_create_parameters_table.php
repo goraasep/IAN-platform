@@ -24,8 +24,10 @@ return new class extends Migration
             $table->string('unit')->nullable();
             $table->double('th_H')->default(0);
             $table->integer('th_H_enable')->default(0);
+            $table->integer('th_H_count')->default(0);
             $table->double('th_L')->default(0);
             $table->integer('th_L_enable')->default(0);
+            $table->integer('th_L_count')->default(0);
             $table->string('alert')->default('Normal');
             $table->string('alert_prev')->default('Normal');
             $table->double('max')->default(0);

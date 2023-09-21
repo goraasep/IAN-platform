@@ -31,7 +31,9 @@ class LoginController extends Controller
                 return redirect('/');
             }
         }
-        return back()->with('loginError', 'Login failed!');
+        alert()->warning('Failed', 'Login failed!');
+        return back();
+        // return back()->with('loginError', 'Login failed!');
     }
     public function logout(Request $request)
     {
@@ -65,8 +67,6 @@ class LoginController extends Controller
                 'dashboards' => $dashboards
             ];
         }
-
-
         return view('account.index', $data);
     }
 

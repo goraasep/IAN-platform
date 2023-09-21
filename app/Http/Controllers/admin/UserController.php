@@ -127,7 +127,7 @@ class UserController extends Controller
             'email',
             'created_at',
         );
-        $collection = DB::table('users')->select($columns);
+        $collection = DB::table('users')->select($columns)->where('id', '!=', 1);
         $totalData = $collection->count();
 
         $totalFiltered = $totalData;
@@ -188,6 +188,7 @@ class UserController extends Controller
 
     public function access_list(Request $request)
     {
+        $user_id = $request->input('user_id');
         $columns = array(
             'dashboards.dashboard_name',
             'dashboards.description',
@@ -195,7 +196,7 @@ class UserController extends Controller
             'access_rights.id'
         );
         $collection = DB::table('access_rights')->select($columns)
-            ->leftJoin('dashboards', 'access_rights.dashboard_id', '=', 'dashboards.id');
+            ->leftJoin('dashboards', 'access_rights.dashboard_id', '=', 'dashboards.id')->where('user_id', $user_id);
         // $subjoin = DB::table('service_logs')->select($subcolumns)
         //     ->leftJoin('verification_logs', 'service_logs.id', '=', 'verification_logs.service_id');
         $totalData = $collection->count();
