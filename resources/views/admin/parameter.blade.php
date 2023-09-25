@@ -91,6 +91,28 @@
                                     </div>
                                     <div class="row">
                                         <div class="form-group col">
+                                            <label for="max" class="col-form-label">Max Value:</label>
+                                            <input type="number" step="any" class="form-control" id="max"
+                                                name="max" value="{{ old('max', $parameter->max) }}">
+                                            @error('max')
+                                                <div class="invalid-feedback">
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
+                                        </div>
+                                        <div class="form-group col">
+                                            <label for="max" class="col-form-label">Min Value:</label>
+                                            <input type="number" step="any" class="form-control" id="min"
+                                                name="min" value="{{ old('min', $parameter->min) }}">
+                                            @error('min')
+                                                <div class="invalid-feedback">
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col">
                                             <label for="th_H_enable" class="col-form-label">Enable Threshold
                                                 High:</label>
                                             <select class="form-control" id="th_H_enable" name="th_H_enable">
@@ -153,28 +175,35 @@
                                     </div>
                                     <div class="row">
                                         <div class="form-group col">
-                                            <label for="max" class="col-form-label">Max Value:</label>
-                                            <input type="number" step="any" class="form-control" id="max"
-                                                name="max" value="{{ old('max', $parameter->max) }}">
-                                            @error('max')
+                                            <label for="log_enable" class="col-form-label">Enable Log:</label>
+                                            <select class="form-control" id="log_enable" name="log_enable">
+                                                <option value="1"
+                                                    {{ old('log_enable', $parameter->log_enable) == '1' ? 'selected' : '' }}>
+                                                    Yes</option>
+                                                <option value="0"
+                                                    {{ old('log_enable', $parameter->log_enable) == '0' ? 'selected' : '' }}>
+                                                    No
+                                                </option>
+                                            </select>
+                                            @error('log_enable')
                                                 <div class="invalid-feedback">
                                                     {{ $message }}
                                                 </div>
                                             @enderror
                                         </div>
                                         <div class="form-group col">
-                                            <label for="max" class="col-form-label">Min Value:</label>
-                                            <input type="number" step="any" class="form-control" id="min"
-                                                name="min" value="{{ old('min', $parameter->min) }}">
-                                            @error('min')
+                                            <label for="log_interval" class="col-form-label">Log Interval
+                                                (second):</label>
+                                            <input type="number" step="none" min="1" class="form-control"
+                                                id="log_interval" name="log_interval"
+                                                value="{{ old('log_interval', $parameter->log_interval) }}">
+                                            @error('log_interval')
                                                 <div class="invalid-feedback">
                                                     {{ $message }}
                                                 </div>
                                             @enderror
                                         </div>
                                     </div>
-
-
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-white" data-bs-dismiss="modal">Close</button>
@@ -368,10 +397,28 @@
                     <input type="text" name="datetimerange" id="datetimerange" value="{{ $datetimerange ?: '' }}"
                         class="form-control">
                 </div>
-                <div class="col-xs-auto col-lg-5">
+                <div class="col-xs-auto col-lg-2">
+                    <div class="form-group">
+                        <select name="group" id="" class="form-control">
+                            <option value="hour" {{ $group == 'hour' ? 'selected' : '' }}>By Hour</option>
+                            <option value="date" {{ $group == 'date' ? 'selected' : '' }}>By Date</option>
+                            <option value="none" {{ $group == 'none' ? 'selected' : '' }}>None</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-xs-auto col-lg-2">
                     <button type="submit" value="Submit" name="apply" formmethod="post"
                         formaction="{{ url('admin-panel/parameter/' . $parameter->id) }}"
                         class="btn btn-dark">Apply</button>
+                    {{-- <a class="btn btn-success" href="{{ url('admin-panel/export/parameter') }}"
+                        target="_blank">Export</a> --}}
+                    <button class="btn btn-outline-success" type="button"
+                        onclick="window.open('{{ route('export_parameter_admin', ['datetimerange' => $datetimerange, 'parameter_name' => $parameter->name, 'parameter_id' => $parameter->id]) }}','_blank')">
+                        <span class="btn-inner--icon">
+                            <i class="text-success fa-solid fa-file-excel"></i>
+                        </span>
+                        <span class="btn-inner--text">Export</span>
+                    </button>
                 </div>
             </div>
         </form>

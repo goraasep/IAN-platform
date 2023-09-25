@@ -727,6 +727,9 @@
                 $('#historical_log').DataTable({
                     "processing": true, //Feature control the processing indicator.
                     "serverSide": true, //Feature control DataTables' server-side processing mode.
+                    order: [
+                        [0, 'desc']
+                    ],
                     "ajax": {
                         "url": "{{ url('datatables/historical_log') }}",
                         "type": "POST",
@@ -741,6 +744,9 @@
                     $('#alert_log').DataTable({
                         "processing": true, //Feature control the processing indicator.
                         "serverSide": true, //Feature control DataTables' server-side processing mode.
+                        order: [
+                            [0, 'desc']
+                        ],
                         "ajax": {
                             "url": "{{ url('datatables/alert_log') }}",
                             "type": "POST",
@@ -991,6 +997,9 @@
                 $('#historical_log').DataTable({
                     "processing": true, //Feature control the processing indicator.
                     "serverSide": true, //Feature control DataTables' server-side processing mode.
+                    order: [
+                        [0, 'desc']
+                    ],
                     "ajax": {
                         "url": "{{ url('datatables/user_historical_log') }}",
                         "type": "POST",
@@ -1005,6 +1014,9 @@
                     $('#alert_log').DataTable({
                         "processing": true, //Feature control the processing indicator.
                         "serverSide": true, //Feature control DataTables' server-side processing mode.
+                        order: [
+                            [0, 'desc']
+                        ],
                         "ajax": {
                             "url": "{{ url('datatables/user_alert_log') }}",
                             "type": "POST",

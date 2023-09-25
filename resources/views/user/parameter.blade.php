@@ -30,7 +30,16 @@
                     <input type="text" name="datetimerange" id="datetimerange" value="{{ $datetimerange ?: '' }}"
                         class="form-control">
                 </div>
-                <div class="col-xs-auto col-lg-5">
+                <div class="col-xs-auto col-lg-2">
+                    <div class="form-group">
+                        <select name="group" id="" class="form-control">
+                            <option value="hour" {{ $group == 'hour' ? 'selected' : '' }}>By Hour</option>
+                            <option value="date" {{ $group == 'date' ? 'selected' : '' }}>By Date</option>
+                            <option value="none" {{ $group == 'none' ? 'selected' : '' }}>None</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-xs-auto col-lg-2">
                     <button type="submit" value="Submit" name="apply" formmethod="post"
                         formaction="{{ url('dashboard/parameter/' . $parameter->id) }}" class="btn btn-dark">Apply</button>
                 </div>

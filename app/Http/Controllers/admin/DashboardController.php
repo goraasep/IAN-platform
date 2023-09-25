@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Charts\NumberParametersChart;
+use App\Exports\DashboardExport;
 use App\Http\Controllers\Controller;
 use App\Models\Dashboard;
 use App\Models\Panel;
@@ -301,5 +302,11 @@ class DashboardController extends Controller
             ])
             ->options($gauge_options2);;
         return $chart_gauge;
+    }
+
+    public function export(Request $request)
+    {
+        // dd($request->all());
+        return new DashboardExport($request);
     }
 }

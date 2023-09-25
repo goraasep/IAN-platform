@@ -55,6 +55,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/admin-panel/dashboard/{dashboard}', [AdminDashboardController::class, 'show']);
         Route::put('/admin-panel/dashboard/{dashboard}', [AdminDashboardController::class, 'update']);
         Route::delete('/admin-panel/dashboard/{dashboard}', [AdminDashboardController::class, 'destroy']);
+        Route::get('/admin-panel/export/dashboard', [AdminDashboardController::class, 'export'])->name('export_dashboard_admin');
         //panel
         Route::post('/admin-panel/panel', [AdminPanelController::class, 'store']);
         Route::put('/admin-panel/panel/{panel}', [AdminPanelController::class, 'update']);
@@ -65,6 +66,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/admin-panel/parameter/{parameter}', [AdminParameterController::class, 'show']);
         Route::put('/admin-panel/parameter/{parameter}', [AdminParameterController::class, 'update']);
         Route::delete('/admin-panel/parameter/{parameter}', [AdminParameterController::class, 'destroy']);
+        Route::get('/admin-panel/export/parameter', [AdminParameterController::class, 'export'])->name('export_parameter_admin');
         //user
         Route::get('/admin-panel/user/{user}', [AdminUserController::class, 'show']);
         Route::post('/admin-panel/user', [AdminUserController::class, 'store']);
@@ -89,6 +91,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [UserDashboardController::class, 'index']);
         Route::get('/dashboard/{dashboard}', [UserDashboardController::class, 'show']);
         Route::get('/dashboard/parameter/{parameter}', [UserParameterController::class, 'show']);
+        Route::post('/dashboard/parameter/{parameter}', [UserParameterController::class, 'show']);
         Route::post('/userlivedata', [UserParameterController::class, 'liveData']);
         Route::post('/usergraphdata', [UserParameterController::class, 'graphData']);
         Route::post('/datatables/user_historical_log', [UserParameterController::class, 'historical_log']);

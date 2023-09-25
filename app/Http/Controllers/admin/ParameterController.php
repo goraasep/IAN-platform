@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Charts\NumberParametersChart;
+use App\Exports\SingleParameterExport;
 use App\Http\Controllers\Controller;
 use App\Models\Parameters;
 use Carbon\Carbon;
@@ -21,6 +22,7 @@ class ParameterController extends Controller
         // return $parameter;
         // dd($request->datetimerange);
         $default_time = $request->datetimerange ?: Carbon::now()->toDateString() . ' 00:00:00 to ' . Carbon::now()->toDateString() . ' 23:59:00';
+        $default_group = $request->group ?: 'hour';
         $data = [
             'title' => 'Home',
             'breadcrumb' => 'Parameter',
@@ -28,9 +30,10 @@ class ParameterController extends Controller
             'parameter' => $parameter,
             'charts' => [
                 'chart_gauge' => $this->renderGauge($parameter),
-                'chart_line' => $this->renderLine($parameter, $default_time)
+                'chart_line' => $this->renderLine($parameter, $default_time, $default_group)
             ],
-            'datetimerange' => $default_time
+            'datetimerange' => $default_time,
+            'group' => $default_group
         ];
         // $data['charts'] = $this->renderChart($parameter);
         return view('admin.parameter', $data);
@@ -49,6 +52,8 @@ class ParameterController extends Controller
                 'th_L_enable' => 'required|integer',
                 'max' => 'required|numeric',
                 'min' => 'required|numeric',
+                'log_interval' => 'required|integer',
+                'log_enable' => 'required|integer',
             ]);
             $parameter = Parameters::create($validatedData);
             // Alert::success('Congrats', 'You\'ve Successfully Registered');
@@ -92,6 +97,8 @@ class ParameterController extends Controller
                 'th_L_enable' => 'required|integer',
                 'max' => 'required|numeric',
                 'min' => 'required|numeric',
+                'log_interval' => 'required|integer',
+                'log_enable' => 'required|integer',
             ]);
             Parameters::where('id', $parameter->id)->update($validatedData);
             alert()->success('Success', 'Edit parameter success!');
@@ -345,7 +352,7 @@ class ParameterController extends Controller
         return $chart_gauge;
     }
 
-    private function renderLine($parameter, $datetimerange)
+    private function renderLine($parameter, $datetimerange, $default_group)
     {
         $datetimeexplode = explode(' to ', $datetimerange);
         $datetimestart = $datetimeexplode[0];
@@ -355,8 +362,23 @@ class ParameterController extends Controller
             ->where([
                 ['created_at', '>=', $datetimestart],
                 ['created_at', '<=',  $datetimeend],
-            ])
-            ->get();
+            ]);
+        if ($default_group == 'hour') {
+            $parameter_log = $parameter_log->groupByRaw('date(created_at)');
+            $parameter_log = $parameter_log->groupByRaw('hour(created_at)');
+        } elseif ($default_group == 'date') {
+            $parameter_log = $parameter_log->groupByRaw('date(created_at)');
+        }
+        $parameter_log = $parameter_log->get();
+
+        // $parameter_log = DB::table('parameter_log_' . $parameter->id)
+        //     ->select('created_at', 'log_value')
+        //     ->where([
+        //         ['created_at', '>=', $datetimestart],
+        //         ['created_at', '<=',  $datetimeend],
+        //     ])
+        //     ->groupByRaw('hour(created_at)')
+        //     ->get();
         $arr_parameter_log = collect($parameter_log)->map(function ($log) {
             return [$log->created_at, $log->log_value];
         });
@@ -588,5 +610,11 @@ class ParameterController extends Controller
             "data"            => $data
         );
         echo json_encode($json_data);
+    }
+
+    public function export(Request $request)
+    {
+        // dd($request->all());
+        return new SingleParameterExport($request);
     }
 }

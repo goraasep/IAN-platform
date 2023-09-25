@@ -169,6 +169,28 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="form-group col">
+                                                        <label for="max" class="col-form-label">Max Value:</label>
+                                                        <input type="number" step="any" class="form-control"
+                                                            id="max" name="max" value="{{ old('max', 0) }}">
+                                                        @error('max')
+                                                            <div class="invalid-feedback">
+                                                                {{ $message }}
+                                                            </div>
+                                                        @enderror
+                                                    </div>
+                                                    <div class="form-group col">
+                                                        <label for="max" class="col-form-label">Min Value:</label>
+                                                        <input type="number" step="any" class="form-control"
+                                                            id="min" name="min" value="{{ old('min', 0) }}">
+                                                        @error('min')
+                                                            <div class="invalid-feedback">
+                                                                {{ $message }}
+                                                            </div>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="form-group col">
                                                         <label for="th_H_enable" class="col-form-label">Enable Threshold
                                                             High:</label>
                                                         <select class="form-control" id="th_H_enable" name="th_H_enable">
@@ -229,28 +251,35 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="form-group col">
-                                                        <label for="max" class="col-form-label">Max Value:</label>
-                                                        <input type="number" step="any" class="form-control"
-                                                            id="max" name="max" value="{{ old('max', 0) }}">
-                                                        @error('max')
+                                                        <label for="log_enable" class="col-form-label">Enable Log:</label>
+                                                        <select class="form-control" id="log_enable" name="log_enable">
+                                                            <option value="1"
+                                                                {{ old('log_enable') == '1' ? 'selected' : '' }}>
+                                                                Yes</option>
+                                                            <option value="0"
+                                                                {{ old('log_enable') == '0' ? 'selected' : '' }}>
+                                                                No
+                                                            </option>
+                                                        </select>
+                                                        @error('log_enable')
                                                             <div class="invalid-feedback">
                                                                 {{ $message }}
                                                             </div>
                                                         @enderror
                                                     </div>
                                                     <div class="form-group col">
-                                                        <label for="max" class="col-form-label">Min Value:</label>
-                                                        <input type="number" step="any" class="form-control"
-                                                            id="min" name="min" value="{{ old('min', 0) }}">
-                                                        @error('min')
+                                                        <label for="log_interval" class="col-form-label">Log
+                                                            Interval (second):</label>
+                                                        <input type="number" step="none" min="1"
+                                                            class="form-control" id="log_interval" name="log_interval"
+                                                            value="{{ old('log_interval', 1) }}">
+                                                        @error('log_interval')
                                                             <div class="invalid-feedback">
                                                                 {{ $message }}
                                                             </div>
                                                         @enderror
                                                     </div>
                                                 </div>
-
-
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-white"

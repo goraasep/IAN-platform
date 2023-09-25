@@ -23,6 +23,7 @@ class ParameterController extends Controller
             array_push($dashboards, $dashboard);
         }
         $default_time = $request->datetimerange ?: Carbon::now()->toDateString() . ' 00:00:00 to ' . Carbon::now()->toDateString() . ' 23:59:00';
+        $default_group = $request->group ?: 'hour';
         $data = [
             'title' => 'Home',
             'breadcrumb' => 'Parameter',
@@ -30,10 +31,11 @@ class ParameterController extends Controller
             'parameter' => $parameter,
             'charts' => [
                 'chart_gauge' => $this->renderGauge($parameter),
-                'chart_line' => $this->renderLine($parameter, $default_time)
+                'chart_line' => $this->renderLine($parameter, $default_time, $default_group)
             ],
             'datetimerange' => $default_time,
-            'dashboards' => $dashboards
+            'dashboards' => $dashboards,
+            'group' => $default_group
         ];
         // $data['charts'] = $this->renderChart($parameter);
         return view('user.parameter', $data);
@@ -180,7 +182,7 @@ class ParameterController extends Controller
         return $chart_gauge;
     }
 
-    private function renderLine($parameter, $datetimerange)
+    private function renderLine($parameter, $datetimerange, $default_group)
     {
         $datetimeexplode = explode(' to ', $datetimerange);
         $datetimestart = $datetimeexplode[0];
@@ -190,8 +192,21 @@ class ParameterController extends Controller
             ->where([
                 ['created_at', '>=', $datetimestart],
                 ['created_at', '<=',  $datetimeend],
-            ])
-            ->get();
+            ]);
+        if ($default_group == 'hour') {
+            $parameter_log = $parameter_log->groupByRaw('date(created_at)');
+            $parameter_log = $parameter_log->groupByRaw('hour(created_at)');
+        } elseif ($default_group == 'date') {
+            $parameter_log = $parameter_log->groupByRaw('date(created_at)');
+        }
+        $parameter_log = $parameter_log->get();
+        // $parameter_log = DB::table('parameter_log_' . $parameter->id)
+        //     ->select('created_at', 'log_value')
+        //     ->where([
+        //         ['created_at', '>=', $datetimestart],
+        //         ['created_at', '<=',  $datetimeend],
+        //     ])
+        //     ->get();
         $arr_parameter_log = collect($parameter_log)->map(function ($log) {
             return [$log->created_at, $log->log_value];
         });
