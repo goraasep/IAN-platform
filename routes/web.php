@@ -92,6 +92,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/dashboard/{dashboard}', [UserDashboardController::class, 'show']);
         Route::get('/dashboard/parameter/{parameter}', [UserParameterController::class, 'show']);
         Route::post('/dashboard/parameter/{parameter}', [UserParameterController::class, 'show']);
+        Route::get('/export/dashboard', [UserDashboardController::class, 'export'])->name('export_dashboard_user');
+        Route::get('/export/parameter', [UserParameterController::class, 'export'])->name('export_parameter_user');
+
         Route::post('/userlivedata', [UserParameterController::class, 'liveData']);
         Route::post('/usergraphdata', [UserParameterController::class, 'graphData']);
         Route::post('/datatables/user_historical_log', [UserParameterController::class, 'historical_log']);

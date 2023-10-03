@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\user;
 
 use App\Charts\NumberParametersChart;
+use App\Exports\DashboardExport;
 use App\Http\Controllers\Controller;
 use App\Models\Dashboard;
 use Illuminate\Http\Request;
@@ -207,5 +208,18 @@ class DashboardController extends Controller
             ])
             ->options($gauge_options2);;
         return $chart_gauge;
+    }
+
+    public function export(Request $request)
+    {
+        // dd($request->all());
+        $access = collect(Auth::user()->access);
+        $dashboard_access = $access->where('dashboard_id', $request->input('dashboard_id'));
+        if (sizeof($dashboard_access) > 0) {
+            return new DashboardExport($request);
+        } else {
+            alert()->warning('Failed', 'You dont have access to this dashboard.');
+            return redirect('/');
+        }
     }
 }

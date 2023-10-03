@@ -42,6 +42,13 @@
                 <div class="col-xs-auto col-lg-2">
                     <button type="submit" value="Submit" name="apply" formmethod="post"
                         formaction="{{ url('dashboard/parameter/' . $parameter->id) }}" class="btn btn-dark">Apply</button>
+                    <button class="btn btn-outline-success" type="button"
+                        onclick="window.open('{{ route('export_parameter_user', ['datetimerange' => $datetimerange, 'parameter_name' => $parameter->name, 'parameter_id' => $parameter->id]) }}','_blank')">
+                        <span class="btn-inner--icon">
+                            <i class="text-success fa-solid fa-file-excel"></i>
+                        </span>
+                        <span class="btn-inner--text">Export</span>
+                    </button>
                 </div>
             </div>
         </form>

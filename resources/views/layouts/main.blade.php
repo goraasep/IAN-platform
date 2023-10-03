@@ -836,6 +836,18 @@
                 setInterval(getLiveData, 3000);
             });
         </script>
+        <script>
+            $(function() {
+                $('input[name="datetimerange"]').daterangepicker({
+                    timePicker: true,
+                    timePicker24Hour: true,
+                    locale: {
+                        separator: " to ",
+                        format: 'YYYY-MM-DD HH:mm:ss'
+                    }
+                });
+            });
+        </script>
     @endif
 
     @if (Request::is('admin-panel/user/*'))
@@ -917,6 +929,18 @@
 
                 }
                 setInterval(getLiveData, 3000);
+            });
+        </script>
+        <script>
+            $(function() {
+                $('input[name="datetimerange"]').daterangepicker({
+                    timePicker: true,
+                    timePicker24Hour: true,
+                    locale: {
+                        separator: " to ",
+                        format: 'YYYY-MM-DD HH:mm:ss'
+                    }
+                });
             });
         </script>
     @endif

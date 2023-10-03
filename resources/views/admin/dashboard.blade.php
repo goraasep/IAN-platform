@@ -34,6 +34,14 @@
                 </button>
                 <button type="button"
                     class="btn btn-sm btn-white btn-icon d-md-flex align-items-center mb-md-0 mb-2 mb-0 me-md-2"
+                    data-bs-toggle="modal" data-bs-target="#exportDashboardModal">
+                    <span class="btn-inner--icon me-2">
+                        <i class="fa-solid fa-file-excel"></i>
+                    </span>
+                    <span class="btn-inner--text">Export Dashboard</span>
+                </button>
+                <button type="button"
+                    class="btn btn-sm btn-white btn-icon d-md-flex align-items-center mb-md-0 mb-2 mb-0 me-md-2"
                     data-bs-toggle="modal" data-bs-target="#settingDashboardModal">
                     <span class="btn-inner--icon me-2">
                         <i class="fa-solid fa-cog"></i>
@@ -90,6 +98,39 @@
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-white" data-bs-dismiss="modal">Close</button>
                                     <button type="submit" class="btn btn-dark">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="exportDashboardModal" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalMessageTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <form method="post">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Export Dashboard
+                                    </h5>
+                                    <button type="button" class="btn-close text-dark" data-bs-dismiss="modal"
+                                        aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body mx-3">
+                                    @csrf
+                                    {{-- <input type="number" name="id" value="{{ $dashboard->id }}" required hidden> --}}
+                                    <div class="form-group">
+                                        <label for="dashboard-name" class="col-form-label">Choose Range:</label>
+                                        <input type="text" name="datetimerange" id="datetimerange" value=""
+                                            class="form-control">
+                                    </div>
+                                    <input type="number" name="dashboard_id" value="{{ $dashboard->id }}" hidden>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-white" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" value="Submit" name="export" formmethod="get"
+                                        formaction="/admin-panel/export/dashboard" formtarget="_blank"
+                                        class="btn btn-success">Export</button>
                                 </div>
                             </form>
                         </div>

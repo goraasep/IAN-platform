@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\user;
 
 use App\Charts\NumberParametersChart;
+use App\Exports\SingleParameterExport;
 use App\Http\Controllers\Controller;
 use App\Models\Dashboard;
 use App\Models\Parameters;
@@ -438,5 +439,11 @@ class ParameterController extends Controller
             "data"            => $data
         );
         echo json_encode($json_data);
+    }
+
+    public function export(Request $request)
+    {
+        // dd($request->all());
+        return new SingleParameterExport($request);
     }
 }

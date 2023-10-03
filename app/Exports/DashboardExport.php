@@ -20,7 +20,7 @@ use PhpOffice\PhpSpreadsheet\Chart\Legend;
 use PhpOffice\PhpSpreadsheet\Chart\PlotArea;
 use PhpOffice\PhpSpreadsheet\Chart\Title;
 
-class DashboardExport implements WithEvents, Responsable
+class DashboardExport implements WithEvents, Responsable, WithCharts
 {
     /**
      * @return \Illuminate\Support\Collection
@@ -32,13 +32,13 @@ class DashboardExport implements WithEvents, Responsable
     private $writerType = Excel::XLSX;
     public function __construct($request)
     {
-        // $datetimeexplode = explode(' to ', $request->input('datetimerange'));
-        // $start = $datetimeexplode[0];
-        // $end = $datetimeexplode[1];
+        $datetimeexplode = explode(' to ', $request->input('datetimerange'));
+        $start = $datetimeexplode[0];
+        $end = $datetimeexplode[1];
         $this->parameter = [
-            // 'from' => $start,
-            // 'to' => $end,
-            'dashboard_id' => 1,
+            'from' => $start,
+            'to' => $end,
+            'dashboard_id' => $request->input('dashboard_id'),
         ];
         // $this->fileName = $this->parameter['from'] . '_to_' . $this->parameter['to'] . '_' . $this->parameter['parameter_name'] . '.xlsx';
         $this->fileName = 'test.xlsx';
@@ -69,10 +69,10 @@ class DashboardExport implements WithEvents, Responsable
                 $sheet->setTitle('Overview');
                 $workSheet =  $sheet->getDelegate();
                 // $this->getDrawing()->setWorksheet($workSheet);
-                $this->charts()->setWorksheet($workSheet);
-                // foreach ($this->charts() as $chart) {
-                //     $chart->setWorksheet($workSheet);
-                // }
+                // $this->charts()->setWorksheet($workSheet);
+                foreach ($this->charts() as $chart) {
+                    $chart->setWorksheet($workSheet);
+                }
                 // $this->populateSheet($sheet);
 
                 $event->writer->getSheetByIndex(0)->export($event->getConcernable()); // call the export on the first sheet
@@ -108,10 +108,10 @@ class DashboardExport implements WithEvents, Responsable
             $parameter = $panel->parameter;
             $parameter_count = DB::table('parameter_log_' . $parameter->id)
                 ->select('created_at', 'log_value')
-                // ->where([
-                //     ['created_at', '>=', $this->parameter['from']],
-                //     ['created_at', '<=', $this->parameter['to']],
-                // ])
+                ->where([
+                    ['created_at', '>=', $this->parameter['from']],
+                    ['created_at', '<=', $this->parameter['to']],
+                ])
                 ->orderBy('created_at', 'desc')
                 ->count();
             $label      = [new DataSeriesValues('String', $parameter->name . '!$B$1', null, 1)];
@@ -136,12 +136,11 @@ class DashboardExport implements WithEvents, Responsable
 
             $legend = new Legend();
             $chart  = new ChartChart($parameter->name . ' Chart', new Title($parameter->name . ' Chart'), $legend, $plot);
-            // $chart->setTopLeftPosition('D' . (2 + (30 * $i)));
-            // $chart->setBottomRightPosition('W' . (30 + (30 * $i)));
-            $chart->setTopLeftPosition('D2');
-            $chart->setBottomRightPosition('W30');
+            $chart->setTopLeftPosition('D' . (2 + (30 * $i)));
+            $chart->setBottomRightPosition('W' . (30 + (30 * $i)));
+            // $chart->setTopLeftPosition('D2');
+            // $chart->setBottomRightPosition('W30');
             $i++;
-            return $chart;
             array_push($charts, $chart);
         }
 
@@ -155,10 +154,10 @@ class DashboardExport implements WithEvents, Responsable
         // $parameter = Parameters::find(1);
         $parameter_log = DB::table('parameter_log_' . $parameter->id)
             ->select('created_at', 'log_value')
-            // ->where([
-            //     ['created_at', '>=', $this->parameter['from']],
-            //     ['created_at', '<=', $this->parameter['to']],
-            // ])
+            ->where([
+                ['created_at', '>=', $this->parameter['from']],
+                ['created_at', '<=', $this->parameter['to']],
+            ])
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -232,10 +231,10 @@ class DashboardExport implements WithEvents, Responsable
         // $parameter = Parameters::find(1);
         $parameter_log = DB::table('parameter_alert_' . $parameter->id)
             ->select('created_at', 'alert')
-            // ->where([
-            //     ['created_at', '>=', $this->parameter['from']],
-            //     ['created_at', '<=', $this->parameter['to']],
-            // ])
+            ->where([
+                ['created_at', '>=', $this->parameter['from']],
+                ['created_at', '<=', $this->parameter['to']],
+            ])
             ->orderBy('created_at', 'desc')
             ->get();
 
