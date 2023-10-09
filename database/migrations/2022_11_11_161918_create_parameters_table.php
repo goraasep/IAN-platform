@@ -35,6 +35,8 @@ return new class extends Migration
             $table->integer('show')->default(0);
             $table->integer('log_enable')->default(0);
             $table->integer('log_interval')->default(5);
+            $table->foreignId('topic_id');
+            $table->string('json_path');
             // $table->string('base_parameter')->nullable();
             // $table->string('operator')->nullable();
             // $table->double('condition_value')->default(0);

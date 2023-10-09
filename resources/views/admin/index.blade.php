@@ -280,6 +280,37 @@
                                                         @enderror
                                                     </div>
                                                 </div>
+                                                <div class="row">
+                                                    <div class="form-group col">
+                                                        <label for="topic_id" class="col-form-label">Connection:</label>
+                                                        <select class="form-control" id="topic_id" name="topic_id">
+                                                            @foreach ($connections as $connection)
+                                                                @foreach ($connection->topics as $topic)
+                                                                    <option value="{{ $topic->id }}">
+                                                                        Broker: {{ $connection->broker_address }} | Topic:
+                                                                        {{ $topic->topic }}
+                                                                    </option>
+                                                                @endforeach
+                                                            @endforeach
+                                                        </select>
+                                                        @error('log_enable')
+                                                            <div class="invalid-feedback">
+                                                                {{ $message }}
+                                                            </div>
+                                                        @enderror
+                                                    </div>
+                                                    <div class="form-group col">
+                                                        <label for="json_path" class="col-form-label">JSON Path:</label>
+                                                        <input type="text" step="none" min="1"
+                                                            class="form-control" id="json_path" name="json_path"
+                                                            value="{{ old('json_path') }}">
+                                                        @error('json_path')
+                                                            <div class="invalid-feedback">
+                                                                {{ $message }}
+                                                            </div>
+                                                        @enderror
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-white"
@@ -401,6 +432,123 @@
                             <tr>
                                 <th>ID</th>
                                 <th>User</th>
+                                <th>Created At</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card border shadow-xs mb-4">
+                <div class="card-header border-bottom pb-0">
+                    <div class="d-sm-flex align-items-center">
+                        <div>
+                            <h6 class="font-weight-semibold text-lg mb-0">Connection list</h6>
+                            <p class="text-sm">See information about all connections</p>
+                        </div>
+                        <div class="ms-auto d-flex">
+                            <button type="button" class="btn btn-sm btn-dark btn-icon d-flex align-items-center me-2"
+                                data-bs-toggle="modal" data-bs-target="#addConnModal">
+                                <span class="btn-inner--icon me-2">
+                                    <i class="fa-solid fa-plus"></i>
+                                </span>
+                                <span class="btn-inner--text">Add Connection</span>
+                            </button>
+                            <!-- Modal -->
+                            <div class="modal fade" id="addConnModal" tabindex="-1" role="dialog"
+                                aria-labelledby="exampleModalMessageTitle" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <form method="post" action="/admin-panel/connection">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Add new Connection
+                                                </h5>
+                                                <button type="button" class="btn-close text-dark"
+                                                    data-bs-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body mx-3">
+                                                @csrf
+                                                <div class="form-group">
+                                                    <label for="conn-address" class="col-form-label">Broker
+                                                        Address:</label>
+                                                    <input type="text" class="form-control" id="conn-address"
+                                                        name="broker_address" value="{{ old('broker_address') }}">
+                                                    @error('broker_address')
+                                                        <div class="invalid-feedback">
+                                                            {{ $message }}
+                                                        </div>
+                                                    @enderror
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="conn-port" class="col-form-label">Port:</label>
+                                                    <input type="number" class="form-control" id="conn-port"
+                                                        name="port" value="{{ old('port') }}">
+                                                    @error('port')
+                                                        <div class="invalid-feedback">
+                                                            {{ $message }}
+                                                        </div>
+                                                    @enderror
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="conn-username" class="col-form-label">Username:</label>
+                                                    <input type="text" class="form-control" id="conn-username"
+                                                        name="username" value="{{ old('username') }}">
+                                                    @error('username')
+                                                        <div class="invalid-feedback">
+                                                            {{ $message }}
+                                                        </div>
+                                                    @enderror
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="conn-password" class="col-form-label">Password:</label>
+                                                    <input type="password" class="form-control" id="conn-password"
+                                                        name="password" value="{{ old('password') }}">
+                                                    @error('password')
+                                                        <div class="invalid-feedback">
+                                                            {{ $message }}
+                                                        </div>
+                                                    @enderror
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="conn-client-id" class="col-form-label">Client ID:</label>
+                                                    <input type="text" class="form-control" id="conn-client-id"
+                                                        name="client_id" value="{{ old('client_id') }}">
+                                                    @error('client_id')
+                                                        <div class="invalid-feedback">
+                                                            {{ $message }}
+                                                        </div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-white"
+                                                    data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-dark">Save</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body table-responsive">
+                    <table id="connection_list" class="display text-center" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Address</th>
+                                <th>Port</th>
+                                <th>Client ID</th>
+                                <th>Status</th>
                                 <th>Created At</th>
                                 <th>Action</th>
                             </tr>

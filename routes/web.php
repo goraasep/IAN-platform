@@ -5,6 +5,8 @@ use App\Http\Controllers\admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\admin\PanelController as AdminPanelController;
 use App\Http\Controllers\admin\ParameterController as AdminParameterController;
 use App\Http\Controllers\admin\UserController as AdminUserController;
+use App\Http\Controllers\admin\ConnectionController as AdminConnectionController;
+use App\Http\Controllers\admin\TopicController as AdminTopicController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DevicesController;
 use App\Http\Controllers\ParameterController;
@@ -74,11 +76,21 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/admin-panel/user/{user}', [AdminUserController::class, 'destroy']);
         Route::post('/admin-panel/access', [AdminUserController::class, 'addDashboardAccess']);
         Route::delete('/admin-panel/access/{access}', [AdminUserController::class, 'destroy_access']);
+        Route::post('/datatables/access_list', [AdminUserController::class, 'access_list']);
+
+        //connection
+        Route::get('/admin-panel/connection/{connection}', [AdminConnectionController::class, 'show']);
+        Route::post('/admin-panel/connection', [AdminConnectionController::class, 'store']);
+        Route::put('/admin-panel/connection/{connection}', [AdminConnectionController::class, 'update']);
+        Route::delete('/admin-panel/connection/{connection}', [AdminConnectionController::class, 'destroy']);
+        Route::post('/datatables/topic_list', [AdminTopicController::class, 'topic_list']);
+        Route::post('/admin-panel/topic', [AdminTopicController::class, 'store']);
+        Route::delete('/admin-panel/topic/{topic}', [AdminTopicController::class, 'destroy']);
 
         Route::post('/datatables/parameter_list', [AdminParameterController::class, 'parameter_list']);
         Route::post('/datatables/dashboard_list', [AdminDashboardController::class, 'dashboard_list']);
         Route::post('/datatables/user_list', [AdminUserController::class, 'user_list']);
-        Route::post('/datatables/access_list', [AdminUserController::class, 'access_list']);
+        Route::post('/datatables/connection_list', [AdminConnectionController::class, 'connection_list']);
 
 
         Route::post('/datatables/historical_log', [AdminParameterController::class, 'historical_log']);

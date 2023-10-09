@@ -648,6 +648,17 @@
                         }
                     },
                 });
+                $('#connection_list').DataTable({
+                    "processing": true, //Feature control the processing indicator.
+                    "serverSide": true, //Feature control DataTables' server-side processing mode.
+                    "ajax": {
+                        "url": "{{ url('datatables/connection_list') }}",
+                        "type": "POST",
+                        "data": {
+                            _token: "{{ csrf_token() }}"
+                        }
+                    },
+                });
             });
         </script>
     @endif
@@ -1063,6 +1074,25 @@
                         separator: " to ",
                         format: 'YYYY-MM-DD HH:mm:ss'
                     }
+                });
+            });
+        </script>
+    @endif
+
+    @if (Request::is('admin-panel/connection/*'))
+        <script>
+            $(document).ready(function() {
+                $('#topic_list').DataTable({
+                    "processing": true, //Feature control the processing indicator.
+                    "serverSide": true, //Feature control DataTables' server-side processing mode.
+                    "ajax": {
+                        "url": "{{ url('datatables/topic_list') }}",
+                        "type": "POST",
+                        "data": {
+                            _token: "{{ csrf_token() }}",
+                            "connection_id": {{ $connection->id }}
+                        }
+                    },
                 });
             });
         </script>

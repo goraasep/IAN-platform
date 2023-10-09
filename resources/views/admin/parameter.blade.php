@@ -204,6 +204,38 @@
                                             @enderror
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="form-group col">
+                                            <label for="topic_id" class="col-form-label">Connection:</label>
+                                            <select class="form-control" id="topic_id" name="topic_id">
+                                                @foreach ($connections as $connection)
+                                                    @foreach ($connection->topics as $topic)
+                                                        <option value="{{ $topic->id }}"
+                                                            {{ $parameter->topic_id == $topic->id ? 'selected' : '' }}>
+                                                            Broker: {{ $connection->broker_address }} | Topic:
+                                                            {{ $topic->topic }}
+                                                        </option>
+                                                    @endforeach
+                                                @endforeach
+                                            </select>
+                                            @error('log_enable')
+                                                <div class="invalid-feedback">
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
+                                        </div>
+                                        <div class="form-group col">
+                                            <label for="json_path" class="col-form-label">JSON Path:</label>
+                                            <input type="text" step="none" min="1" class="form-control"
+                                                id="json_path" name="json_path"
+                                                value="{{ old('json_path', $parameter->json_path) }}">
+                                            @error('json_path')
+                                                <div class="invalid-feedback">
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-white" data-bs-dismiss="modal">Close</button>

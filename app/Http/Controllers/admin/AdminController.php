@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Connections;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -21,6 +22,7 @@ class AdminController extends Controller
             'title' => 'Home',
             'breadcrumb' => 'Admin Panel',
             'subtitle' => 'test',
+            'connections' => Connections::with('topics')->get()
         ]);
     }
 }

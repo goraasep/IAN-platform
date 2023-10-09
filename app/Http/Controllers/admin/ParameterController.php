@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Charts\NumberParametersChart;
 use App\Exports\SingleParameterExport;
 use App\Http\Controllers\Controller;
+use App\Models\Connections;
 use App\Models\Parameters;
 use Carbon\Carbon;
 use Illuminate\Database\Schema\Blueprint;
@@ -33,7 +34,8 @@ class ParameterController extends Controller
                 'chart_line' => $this->renderLine($parameter, $default_time, $default_group)
             ],
             'datetimerange' => $default_time,
-            'group' => $default_group
+            'group' => $default_group,
+            'connections' => Connections::with('topics')->get()
         ];
         // $data['charts'] = $this->renderChart($parameter);
         return view('admin.parameter', $data);
@@ -54,6 +56,8 @@ class ParameterController extends Controller
                 'min' => 'required|numeric',
                 'log_interval' => 'required|integer',
                 'log_enable' => 'required|integer',
+                'topic_id' => 'required|integer',
+                'json_path' => 'required|max:1024',
             ]);
             $parameter = Parameters::create($validatedData);
             // Alert::success('Congrats', 'You\'ve Successfully Registered');
@@ -99,6 +103,8 @@ class ParameterController extends Controller
                 'min' => 'required|numeric',
                 'log_interval' => 'required|integer',
                 'log_enable' => 'required|integer',
+                'topic_id' => 'required|integer',
+                'json_path' => 'required|max:1024',
             ]);
             Parameters::where('id', $parameter->id)->update($validatedData);
             alert()->success('Success', 'Edit parameter success!');
