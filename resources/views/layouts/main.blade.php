@@ -1019,7 +1019,7 @@
                             parameter_id: "{{ $parameter->id }}",
                         },
                         success: function(data) {
-                            data.actual_value
+                            // data.actual_value
                             $('#live_string').html(data.actual_string);
                         }
                     });
@@ -1094,6 +1094,34 @@
                         }
                     },
                 });
+            });
+            $(document).ready(function() {
+                let getConnectionStatus = function() {
+                    $.ajax({
+                        type: 'POST',
+                        url: '{{ url('connection_status') }}',
+                        async: true,
+                        dataType: 'json',
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            connection_id: "{{ $connection->id }}",
+                        },
+                        success: function(data) {
+                            let conn_status = ``;
+                            if (data.status == "Connected") {
+                                conn_status =
+                                    `<span class="badge bg-gradient-success">${data.status}</span>`
+                            } else {
+                                conn_status =
+                                    `<span class="badge bg-gradient-danger">${data.status}</span>`
+                            }
+                            $('#conn_status').html(conn_status);
+
+                        }
+                    });
+                }
+                getConnectionStatus();
+                setInterval(getConnectionStatus, 1000);
             });
         </script>
     @endif

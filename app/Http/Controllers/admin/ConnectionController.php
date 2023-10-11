@@ -160,4 +160,24 @@ class ConnectionController extends Controller
         );
         echo json_encode($json_data);
     }
+
+    public function connStatus(Request $request)
+    {
+        $connection_id = $request->input('connection_id');
+        $connection_status = Connections::find($connection_id)->status;
+        return json_encode(["status" => $connection_status]);
+    }
+
+    public function reconnect(Connections $connection)
+    {
+        try {
+            $data = ["conn_flag" => 0];
+            Connections::whereId($connection->id)->update($data);
+            alert()->success('Success', 'Reconnecting');
+            return back();
+        } catch (Throwable $e) {
+            alert()->warning('Failed', "Reconnecting failed, " . $e->getMessage());
+            return back();
+        }
+    }
 }

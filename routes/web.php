@@ -83,6 +83,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/admin-panel/connection', [AdminConnectionController::class, 'store']);
         Route::put('/admin-panel/connection/{connection}', [AdminConnectionController::class, 'update']);
         Route::delete('/admin-panel/connection/{connection}', [AdminConnectionController::class, 'destroy']);
+        Route::post('/admin-panel/connection/{connection}/reconnect', [AdminConnectionController::class, 'reconnect']);
         Route::post('/datatables/topic_list', [AdminTopicController::class, 'topic_list']);
         Route::post('/admin-panel/topic', [AdminTopicController::class, 'store']);
         Route::delete('/admin-panel/topic/{topic}', [AdminTopicController::class, 'destroy']);
@@ -98,6 +99,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::post('/livedata', [AdminParameterController::class, 'liveData']);
         Route::post('/graphdata', [AdminParameterController::class, 'graphData']);
+        Route::post('/connection_status', [AdminConnectionController::class, 'connStatus']);
     });
     Route::middleware('role:User')->group(function () {
         Route::get('/', [UserDashboardController::class, 'index']);

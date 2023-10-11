@@ -6,6 +6,10 @@
                 <div class="mb-md-0 mb-3">
                     <h3 class="font-weight-bold mb-0">{{ $connection->broker_address }}:{{ $connection->port }}</h3>
                     <p class="mb-0">Client ID: {{ $connection->client_id }}</p>
+                    {{-- <p class="mb-0"><span id="conn_status"
+                            class="badge {{ $connection->status == 'Connected' ? 'bg-gradient-success' : 'bg-gradient-danger' }} ">{{ $connection->status }}</span>
+                    </p> --}}
+                    <p class="mb-0"><span id="conn_status"></span></p>
                 </div>
                 <a href="/admin-panel" type="button"
                     class="btn btn-sm btn-white btn-icon d-md-flex align-items-center mb-0 ms-md-auto mb-md-0 mb-2 me-md-2">
@@ -30,6 +34,20 @@
                     </span>
                     <span class="btn-inner--text">Connection Setting</span>
                 </button>
+                {{-- <button type="submit" value="Submit" name="export" formmethod="get"
+                                        formaction="/admin-panel/export/dashboard" formtarget="_blank"
+                                        class="btn btn-success">Export</button> --}}
+                <form action="">
+                    @csrf
+                    <button type="submit" value="Submit" name="reconnect" formmethod="post"
+                        formaction="/admin-panel/connection/{{ $connection->id }}/reconnect"
+                        class="btn btn-sm btn-white btn-icon d-md-flex align-items-center mb-md-0 mb-2 mb-0 me-md-2">
+                        <span class="btn-inner--icon me-2">
+                            <i class="fa-solid fa-sync-alt"></i>
+                        </span>
+                        <span class="btn-inner--text">Reconnect</span>
+                    </button>
+                </form>
                 <button type="button"
                     class="btn btn-sm btn-icon btn-outline-danger d-md-flex align-items-center mb-md-0 mb-2 mb-0"
                     data-bs-toggle="modal" data-bs-target="#deleteConnectionModal">
@@ -93,7 +111,8 @@
                                     <div class="form-group">
                                         <label for="conn-address" class="col-form-label">Broker
                                             Address:</label>
-                                        <input type="text" class="form-control" id="conn-address" name="broker_address"
+                                        <input type="text" class="form-control" id="conn-address"
+                                            name="broker_address"
                                             value="{{ old('broker_address', $connection->broker_address) }}">
                                         @error('broker_address')
                                             <div class="invalid-feedback">
