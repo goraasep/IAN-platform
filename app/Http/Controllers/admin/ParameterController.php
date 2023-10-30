@@ -66,18 +66,21 @@ class ParameterController extends Controller
                 Schema::create('parameter_log_' . $parameter->id, function (Blueprint $table) {
                     $table->id();
                     $table->double('log_value');
-                    $table->timestamp('created_at', $precision = 0);
+                    $table->timestamp('created_at', $precision = 0)->useCurrent();
+                    $table->index(['created_at']);
                 });
                 Schema::create('parameter_alert_' . $parameter->id, function (Blueprint $table) {
                     $table->id();
                     $table->string('alert');
-                    $table->timestamp('created_at', $precision = 0);
+                    $table->timestamp('created_at', $precision = 0)->useCurrent();
+                    $table->index(['created_at']);
                 });
             } else {
                 Schema::create('parameter_log_' . $parameter->id, function (Blueprint $table) {
                     $table->id();
                     $table->string('log_value');
-                    $table->timestamp('created_at', $precision = 0);
+                    $table->timestamp('created_at', $precision = 0)->useCurrent();
+                    $table->index(['created_at']);
                 });
             }
 
